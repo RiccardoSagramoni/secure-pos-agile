@@ -28,7 +28,7 @@ class DBManager:
             conn.commit()
         except:
             res = None
-            print("Exeption in query - special char")
+            print("Query exception")
         conn.close()
         return res
 
