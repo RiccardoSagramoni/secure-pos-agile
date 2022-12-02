@@ -19,10 +19,10 @@ def test_insert_record():
             "name": "team",
             "lastName": "cammeo"}
     df = pd.DataFrame(data, index=[0])
-    try:
-        db.insert_record(df, path_db, "example")
+    res = db.insert_record(df, path_db, "example")
+    if res:
         assert True
-    except:
+    else:
         assert False
 
 
@@ -30,7 +30,10 @@ def test_execute_query():
     try:
         query = "SELECT * FROM example"
         res = db.execute_query(path_db, query)
-        print(res)
+        if res is not None:
+            print(res)
+        else:
+            print("empty table")
         assert True
     except:
         assert False
@@ -49,4 +52,8 @@ def test_update_table():
 
 
 def test_delete_table():
-    assert False
+    try:
+        db.delete_table(path_db, "example")
+        assert True
+    except:
+        assert False

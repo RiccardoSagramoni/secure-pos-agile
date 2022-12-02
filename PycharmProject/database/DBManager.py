@@ -18,7 +18,8 @@ class DBManager:
     @staticmethod
     def insert_record(dataframe, path_db, table):
         conn = sqlite3.connect(path_db, timeout=15)
-        dataframe.to_sql(table, conn, if_exists="append", index=False)
+        res = dataframe.to_sql(table, conn, if_exists="append", index=False)
+        return bool(res)
 
     @staticmethod
     def execute_query(path_db, query):
