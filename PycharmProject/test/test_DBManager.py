@@ -27,11 +27,25 @@ def test_insert_record():
 
 
 def test_execute_query():
-    assert False
+    try:
+        query = "SELECT * FROM example"
+        res = db.execute_query(path_db, query)
+        print(res)
+        assert True
+    except:
+        assert False
 
 
 def test_update_table():
-    assert False
+    try:
+        query = "UPDATE example SET name='pippo' WHERE ex_id='1'"
+        db.update_table(path_db, query)
+        query = "SELECT * FROM example"
+        res = db.execute_query(path_db, query)
+        print(res)
+        assert True
+    except:
+        assert False
 
 
 def test_delete_table():
