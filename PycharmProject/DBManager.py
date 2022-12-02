@@ -8,6 +8,14 @@ class DBManager:
         pass
 
     @staticmethod
+    def create_table(path_db, query):
+        conn = sqlite3.connect(path_db)
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        conn.close()
+
+    @staticmethod
     def insert_record(dataframe, path_db, table):
         conn = sqlite3.connect(path_db, timeout=15)
         dataframe.to_sql(table, conn, if_exist="append", index=False)
@@ -19,28 +27,13 @@ class DBManager:
             res = pd.read_sql(query, conn)
             conn.commit()
         except:
+            res = None
             print("Exeption in query - special char")
         conn.close()
         return res
 
     @staticmethod
-    def delete_table(path_db, table):
-        conn = sqlite3.connect(path_db)
-        cursor = conn.cursor()
-        cursor.execute("DROP TABLE IF EXISTS " + table)
-        conn.commit()
-        conn.close()
-
-    @staticmethod
-    def create_table(self, path_db, query):
-        conn = sqlite3.connect(path_db)
-        cursor = conn.cursor()
-        cursor.execute(query)
-        conn.commit()
-        conn.close()
-
-    @staticmethod
-    def update_table(self, path_db, query):
+    def update_table(path_db, query):
         conn = sqlite3.connect(path_db)
         try:
             cur = conn.cursor()
@@ -50,5 +43,10 @@ class DBManager:
             print("Query exception")
         conn.close()
 
-
-
+    @staticmethod
+    def delete_table(path_db, table):
+        conn = sqlite3.connect(path_db)
+        cursor = conn.cursor()
+        cursor.execute("DROP TABLE IF EXISTS " + table)
+        conn.commit()
+        conn.close()
