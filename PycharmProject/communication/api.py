@@ -17,8 +17,15 @@ class EchoApi(Resource):
 
 
 class GetFileApi(Resource):
-    file_path = 'classifier.gz'
+    base_path = "../data/"
     
-    def get(self):
-        return send_file(self.file_path, as_attachment=True)
+    def get(self, filename):
+        return send_file(self.base_path + filename, as_attachment=True)
 
+
+'''
+- echo
+- file (classifier)
+- json
+- csv
+'''

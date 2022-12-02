@@ -8,8 +8,8 @@ class MyRestServer:
     api = Api(app)
     
     def __init__(self, resource_list: List[tuple]):
-        for (resource, url) in resource_list:
-            self.api.add_resource(resource, url)
+        for (resource, *url) in resource_list:
+            self.api.add_resource(resource, *url)
     
     def start(self, host: str, port: int, debug: bool = False):
         self.app.run(host=host, port=port, debug=debug)
