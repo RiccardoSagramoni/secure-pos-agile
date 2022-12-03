@@ -1,9 +1,10 @@
-from communication import create_app, run_app
+from communication import RestServer
 from communication.api import EchoApi, GetFileApi
 
 if __name__ == "__main__":
-    resources = [
-        (EchoApi, "/"),
-        (GetFileApi, "/file/<filename>")
-    ]
-    run_app(create_app(resources), debug=True)
+    server = RestServer()
+    server.api.add_resource(EchoApi, "/")
+    server.api.add_resource(GetFileApi,
+                            "/get/<filename>",
+                            resource_class_kwargs={'base_path': '../../data/'})
+    server.run(debug=True)

@@ -5,16 +5,20 @@ from flask_restful import Resource
 
 
 class EchoApi(Resource):
-    def get(self):
-        return 'Hello World', 200
+    @staticmethod
+    def get():
+        return "Hello World", 200
     
-    def post(self):
+    @staticmethod
+    def post():
         some_json = request.get_json()
         return {"you sent": some_json}, 201
 
 
 class GetFileApi(Resource):
-    base_path = os.path.realpath("../../data/")
+
+    def __init__(self, base_path):
+        self.base_path = os.path.realpath(base_path)
     
     def get(self, filename):
         # Check path traversal
@@ -27,7 +31,7 @@ class GetFileApi(Resource):
 
 '''
 X echo
-X file (classifier)
+X file
 - json
 - csv
 '''
