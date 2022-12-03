@@ -1,6 +1,7 @@
+from typing import List
+
 from flask import Flask
 from flask_restful import Api
-from typing import List
 
 
 def create_app(resource_list: List[tuple]) -> Flask:

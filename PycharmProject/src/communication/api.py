@@ -1,11 +1,12 @@
+import os.path
+
 from flask import request, send_file
 from flask_restful import Resource
-import os.path
 
 
 class EchoApi(Resource):
     def get(self):
-        return "Hello World", 200
+        return 'Hello World', 200
     
     def post(self):
         some_json = request.get_json()
