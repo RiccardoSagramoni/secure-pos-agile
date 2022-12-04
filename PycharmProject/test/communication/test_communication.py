@@ -19,20 +19,20 @@ def app() -> Flask:
 
 
 def test_get_echo_api(client):
-    r = client.get(echo_url)
-    assert r.status_code == 200
-    assert 'Hello World' == r.json
+    response = client.get(echo_url)
+    assert response.status_code == 200
+    assert 'Hello World' == response.json
 
 
 def test_post_echo_api(client):
     sent_json = {"name": "value"}
-    r = client.post(echo_url, json=sent_json)
-    assert r.status_code == 201
-    assert {"you sent": sent_json} == r.json
+    response = client.post(echo_url, json=sent_json)
+    assert response.status_code == 201
+    assert response.json == {"you sent": sent_json}
 
 
 def test_get_getfile_api(client):
-    r = client.get(getfile_url + '/label.csv')
-    assert r.status_code == 200
-    assert 'event_id' in r.text
-    assert 'label' in r.text
+    response = client.get(getfile_url + '/label.csv')
+    assert response.status_code == 200
+    assert 'event_id' in response.text
+    assert 'label' in response.text

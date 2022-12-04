@@ -16,11 +16,11 @@ class EchoApi(Resource):
 
 
 class GetFileApi(Resource):
-
-    def __init__(self, base_path):
+    
+    def __init__(self, base_path: str):
         self.base_path = os.path.realpath(base_path)
     
-    def get(self, filename):
+    def get(self, filename: str):
         # Check path traversal
         real_path = os.path.realpath(self.base_path + "/" + filename)
         if not real_path.startswith(self.base_path):
