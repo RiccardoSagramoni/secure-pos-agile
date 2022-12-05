@@ -40,10 +40,10 @@ class ManageJsonApi(Resource):
         if not real_path.startswith(self.base_path):
             return "Path traversal detected", 403
 
-        file = open(real_path)
-        data = json.load(file)
-        file.close()
-        return {'json file content': data}, 200
+        with open(real_path, "r") as file:
+            data = json.load(file)
+
+        return {data}, 200
 
     def post(self, filename: str):
         real_path = os.path.realpath(self.base_path + "/" + filename)
@@ -56,7 +56,8 @@ class ManageJsonApi(Resource):
         with open(real_path, "a") as file:
             json.dump(some_json, file)
 
-        return {'you sent ': some_json}, 201
+        return {'OK'}, 201
+
 class ReadCSVApi(Resource):
     def __init__(self, base_path: str):
         self.base_path = os.path.realpath(base_path)
@@ -66,8 +67,8 @@ class ReadCSVApi(Resource):
         if not real_path.startswith(self.base_path):
             return "Path traversal detected", 403
 
-        file = open(real_path)
-        data = read_csv(file)
-        file.close()
-        data = data.to_dict()
-        return {'csv file content': data}, 200
+        with open(real_path, "r") as file:
+            data = read_csv(file)
+            data = data.to_dict()
+
+        return {data}, 200
