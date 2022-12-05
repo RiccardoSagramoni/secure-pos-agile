@@ -4,26 +4,23 @@ import pandas as pd
 
 class DBManager:
 
-    def __init__(self):
-        pass
+    def __init__(self, path_db):
+        self.path_db = path_db
 
-    @staticmethod
-    def create_table(path_db, query):
-        conn = sqlite3.connect(path_db)
+    def create_table(self, query):
+        conn = sqlite3.connect(self.path_db)
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
         conn.close()
 
-    @staticmethod
-    def insert_record(dataframe, path_db, table):
-        conn = sqlite3.connect(path_db, timeout=15)
+    def insert_record(self, dataframe, table):
+        conn = sqlite3.connect(self.path_db, timeout=15)
         res = dataframe.to_sql(table, conn, if_exists="append", index=False)
         return bool(res)
 
-    @staticmethod
-    def execute_query(path_db, query):
-        conn = sqlite3.connect(path_db)
+    def execute_query(self, query):
+        conn = sqlite3.connect(self.path_db)
         try:
             res = pd.read_sql(query, conn)
             conn.commit()
@@ -33,9 +30,8 @@ class DBManager:
         conn.close()
         return res
 
-    @staticmethod
-    def update_table(path_db, query):
-        conn = sqlite3.connect(path_db)
+    def update_table(self, query):
+        conn = sqlite3.connect(self.path_db)
         try:
             cur = conn.cursor()
             cur.execute(query)
@@ -44,9 +40,8 @@ class DBManager:
             print("Query exception")
         conn.close()
 
-    @staticmethod
-    def delete_table(path_db, table):
-        conn = sqlite3.connect(path_db)
+    def delete_table(self, table):
+        conn = sqlite3.connect(self.path_db)
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS " + table)
         conn.commit()
