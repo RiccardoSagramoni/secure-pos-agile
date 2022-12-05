@@ -8,5 +8,5 @@ class RestServer:
         self.app = Flask(name)
         self.api = Api(self.app)
     
-    def run(self, host: str = "0.0.0.0", port: int = 80, debug: bool = False) -> None:
+    def run(self, host: str = "0.0.0.0", port: int = 8080, debug: bool = False) -> None:
         self.app.run(host=host, port=port, debug=debug)
