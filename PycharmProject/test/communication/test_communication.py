@@ -15,7 +15,7 @@ def app() -> Flask:
     server.api.add_resource(GetFileApi,
                             getfile_url + "/<filename>",
                             resource_class_kwargs={'base_path': '../../data/'})
-    return server.app
+    return server._app
 
 
 def test_get_echo_api(client):
