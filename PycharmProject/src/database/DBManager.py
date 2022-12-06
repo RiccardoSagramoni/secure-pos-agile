@@ -1,5 +1,3 @@
-from typing import Union, Iterator
-
 import os
 import pandas as pd
 import sqlite3
@@ -21,7 +19,7 @@ class DBManager:
             res = dataframe.to_sql(table, conn, if_exists="append", index=False)
             return bool(res)
 
-    def read_sql(self, query: str) -> Union[pd.DataFrame, Iterator[pd.DataFrame], None]:
+    def read_sql(self, query: str):
         try:
             with sqlite3.connect(self.path_db, timeout=15) as conn:
                 return pd.read_sql(query, conn)

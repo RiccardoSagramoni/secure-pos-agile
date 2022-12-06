@@ -1,5 +1,3 @@
-import sqlite3
-
 from database import DBManager
 import pandas as pd
 import pytest
@@ -23,7 +21,7 @@ def test_create_table(db):
         assert False
 
 
-def test_insert_record(db):
+def test_insert(db):
     data = {"ex_id": "1",
             "name": "team",
             "lastName": "Cammeo"}
@@ -31,7 +29,7 @@ def test_insert_record(db):
     assert db.insert(df, table="example")
 
 
-def test_execute_query(db):
+def test_read_sql(db):
     try:
         query = "SELECT * FROM example"
         res = db.read_sql(query)
@@ -44,7 +42,7 @@ def test_execute_query(db):
         assert False
 
 
-def test_update_table(db):
+def test_update(db):
     try:
         query = "UPDATE example SET name='pippo' WHERE ex_id='2'"
         db.update(query)
