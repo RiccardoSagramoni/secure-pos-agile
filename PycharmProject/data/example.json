@@ -1,4 +1,3 @@
 {
-  "test": "rest_api",
-  "result": "passed"
+  "test_post1": "rest_api"
 }
