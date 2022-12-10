@@ -12,21 +12,18 @@ def main():
 
     print("Expose json resource")
     server.api.add_resource(ManageJsonApi,
-                            "/json/example.json",
-                            resource_class_kwargs={'base_path': '../../data',
-                                                   'filename': 'example.json'})
+                            "/json/<filename>",
+                            resource_class_kwargs={'base_path': '../../data'})
 
     print("Expose csv resource")
     server.api.add_resource(ReadCSVApi,
-                            "/csv/commercial.csv",
-                            resource_class_kwargs={'base_path': '../../data/',
-                                                   'filename': 'commercial.csv'})
+                            "/csv/<filename>",
+                            resource_class_kwargs={'base_path': '../../data/'})
 
     print("Expose generic resource")
     server.api.add_resource(GetFileApi,
-                            "/file/example.json",
-                            resource_class_kwargs={'base_path': '../../data/',
-                                                   'filename': 'example.json'})
+                            "/file/<filename>",
+                            resource_class_kwargs={'base_path': '../../data/'})
     server.run(debug=True)
 
 
