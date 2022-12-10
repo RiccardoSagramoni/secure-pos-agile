@@ -8,12 +8,12 @@ if __name__ == "__main__":
     server.api.add_resource(EchoApi, "/")
     server.api.add_resource(GetFileApi,
                             "/get/<filename>",
-                            resource_class_kwargs={'base_path': '../../data/'})
+                            resource_class_kwargs={'base_path': '/data/'})
     server.api.add_resource(ManageJsonApi,
                             "/json/<filename>",
-                            resource_class_kwargs={'base_path': '../../data/'})
+                            resource_class_kwargs={'base_path': '/data/'})
     server.api.add_resource(ReadCSVApi,
                             "/csv/<filename>",
-                            resource_class_kwargs={'base_path': '../../data/'})
+                            resource_class_kwargs={'base_path': '/data/'})
     # Start server
     server.run(debug=True)

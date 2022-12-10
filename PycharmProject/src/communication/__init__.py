@@ -17,8 +17,8 @@ class RestServer:
         Initialize a Flask Application.
         :param name: name of the application.
         """
-        self._app = Flask(name)
-        self.api = Api(self._app)
+        self.app = Flask(name)
+        self.api = Api(self.app)
     
     def run(self, host: str = "0.0.0.0", port: int = 8000, debug: bool = False) -> None:
         """
@@ -28,4 +28,4 @@ class RestServer:
         :param port: the port of the web server. Defaults to 8000.
         :param debug: enable or disable debug mode. Disabled by default.
         """
-        self._app.run(host=host, port=port, debug=debug)
+        self.app.run(host=host, port=port, debug=debug)

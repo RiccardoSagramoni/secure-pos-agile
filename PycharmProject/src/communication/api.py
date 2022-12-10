@@ -1,9 +1,11 @@
 import os.path
 import json
+from os import path
 
 from flask import request, send_file
 from flask_restful import Resource
 from pandas import read_csv
+from utility import get_project_folder
 
 
 class EchoApi(Resource):
@@ -13,10 +15,11 @@ class EchoApi(Resource):
     - GET: send back a message.
     - POST: send back the received data.
     """
+    
     @staticmethod
     def get():
         return "Hello World", 200
-
+    
     @staticmethod
     def post():
         some_json = request.get_json()
@@ -28,14 +31,14 @@ class GetFileApi(Resource):
     This API allows to get files from a specified folder,
     by sending a GET request on to endpoint "/<filename>"
     """
-
+    
     def __init__(self, base_path: str):
         """
-        Initialize the API by setting the folder path
-        :param base_path: relative or absolute folder path.
+        Initialize the API by setting the folder path.
+        :param base_path: relative path from the project folder.
         """
-        self.base_path = os.path.realpath(base_path)
-
+        self.base_path = os.path.realpath(get_project_folder() + base_path)
+    
     def get(self, filename: str):
         """
         Get files from server
@@ -46,50 +49,54 @@ class GetFileApi(Resource):
         real_path = os.path.realpath(self.base_path + "/" + filename)
         if not real_path.startswith(self.base_path):
             return "Path traversal detected", 403
-
+        
+        # Check if file exists
+        if not path.exists(real_path):
+            return 'File not found', 404
+        
         return send_file(real_path, as_attachment=True)
 
 
 class ManageJsonApi(Resource):
     def __init__(self, base_path: str):
         self.base_path = os.path.realpath(base_path)
-
+    
     def get(self, filename: str):
         real_path = os.path.realpath(self.base_path + "/" + filename)
         if not real_path.startswith(self.base_path):
             return "Path traversal detected", 403
-
+        
         with open(real_path, "r", encoding="UTF-8") as file:
             data = json.load(file)
-
+        
         return data, 200
-
+    
     def post(self, filename: str):
         real_path = os.path.realpath(self.base_path + "/" + filename)
         if not real_path.startswith(self.base_path):
             return "Path traversal detected", 403
-
+        
         some_json = request.get_json()
         ip_address = request.remote_addr
         print(f" JSON Received: {some_json} From: {ip_address}")
         
         with open(real_path, "w", encoding="UTF-8") as file:
             json.dump(some_json, file, indent=2)
-
+        
         return 'OK', 201
 
 
 class ReadCSVApi(Resource):
     def __init__(self, base_path: str):
         self.base_path = os.path.realpath(base_path)
-
+    
     def get(self, filename: str):
         real_path = os.path.realpath(self.base_path + "/" + filename)
         if not real_path.startswith(self.base_path):
             return "Path traversal detected", 403
-
+        
         with open(real_path, "r", encoding="UTF-8") as file:
             data = read_csv(file)
             data = data.to_dict()
-
+        
         return data, 200

@@ -1,7 +1,5 @@
 import jsonschema
 
-from jsonschema import validate
-
 
 def validate_json(json_data, schema) -> bool:
     """
@@ -11,7 +9,7 @@ def validate_json(json_data, schema) -> bool:
     :return: True if json object is valid, False otherwise.
     """
     try:
-        validate(instance=json_data, schema=schema)
+        jsonschema.validate(instance=json_data, schema=schema)
     except jsonschema.exceptions.ValidationError:
         return False
     return True
