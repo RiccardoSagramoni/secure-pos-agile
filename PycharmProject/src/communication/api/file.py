@@ -20,8 +20,9 @@ class GetFileApi(Resource):
     
     def get(self):
         """
-        Get the file offered by the endpoint.
-        :return: the server response: an error message on failure, the requested file on success.
+        Get the file exposed by the endpoint.
+        :return: the server response: on success return status 200 and the exposed file,
+                 on failure return status 404 and an error message
         """
         try:
             return flask.send_file(self.filename, as_attachment=True)
@@ -44,8 +45,9 @@ class GetFilesInsideDirectoryApi(Resource):
     
     def get(self, filename: str):
         """
-        Get any file from the base folder.
+        Get any file from the directory.
         :param filename: name of the file
-        :return: the server response: an error message on failure, the requested file on success.
+        :return: the server response: on success return status 200 and the exposed file,
+                 on failure return status 404 and an error message
         """
         return flask.send_from_directory(directory=self.directory, path=filename, as_attachment=True)
