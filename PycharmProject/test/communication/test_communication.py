@@ -2,7 +2,8 @@ import pytest
 from flask import Flask
 
 from communication import RestServer
-from communication.api import EchoApi, GetFilesInsideDirectoryApi
+from communication.api import EchoApi
+from communication.api.file import GetFilesInsideDirectoryApi
 
 ECHO_URL = '/'
 GETFILE_URL = '/get'
