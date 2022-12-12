@@ -2,7 +2,7 @@ import pytest
 from flask import Flask
 
 from communication import RestServer
-from communication.api import EchoApi, GetFileApi
+from communication.api import EchoApi, GetFilesInsideDirectoryApi
 
 ECHO_URL = '/'
 GETFILE_URL = '/get'
@@ -12,9 +12,9 @@ GETFILE_URL = '/get'
 def app() -> Flask:
     server = RestServer()
     server.api.add_resource(EchoApi, ECHO_URL)
-    server.api.add_resource(GetFileApi,
+    server.api.add_resource(GetFilesInsideDirectoryApi,
                             GETFILE_URL + "/<filename>",
-                            resource_class_kwargs={'base_path': '/data/'})
+                            resource_class_kwargs={'directory': '/data/'})
     return server.app
 
 
