@@ -1,4 +1,4 @@
-from database import DBManager
+from database.DBManager import DBManager
 import pandas as pd
 import pytest
 
