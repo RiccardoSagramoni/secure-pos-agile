@@ -2,7 +2,8 @@ import pytest
 from flask import Flask
 
 from communication import RestServer
-from communication.api import EchoApi, GetFileApi
+from communication.api import EchoApi
+from communication.api.file import GetFilesInsideDirectoryApi
 
 ECHO_URL = '/'
 GETFILE_URL = '/get'
@@ -12,9 +13,9 @@ GETFILE_URL = '/get'
 def app() -> Flask:
     server = RestServer()
     server.api.add_resource(EchoApi, ECHO_URL)
-    server.api.add_resource(GetFileApi,
+    server.api.add_resource(GetFilesInsideDirectoryApi,
                             GETFILE_URL + "/<filename>",
-                            resource_class_kwargs={'base_path': '/data/'})
+                            resource_class_kwargs={'directory': '/data/'})
     return server.app
 
 
@@ -34,8 +35,6 @@ def test_echo_api__post(client):
 def test_getfile_api__get(client):
     response = client.get(GETFILE_URL + '/label.csv')
     assert response.status_code == 200
-    assert 'event_id' in response.text
-    assert 'label' in response.text
 
 
 def test_getfile_api__wrong_file(client):
