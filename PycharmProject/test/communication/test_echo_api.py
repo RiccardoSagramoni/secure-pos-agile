@@ -1,4 +1,4 @@
-from fixture_app import *
+from conftest import ECHO_URL
 
 
 def test_echo_api__get(client):

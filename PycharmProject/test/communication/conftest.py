@@ -17,7 +17,7 @@ CSV_URL = '/csv'
 RECEIVE_API_FILENAME = 'test/communication/receive.txt'
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='package')
 def app() -> Flask:
     server = RestServer()
     server.api.add_resource(EchoApi, ECHO_URL)

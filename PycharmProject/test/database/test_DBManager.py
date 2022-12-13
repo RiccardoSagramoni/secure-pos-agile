@@ -5,7 +5,7 @@ import pytest
 path_db = "test.db"
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='package')
 def db():
     db = DBManager(path_db)
     yield db

@@ -1,6 +1,6 @@
 import os
 
-from fixture_app import *
+from conftest import GETFILE_URL, GETFILE_DIR_URL, RECEIVE_URL, RECEIVE_API_FILENAME
 from utility import get_project_folder, get_tests_folder
 
 
