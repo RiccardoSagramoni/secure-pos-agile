@@ -10,7 +10,8 @@ if __name__ == "__main__":
     
     # Add APIs
     server.api.add_resource(EchoApi, "/")
-    server.api.add_resource(GetFileApi, "/file",
+    server.api.add_resource(GetFileApi,
+                            "/file",
                             resource_class_kwargs={'filename': 'data/label.csv'})
     server.api.add_resource(GetFilesInsideDirectoryApi,
                             "/dir/<filename>",

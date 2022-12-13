@@ -17,7 +17,7 @@ class ReceiveFileApi(Resource):
     
     def post(self):
         if 'file' not in request.files:
-            return flask.redirect(request.url)
+            return flask.abort(400)
             
         file = request.files['file']
         file.save(self.filename)
