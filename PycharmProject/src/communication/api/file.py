@@ -1,9 +1,31 @@
 import os
+from typing import Callable
 
 import flask
+from flask import request
 from flask_restful import Resource
 
 from utility import get_project_folder
+
+
+class ReceiveFileApi(Resource):
+    def __init__(self,
+                 filename: str,
+                 handler: Callable[[], None] = None):
+        self.filename = os.path.join(get_project_folder(), filename)
+        self.handle_request = handler
+    
+    def post(self):
+        if 'file' not in request.files:
+            return flask.redirect(request.url)
+            
+        file = request.files['file']
+        file.save(self.filename)
+        
+        if self.handle_request is not None:
+            self.handle_request()
+        
+        return "File correctly received", 201
 
 
 class GetFileApi(Resource):
@@ -16,7 +38,7 @@ class GetFileApi(Resource):
         Initialize the API by setting the folder path.
         :param filename: relative path from the project folder.
         """
-        self.filename = os.path.realpath(get_project_folder() + filename)
+        self.filename = os.path.join(get_project_folder(), filename)
     
     def get(self):
         """
@@ -41,7 +63,7 @@ class GetFilesInsideDirectoryApi(Resource):
         Initialize the API by setting the folder path.
         :param directory: relative path from the project folder.
         """
-        self.directory = os.path.realpath(get_project_folder() + directory)
+        self.directory = os.path.join(get_project_folder(), directory)
     
     def get(self, filename: str):
         """

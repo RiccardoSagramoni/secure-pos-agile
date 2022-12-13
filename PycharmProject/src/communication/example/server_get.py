@@ -11,15 +11,15 @@ if __name__ == "__main__":
     # Add APIs
     server.api.add_resource(EchoApi, "/")
     server.api.add_resource(GetFileApi, "/file",
-                            resource_class_kwargs={'filename': '/data/labbbel.csv'})
+                            resource_class_kwargs={'filename': 'data/label.csv'})
     server.api.add_resource(GetFilesInsideDirectoryApi,
                             "/dir/<filename>",
-                            resource_class_kwargs={'directory': '/data/'})
+                            resource_class_kwargs={'directory': 'data/'})
     server.api.add_resource(ManageJsonApi,
                             "/json/<filename>",
-                            resource_class_kwargs={'base_path': '/data/'})
+                            resource_class_kwargs={'base_path': 'data/'})
     server.api.add_resource(ReadCSVApi,
                             "/csv/<filename>",
-                            resource_class_kwargs={'base_path': '/data/'})
+                            resource_class_kwargs={'base_path': 'data/'})
     # Start server
     server.run(debug=True)

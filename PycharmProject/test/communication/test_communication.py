@@ -15,7 +15,7 @@ def app() -> Flask:
     server.api.add_resource(EchoApi, ECHO_URL)
     server.api.add_resource(GetFilesInsideDirectoryApi,
                             GETFILE_URL + "/<filename>",
-                            resource_class_kwargs={'directory': '/data/'})
+                            resource_class_kwargs={'directory': 'data/'})
     return server.app
 
 
