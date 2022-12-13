@@ -1,5 +1,5 @@
 from communication import RestServer
-from communication.api import EchoApi, GetFileApi, ManageJsonApi, ReadCSVApi
+from communication.api import EchoApi, file, csv, json
 
 
 def main():
@@ -11,19 +11,20 @@ def main():
     server.api.add_resource(EchoApi, "/Hello")
 
     print("Expose json resource")
-    server.api.add_resource(ManageJsonApi,
+    server.api.add_resource(json.ManageJsonApi,
                             "/json/<filename>",
                             resource_class_kwargs={'base_path': '../../data'})
 
     print("Expose csv resource")
-    server.api.add_resource(ReadCSVApi,
+    server.api.add_resource(csv.ReadCSVApi,
                             "/csv/<filename>",
                             resource_class_kwargs={'base_path': '../../data/'})
 
     print("Expose generic resource")
-    server.api.add_resource(GetFileApi,
-                            "/file/<filename>",
-                            resource_class_kwargs={'base_path': '../../data/'})
+    server.api.add_resource(file.GetFileApi,
+                            "/file",
+                            resource_class_kwargs={'filename': '/data/label.csv'})
+
     server.run(debug=True)
 
 

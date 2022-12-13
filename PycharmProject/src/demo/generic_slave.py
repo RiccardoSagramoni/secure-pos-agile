@@ -8,7 +8,7 @@ def main():
 
     # Receive json file
     print("Get json resource")
-    get_resource(IP_MASTER + "/file/example.json", None)
+    get_resource(IP_MASTER + "/file", None)
 
 
 if __name__ == "__main__":
