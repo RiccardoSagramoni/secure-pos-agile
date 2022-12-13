@@ -35,8 +35,6 @@ def test_echo_api__post(client):
 def test_getfile_api__get(client):
     response = client.get(GETFILE_URL + '/label.csv')
     assert response.status_code == 200
-    assert 'event_id' in response.text
-    assert 'label' in response.text
 
 
 def test_getfile_api__wrong_file(client):
