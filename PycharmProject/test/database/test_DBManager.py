@@ -39,7 +39,7 @@ def test_insert(db):
 
 def test_read_sql(db):
     try:
-        query = "SELECT * FROM example"
+        query = "SELECT * FROM example WHERE ex_id='1'"
         result = db.read_sql(query)
         assert result.equals(test_dataframe)
     except:
@@ -50,7 +50,7 @@ def test_update(db):
     try:
         assert db.update("UPDATE example SET name='pippo' WHERE ex_id='1'")
         
-        result = db.read_sql("SELECT * FROM example")
+        result = db.read_sql("SELECT * FROM example WHERE ex_id='1'")
         assert result.equals(new_test_dataframe)
     except Exception:
         assert False
