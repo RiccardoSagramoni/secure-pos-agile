@@ -29,7 +29,7 @@ def test_create_table(db):
         query = "CREATE TABLE example (ex_id TEXT PRIMARY KEY UNIQUE, name TEXT, lastName TEXT)"
         db.create_table(query)
         assert True
-    except:
+    except Exception:
         assert False
 
 
@@ -52,7 +52,7 @@ def test_update(db):
         
         result = db.read_sql("SELECT * FROM example")
         assert result.equals(new_test_dataframe)
-    except:
+    except Exception:
         assert False
 
 
@@ -60,5 +60,5 @@ def test_delete_table(db):
     try:
         db.delete_table(table="example")
         assert True
-    except:
+    except Exception:
         assert False
