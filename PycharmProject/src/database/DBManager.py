@@ -23,7 +23,7 @@ class DBManager:
         try:
             with sqlite3.connect(self.path_db, timeout=15) as conn:
                 return pd.read_sql(query, conn)
-        except:
+        except Exception:
             print("Query exception")
             return None
 
@@ -34,7 +34,7 @@ class DBManager:
                 cur.execute(query)
                 conn.commit()
                 return True
-        except:
+        except Exception:
             print("Query exception")
             return False
 
