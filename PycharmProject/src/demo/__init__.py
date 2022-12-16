@@ -1,4 +1,8 @@
+import os
+
 import requests
+
+from utility import get_project_folder
 
 IP_MASTER = "http://127.0.0.1:8000"
 
@@ -16,6 +20,7 @@ def get_resource(url, sent_json):
     print_result(response)
 
 
-def post_resource(url, sent_json):
-    response = requests.post(url, json=sent_json)
-    print_result(response)
+def post_resource(ip_address, filename):
+    with open(os.path.join(get_project_folder(), filename), 'rb') as file:
+        response = requests.post(ip_address, files={'file': file})
+        print_result(response)
