@@ -10,4 +10,4 @@ def get_source_folder() -> str:
 
 
 def get_tests_folder() -> str:
-    return os.path.realpath(get_project_folder() + "/tests")
+    return os.path.realpath(get_project_folder() + "/test")
