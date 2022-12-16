@@ -17,7 +17,7 @@ test_dataframe = pd.DataFrame(test_data, index=[0])
 new_test_dataframe = pd.DataFrame(new_test_data, index=[0])
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='package')
 def db():
     db = DBManager(path_db)
     yield db
