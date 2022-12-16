@@ -42,7 +42,7 @@ def test_read_sql(db):
         query = "SELECT * FROM example WHERE ex_id='1'"
         result = db.read_sql(query)
         assert result.equals(test_dataframe)
-    except:
+    except Exception:
         assert False
 
 
