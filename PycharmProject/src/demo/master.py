@@ -1,50 +1,48 @@
-import os
 import sys
 import threading
-
-from flask import request
 
 from communication import RestServer
 from communication.api.file import ReceiveFileApi
 from demo import post_resource
 
+semaphore = threading.Semaphore(0)
 
-def shutdown_server():
-    print('ciao ciao2')
-    sys.exit(0)
-    # func = request.environ.get('werkzeug.server.shutdown')
-    # if func is None:
-    #     raise RuntimeError('Not running with the Werkzeug Server')
-    # func()
 
-def start_master_server():
+def handle_last_message() -> None:
+    # Notify that the message from last slave has arrived
+    semaphore.release()
+
+
+def start_master_server() -> None:
     # Instantiate server
     server = RestServer()
     server.api.add_resource(ReceiveFileApi,
                             "/",
                             resource_class_kwargs={
                                 'filename': 'file.txt',
-                                'handler': shutdown_server()
+                                'handler': handle_last_message
                             })
-    server.run(debug=True)
+    server.run()
 
 
-def main(next_node):
-    print('ciao')
-    # start a thread with start_master_server
-    master_thread = threading.Thread(target=start_master_server())
+def main(url_slave: str) -> None:
+    # Start Flask server as a daemon thread (it dies when main thread dies)
+    master_thread = threading.Thread(target=start_master_server, daemon=True)
     master_thread.start()
-
+    
     # Send POST request to first slave
-    post_resource(next_node, 'requirements.txt')
-
+    print(f"Send POST request to slave {url_slave}")
+    post_resource(url_slave, 'requirements.txt')
+    
     # Wait for last message
-    master_thread.join()
+    semaphore.acquire()
+    print('Last message arrived!')
+    sys.exit(0)
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Errore! Serve indirizzo ip del primo nodo")
         sys.exit(1)
-
-    main(str(sys.argv[1]))
+    
+    main(sys.argv[1])
