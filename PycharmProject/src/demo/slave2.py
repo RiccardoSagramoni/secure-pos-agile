@@ -6,14 +6,17 @@ from demo import post_resource
 
 
 def start_slave2_server(next_node):
+    filename = 'file.txt'
+    
     # Instantiate server
     server = RestServer()
     server.api.add_resource(ReceiveFileApi,
                             "/",
-                            resource_class_kwargs={'filename': 'file.txt',
-                                                   # l'handler manda la richiesta POST al master
-                                                   'handler': post_resource(next_node, "file.txt")
-                                                   })
+                            resource_class_kwargs={
+                                'filename': filename,
+                                # l'handler manda la richiesta POST al master
+                                'handler': lambda: post_resource(next_node, filename)
+                            })
     server.run(debug=True)
 
 
