@@ -42,10 +42,10 @@ def validate_json_file_file(json_data_filename, schema_filename):
     json_file_path = get_project_folder() + "/" + json_data_filename
     schema_file_path = get_project_folder() + "/" + schema_filename
 
-    with open(json_file_path, "r", encoding="UTF08") as file:
+    with open(json_file_path, "r", encoding="UTF-8") as file:
         json_data = json.load(file)
 
-    with open(schema_file_path, "r", encoding="UTF08") as file:
+    with open(schema_file_path, "r", encoding="UTF-8") as file:
         json_schema = json.load(file)
 
     return validate_json(json_data, json_schema)
