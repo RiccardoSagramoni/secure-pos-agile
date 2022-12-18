@@ -1,5 +1,6 @@
 import sys
 import threading
+from time import sleep
 
 from communication import RestServer
 from communication.api.file import ReceiveFileApi
@@ -37,6 +38,7 @@ def main(url_slave: str) -> None:
     # Wait for last message
     semaphore.acquire()
     print('Last message arrived!')
+    sleep(1)
     sys.exit(0)
 
 

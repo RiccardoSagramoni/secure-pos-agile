@@ -4,8 +4,6 @@ import requests
 
 from utility import get_project_folder
 
-IP_MASTER = "http://127.0.0.1:8000"
-
 
 def print_result(response):
     print("Status_code: " + str(response.status_code))

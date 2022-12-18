@@ -20,7 +20,7 @@ def start_slave1_server(next_node):
                             "/",
                             resource_class_kwargs={
                                 'filename': filename,
-                                # l'handler manda la richiesta POST al prossimo slave
+                                # l'handler manda la richiesta POST al prossimo nodo
                                 'handler': lambda: handle_message(next_node, filename)
                             })
     server.run(debug=True)
@@ -34,7 +34,7 @@ def main(next_node):
 if __name__ == "__main__":
     
     if len(sys.argv) < 2:
-        print("Errore! Serve indirizzo ip del prossimo slave")
+        print("Errore! Serve indirizzo ip del prossimo nodo")
         exit(1)
     
     main(str(sys.argv[1]))
