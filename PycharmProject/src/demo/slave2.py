@@ -1,8 +1,14 @@
 import sys
+import threading
 
 from communication import RestServer
 from communication.api.file import ReceiveFileApi
 from demo import post_resource
+
+
+def handle_message(next_node, filename):
+    t = threading.Thread(target=post_resource, args=(next_node, filename))
+    t.start()
 
 
 def start_slave2_server(next_node):
@@ -15,7 +21,7 @@ def start_slave2_server(next_node):
                             resource_class_kwargs={
                                 'filename': filename,
                                 # l'handler manda la richiesta POST al master
-                                'handler': lambda: post_resource(next_node, filename)
+                                'handler': lambda: handle_message(next_node, filename)
                             })
     server.run(debug=True)
 

@@ -27,8 +27,8 @@ def start_master_server() -> None:
 
 def main(url_slave: str) -> None:
     # Start Flask server as a daemon thread (it dies when main thread dies)
-    master_thread = threading.Thread(target=start_master_server, daemon=True)
-    master_thread.start()
+    flask_thread = threading.Thread(target=start_master_server, daemon=True)
+    flask_thread.start()
     
     # Send POST request to first slave
     print(f"Send POST request to slave {url_slave}")
