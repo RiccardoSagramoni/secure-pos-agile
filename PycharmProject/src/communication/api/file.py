@@ -25,7 +25,7 @@ class ReceiveFileApi(Resource):
         if self.handle_request is not None:
             self.handle_request()
         
-        return "File correctly received", 201
+        return 'File correctly received', 201
 
 
 class GetFileApi(Resource):
