@@ -6,12 +6,14 @@ from communication import RestServer
 from communication.api.file import ReceiveFileApi
 from demo import post_resource
 
-semaphore = threading.Semaphore(0)
+# This semaphore notifies the main thread when
+# the last message of the toolchain has been received
+message_received = threading.Semaphore(0)
 
 
 def handle_last_message() -> None:
     # Notify that the message from last slave has arrived
-    semaphore.release()
+    message_received.release()
 
 
 def start_master_server() -> None:
@@ -36,15 +38,16 @@ def main(url_slave: str) -> None:
     post_resource(url_slave, 'requirements.txt')
     
     # Wait for last message
-    semaphore.acquire()
+    message_received.acquire()
     print('Last message arrived!')
+    # Allows Flask application to return correct status code before terminating
     sleep(1)
     sys.exit(0)
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Errore! Serve indirizzo ip del primo nodo")
+        print("Errore! Serve url del primo nodo (formato http://<ip>:<port>)")
         sys.exit(1)
     
     main(sys.argv[1])

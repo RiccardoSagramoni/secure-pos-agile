@@ -7,11 +7,14 @@ from demo import post_resource
 
 
 def handle_message(next_node, filename):
-    t = threading.Thread(target=post_resource, args=(next_node, filename))
-    t.start()
+    # When the slave receives a message, generate a new thread
+    # which replicates the message to the next node in the toolchain
+    thread = threading.Thread(target=post_resource, args=(next_node, filename))
+    thread.start()
 
 
 def start_slave_server(next_node):
+    # Path where to save the received file
     filename = 'file.txt'
     
     # Instantiate server
@@ -26,15 +29,9 @@ def start_slave_server(next_node):
     server.run(debug=True)
 
 
-def main(next_node):
-    # run server and attend post request from master
-    start_slave_server(next_node)
-
-
 if __name__ == "__main__":
-    
     if len(sys.argv) < 2:
         print("Errore! Serve indirizzo ip del prossimo nodo")
-        exit(1)
+        sys.exit(1)
     
-    main(str(sys.argv[1]))
+    start_slave_server(str(sys.argv[1]))
