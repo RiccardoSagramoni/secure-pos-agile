@@ -11,7 +11,7 @@ def handle_message(next_node, filename):
     t.start()
 
 
-def start_slave1_server(next_node):
+def start_slave_server(next_node):
     filename = 'file.txt'
     
     # Instantiate server
@@ -28,7 +28,7 @@ def start_slave1_server(next_node):
 
 def main(next_node):
     # run server and attend post request from master
-    start_slave1_server(next_node)
+    start_slave_server(next_node)
 
 
 if __name__ == "__main__":
