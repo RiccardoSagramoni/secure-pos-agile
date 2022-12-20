@@ -1,6 +1,7 @@
 import os
 
 import requests
+import json
 
 from utility import get_project_folder
 
@@ -13,5 +14,10 @@ if __name__ == "__main__":
     
     # Failure
     r = requests.post("http://127.0.0.1:8000")
+    print(r)
+    print(r.text)
+
+    # Success
+    r = requests.post("http://127.0.0.1:8000", json={"try": "result"})
     print(r)
     print(r.text)

@@ -2,7 +2,7 @@ from communication import RestServer
 from communication.api import EchoApi
 from communication.api.csv import ReadCSVApi
 from communication.api.file import GetFileApi, GetFilesInsideDirectoryApi
-from communication.api.json import ManageJsonApi
+from communication.api.json import GetJsonApi
 
 if __name__ == "__main__":
     # Instantiate server
@@ -16,11 +16,11 @@ if __name__ == "__main__":
     server.api.add_resource(GetFilesInsideDirectoryApi,
                             "/dir/<filename>",
                             resource_class_kwargs={'directory': 'data/'})
-    server.api.add_resource(ManageJsonApi,
-                            "/json/<filename>",
-                            resource_class_kwargs={'base_path': 'data/'})
-    server.api.add_resource(ReadCSVApi,
-                            "/csv/<filename>",
-                            resource_class_kwargs={'base_path': 'data/'})
+    server.api.add_resource(GetJsonApi,
+                            "/json",
+                            resource_class_kwargs={'filename': 'data/example.json'})
+    # server.api.add_resource(ReadCSVApi,
+    #                         "/csv/<filename>",
+    #                         resource_class_kwargs={'base_path': 'data/'})
     # Start server
     server.run(debug=True)
