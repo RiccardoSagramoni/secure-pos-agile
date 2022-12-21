@@ -10,10 +10,10 @@ import flask
 from flask import request
 from flask_restful import Resource
 
-from utility import get_project_folder
+from utility import get_project_folder, get_received_data_folder
 
 
-class ReceiveJsonApi():
+class ReceiveJsonApi(Resource):
     """
     This API allows other nodes to send json to the Flask application.
     """
@@ -27,7 +27,7 @@ class ReceiveJsonApi():
                         The handler function should return not take too much time
                         (start a new thread, if necessary).
         """
-        self.filename = os.path.join(get_project_folder(), filename)
+        self.filename = os.path.join(get_received_data_folder(), filename)
         self.handle_request = handler
 
     def post(self):
@@ -38,15 +38,16 @@ class ReceiveJsonApi():
         :return: status code 201 on success, 400 if the file does not exists
         """
         # Check if the request contains the json file
-        if 'json' not in request.json:
-            return flask.abort(400)
+        # if 'json' not in request.json:
+        #     return flask.abort(400)
 
         some_json = request.get_json()
         ip_address = request.remote_addr
         print(f" JSON Received: {some_json} From: {ip_address}")
 
         # Save the json in the filesystem
-        json.dump(some_json, self.filename, indent=2)
+        with open(self.filename, 'w') as json_file:
+            json.dump(some_json, json_file, indent=2)
 
         # Execute the handler function if it was specified
         if self.handle_request is not None:
@@ -72,7 +73,33 @@ class GetJsonApi(Resource):
                  on failure return status 404 and an error message
         """
         try:
-            with open(self.filename, 'rb') as json_file:
+            with open(self.filename, 'r') as json_file:
+                json_data = json.load(json_file)
+                json_file.close()
+                return json_data, 200
+
+        except FileNotFoundError:
+            return flask.abort(404)
+
+class GetJsonInsideDirectoryApi(Resource):
+    """
+    This API allows to show the content of a json file in the server's file system via GET method.
+    """
+    def __init__(self, directory: str):
+        """
+        Initialize the API by setting the folder path.
+        :param filename: relative path from the project folder.
+        """
+        self.directory = os.path.join(get_project_folder(), directory)
+
+    def get(self, filename: str):
+        """
+        Get the content of the json file by the endpoint.
+        :return: the server response: on success return status 200 and the show the content of the json file,
+                 on failure return status 404 and an error message
+        """
+        try:
+            with open(os.path.join(self.directory, filename), 'r') as json_file:
                 json_data = json.load(json_file)
                 json_file.close()
                 return json_data, 200
