@@ -1,15 +1,17 @@
+import os
 import sys
 import threading
 
 from communication import RestServer
 from communication.api.file_transfer import ReceiveFileApi
 from demo import post_resource
+from utility import get_received_data_folder
 
 
 def handle_message(next_node, filename):
     # When the slave receives a message, generate a new thread
     # which replicates the message to the next node in the toolchain
-    thread = threading.Thread(target=post_resource, args=(next_node, filename))
+    thread = threading.Thread(target=post_resource, args=(next_node, os.path.join(get_received_data_folder(), filename)))
     thread.start()
 
 
