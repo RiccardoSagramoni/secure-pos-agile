@@ -1,3 +1,9 @@
+*.db
+data/received_data/*
+!data/received_data/README.md
+
+
+################################################################
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
