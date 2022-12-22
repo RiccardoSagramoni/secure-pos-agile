@@ -1,4 +1,6 @@
 import json
+import os
+
 from jsonschema import exceptions, validate
 from utility import get_project_folder, get_json_schema_folder
 
@@ -24,7 +26,7 @@ def validate_json_data_file(json_data, schema_filename):
     :param schema_filename: name of the file containing the json schema
     :return: True if json object is valid, False otherwise
     """
-    schema_path = get_json_schema_folder() + "/" + schema_filename
+    schema_path = os.path.join(get_json_schema_folder(), schema_filename)
 
     with open(schema_path, "r", encoding="UTF-8") as file:
         json_schema = json.load(file)
@@ -32,20 +34,14 @@ def validate_json_data_file(json_data, schema_filename):
     return validate_json(json_data, json_schema)
 
 
-def validate_json_file_file(json_data_filename, schema_filename):
+def validate_json_file_file(json_filename, schema_filename):
     """
     Validate a json file against a json schema in a file
-    :param json_data_filename: file containing the json object
+    :param json_filename: file containing the json object
     :param schema_filename: file containing the json schema
     :return: True if json object is valid, False otherwise
     """
-    json_file_path = get_project_folder() + "/" + json_data_filename
-    schema_file_path = get_json_schema_folder() + "/" + schema_filename
-
-    with open(json_file_path, "r", encoding="UTF-8") as file:
-        json_data = json.load(file)
-
-    with open(schema_file_path, "r", encoding="UTF-8") as file:
-        json_schema = json.load(file)
-
-    return validate_json(json_data, json_schema)
+    json_path = os.path.join(get_project_folder(), json_filename)
+    
+    with open(json_path, "r", encoding="UTF-8") as file:
+        return validate_json_data_file(json.load(file), schema_filename)

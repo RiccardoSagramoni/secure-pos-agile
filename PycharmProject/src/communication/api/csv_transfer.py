@@ -22,7 +22,8 @@ class GetCSVApi(Resource):
     def get(self):
         """
         Get the content of the csv file by the endpoint.
-        :return: the server response: on success return status 200 and the show the content of the csv file,
+        :return: the server response: on success return status 200
+                 and the content of the csv file,
                  on failure return status 404 and an error message
         """
         try:
@@ -43,7 +44,7 @@ class GetCSVInsideDirectoryApi(Resource):
     def __init__(self, directory: str):
         """
         Initialize the API by setting the folder path.
-        :param filename: relative path from the project folder.
+        :param directory: relative path from the project folder.
         """
         self.directory = os.path.join(get_project_folder(), directory)
 

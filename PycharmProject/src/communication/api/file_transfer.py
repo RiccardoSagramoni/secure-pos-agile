@@ -9,7 +9,7 @@ import flask
 from flask import request
 from flask_restful import Resource
 
-from utility import get_project_folder
+from utility import get_project_folder, get_received_data_folder
 
 
 class ReceiveFileApi(Resource):
@@ -22,12 +22,12 @@ class ReceiveFileApi(Resource):
                  handler: Callable[[], None] = None):
         """
         Initialize the API.
-        :param filename: path where to save the received file (relative to PyCharm project folder).
+        :param filename: path where to save the received file (relative to the received data folder).
         :param handler: optional function to call after the file has been saved in the filesystem.
-                        The handler function should return not take too much time
+                        The handler function should not take too much time to return
                         (start a new thread, if necessary).
         """
-        self.filename = os.path.join(get_project_folder(), filename)
+        self.filename = os.path.join(get_received_data_folder(), filename)
         self.handle_request = handler
     
     def post(self):
@@ -35,7 +35,7 @@ class ReceiveFileApi(Resource):
         Handle a POST request.
         Other nodes should send a POST request when they want to send a file to this endpoint.
         The file must be inserted in the ``files['file']`` field of the request.
-        :return: status code 201 on success, 400 if the file does not exists
+        :return: status code 201 on success, 400 if the file does not exist
         """
         # Check if the request contains the file
         if 'file' not in request.files:

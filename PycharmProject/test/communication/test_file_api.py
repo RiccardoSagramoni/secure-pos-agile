@@ -1,7 +1,7 @@
 import os
 
 from conftest import GETFILE_URL, GETFILE_DIR_URL, RECEIVE_URL, RECEIVE_API_FILENAME
-from utility import get_project_folder, get_tests_folder
+from utility import get_project_folder, get_tests_folder, get_received_data_folder
 
 
 def test_get_file__get(client):
@@ -23,7 +23,7 @@ def test_receive_file__post(client):
     # Variables
     source_filename = "send.txt"
     source_path = os.path.join(get_tests_folder(), source_filename)
-    dest_path = os.path.join(get_project_folder(), RECEIVE_API_FILENAME)
+    dest_path = os.path.join(get_received_data_folder(), RECEIVE_API_FILENAME)
     content = "This is a test in pytest!"
     
     # Generate temporary file

@@ -2,7 +2,7 @@ import os
 import json
 
 from conftest import RECEIVE_JSON_URL, GET_JSON_URL, GET_JSON_DIR_URL, RECEIVE_API_JSON_FILENAME
-from utility import get_project_folder
+from utility import get_project_folder, get_received_data_folder
 
 
 def test_get_json__get(client):
@@ -21,8 +21,7 @@ def test_get_json_inside_directory__wrong_json_file(client):
 
 
 def test_receive_json__post(client):
-
-    destination_path = os.path.join(get_project_folder(), RECEIVE_API_JSON_FILENAME)
+    destination_path = os.path.join(get_received_data_folder(), RECEIVE_API_JSON_FILENAME)
     content = {"result": "test passed"}
     response = client.post(RECEIVE_JSON_URL, json=content)
     assert response.status_code == 201

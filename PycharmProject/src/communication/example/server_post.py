@@ -10,5 +10,8 @@ if __name__ == "__main__":
                             resource_class_kwargs={'filename': 'file.txt'})
     server.api.add_resource(ReceiveJsonApi,
                             "/send_json",
-                            resource_class_kwargs={'filename': 'demo_received_json.json', 'json_schema':'demo_received_json_schema.json'})
+                            resource_class_kwargs={
+                                'filename': 'demo_received_json.json',
+                                'json_schema': 'demo_received_json_schema.json'
+                            })
     server.run(debug=True)
