@@ -7,6 +7,7 @@ from flask_restful import Resource
 
 from utility import get_project_folder
 
+
 class GetCSVApi(Resource):
     """
     This API allows to show the content of a csv file in the server's file system via GET method.
@@ -33,6 +34,7 @@ class GetCSVApi(Resource):
 
         except FileNotFoundError:
             return flask.abort(404)
+
 
 class GetCSVInsideDirectoryApi(Resource):
     """

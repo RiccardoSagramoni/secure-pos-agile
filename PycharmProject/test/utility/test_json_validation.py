@@ -1,6 +1,6 @@
 import pytest
 
-from utility.json import validate_json
+from utility.json_validation import validate_json
 from geographical_json import geographical_schema, geographical_good_json, geographical_bad_json
 
 

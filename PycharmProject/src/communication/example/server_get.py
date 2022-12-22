@@ -1,8 +1,8 @@
 from communication import RestServer
 from communication.api import EchoApi
 from communication.api.file import GetFileApi, GetFilesInsideDirectoryApi
-from communication.api.json import GetJsonApi, GetJsonInsideDirectoryApi
-from communication.api.csv import GetCSVApi, GetCSVInsideDirectoryApi
+from communication.api.json_transfer import GetJsonApi, GetJsonInsideDirectoryApi
+from communication.api.csv_transfer import GetCSVApi, GetCSVInsideDirectoryApi
 
 if __name__ == "__main__":
     # Instantiate server

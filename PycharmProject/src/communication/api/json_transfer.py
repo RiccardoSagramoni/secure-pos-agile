@@ -11,6 +11,7 @@ from flask import request
 from flask_restful import Resource
 
 from utility import get_project_folder, get_received_data_folder
+from utility.json_validation import validate_json_data_file
 
 
 class ReceiveJsonApi(Resource):
@@ -19,6 +20,7 @@ class ReceiveJsonApi(Resource):
     """
     def __init__(self,
                  filename: str,
+                 json_schema: str,
                  handler: Callable[[], None] = None):
         """
         Initialize the API.
@@ -28,7 +30,9 @@ class ReceiveJsonApi(Resource):
                         (start a new thread, if necessary).
         """
         self.filename = os.path.join(get_received_data_folder(), filename)
+        self.json_schema = json_schema
         self.handle_request = handler
+
 
     def post(self):
         """
@@ -37,13 +41,15 @@ class ReceiveJsonApi(Resource):
         The json must be inserted in the ``json['json_file']`` field of the request.
         :return: status code 201 on success, 400 if the file does not exists
         """
-        # Check if the request contains the json file
-        # if 'json' not in request.json:
-        #     return flask.abort(400)
 
         some_json = request.get_json()
         ip_address = request.remote_addr
-        print(f" JSON Received: {some_json} From: {ip_address}")
+
+        # validate of the json sent via post
+        if not validate_json_data_file(some_json, self.json_schema):
+            return flask.abort(404)
+
+        print(f" JSON Received and Validated: {some_json} From: {ip_address}")
 
         # Save the json in the filesystem
         with open(self.filename, 'w') as json_file:
@@ -54,6 +60,7 @@ class ReceiveJsonApi(Resource):
             self.handle_request()
 
         return 'JSON correctly received', 201
+
 
 class GetJsonApi(Resource):
     """
@@ -80,6 +87,7 @@ class GetJsonApi(Resource):
 
         except FileNotFoundError:
             return flask.abort(404)
+
 
 class GetJsonInsideDirectoryApi(Resource):
     """
