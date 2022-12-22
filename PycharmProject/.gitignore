@@ -1,7 +1,6 @@
 *.db
-data/received_data/
-
-
+data/received_data/*
+!data/received_data/README.md
 
 
 ################################################################

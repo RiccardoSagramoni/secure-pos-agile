@@ -5,7 +5,7 @@ from jsonschema import exceptions, validate
 from utility import get_project_folder, get_json_schema_folder
 
 
-def validate_json(json_data, schema) -> bool:
+def validate_json(json_data: dict, schema: dict) -> bool:
     """
     Validate a json object against a json schema.
     :param json_data: json object
@@ -19,7 +19,7 @@ def validate_json(json_data, schema) -> bool:
     return True
 
 
-def validate_json_data_file(json_data, schema_filename):
+def validate_json_data_file(json_data: dict, schema_filename: str) -> bool:
     """
     Validate a json object against a json schema in a file
     :param json_data: json object
@@ -34,7 +34,7 @@ def validate_json_data_file(json_data, schema_filename):
     return validate_json(json_data, json_schema)
 
 
-def validate_json_file_file(json_filename, schema_filename):
+def validate_json_file_file(json_filename: str, schema_filename: str) -> bool:
     """
     Validate a json file against a json schema in a file
     :param json_filename: file containing the json object
