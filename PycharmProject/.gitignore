@@ -1,4 +1,8 @@
 *.db
+data/received_data/
+
+
+
 
 ################################################################
 # Byte-compiled / optimized / DLL files
