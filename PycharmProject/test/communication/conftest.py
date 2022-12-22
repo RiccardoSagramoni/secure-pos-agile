@@ -42,7 +42,7 @@ def app() -> Flask:
 
     server.api.add_resource(ReceiveJsonApi,
                             RECEIVE_JSON_URL,
-                            resource_class_kwargs={'filename': "./../" + RECEIVE_API_JSON_FILENAME, 'json_schema':'demo_received_json_schema.json'})
+                            resource_class_kwargs={'filename': "./../../" + RECEIVE_API_JSON_FILENAME, 'json_schema':'demo_received_json_schema.json'})
     server.api.add_resource(GetJsonApi,
                             GET_JSON_URL,
                             resource_class_kwargs={'filename': 'data/example.json'})
