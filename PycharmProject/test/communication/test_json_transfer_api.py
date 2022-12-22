@@ -40,4 +40,4 @@ def test_receive_json__wrong_validation_post(client):
 
     content = {"test": "validation error passed"}
     response = client.post(RECEIVE_JSON_URL, json=content)
-    assert response.status_code == 404
+    assert response.status_code == 400

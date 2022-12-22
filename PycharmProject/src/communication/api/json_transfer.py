@@ -20,7 +20,7 @@ class ReceiveJsonApi(Resource):
     """
     def __init__(self,
                  filename: str,
-                 json_schema: str,
+                 json_schema: str = None,
                  handler: Callable[[], None] = None):
         """
         Initialize the API.
@@ -43,13 +43,10 @@ class ReceiveJsonApi(Resource):
         """
 
         some_json = request.get_json()
-        ip_address = request.remote_addr
 
         # validate of the json sent via post
-        if not validate_json_data_file(some_json, self.json_schema):
-            return flask.abort(404)
-
-        print(f" JSON Received and Validated: {some_json} From: {ip_address}")
+        if self.json_schema is not None and not validate_json_data_file(some_json, self.json_schema):
+            return flask.abort(400)
 
         # Save the json in the filesystem
         with open(self.filename, 'w') as json_file:

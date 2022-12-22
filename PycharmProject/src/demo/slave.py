@@ -2,7 +2,7 @@ import sys
 import threading
 
 from communication import RestServer
-from communication.api.file import ReceiveFileApi
+from communication.api.file_transfer import ReceiveFileApi
 from demo import post_resource
 
 

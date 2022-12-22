@@ -3,7 +3,7 @@ import threading
 from time import sleep
 
 from communication import RestServer
-from communication.api.file import ReceiveFileApi
+from communication.api.file_transfer import ReceiveFileApi
 from demo import post_resource
 
 # This semaphore notifies the main thread when

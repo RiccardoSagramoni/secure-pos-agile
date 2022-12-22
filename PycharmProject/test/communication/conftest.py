@@ -4,7 +4,7 @@ from flask import Flask
 from communication import RestServer
 from communication.api import EchoApi
 from communication.api.csv_transfer import GetCSVApi, GetCSVInsideDirectoryApi
-from communication.api.file import ReceiveFileApi, GetFileApi, GetFilesInsideDirectoryApi
+from communication.api.file_transfer import ReceiveFileApi, GetFileApi, GetFilesInsideDirectoryApi
 from communication.api.json_transfer import GetJsonApi, GetJsonInsideDirectoryApi, ReceiveJsonApi
 
 # echo api url

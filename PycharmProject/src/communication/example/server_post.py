@@ -1,5 +1,5 @@
 from communication import RestServer
-from communication.api.file import ReceiveFileApi
+from communication.api.file_transfer import ReceiveFileApi
 from communication.api.json_transfer import ReceiveJsonApi
 
 
