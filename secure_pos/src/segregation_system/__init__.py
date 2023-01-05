@@ -1,9 +1,9 @@
 import sys
-from src.segregation_system.Classes.ApplicationController import ApplicationController
+from .Classes.SegregationSystemController import SegregationSystemController
 
 
 def main():
-    controller = ApplicationController.ApplicationController()
+    controller = SegregationSystemController()
     controller.server_start()
     sys.exit(0)
 

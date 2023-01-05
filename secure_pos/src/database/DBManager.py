@@ -14,7 +14,11 @@ class DBManager:
             cursor.execute(query)
             conn.commit()
 
-    def insert(self, dataframe: pd.DataFrame, table: str) -> bool:
+    def insert(self, dataframe: object, table: object) -> object:
+        """
+
+        :rtype: object
+        """
         with sqlite3.connect(self.path_db, timeout=15) as conn:
             res = dataframe.to_sql(table, conn, if_exists="append", index=False)
             return bool(res)
