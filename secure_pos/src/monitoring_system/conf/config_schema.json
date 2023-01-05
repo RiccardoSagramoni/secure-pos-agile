@@ -1,0 +1,8 @@
+{
+  "type" : "object",
+  "properties" : {
+    "monitoring_window_lenght" : {"type" :  "number"},
+    "mode" : {"type" :  "string"},
+    "new_training_request" : {"type" :  "boolean"}
+  }
+}

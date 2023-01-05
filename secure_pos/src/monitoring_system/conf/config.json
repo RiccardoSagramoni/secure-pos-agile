@@ -1,0 +1,5 @@
+{
+  "monitoring_window_lenght" : 10,
+  "mode" : "store_label",
+  "new_training_request" : false
+}

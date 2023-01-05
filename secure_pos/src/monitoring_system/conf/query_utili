@@ -1,0 +1,4 @@
+CREATE TABLE expertLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)
+CREATE TABLE classifierLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)
+
+SELECT * FROM expertLabel AS ex JOIN classifierLabel AS cl ON ex.sessionId = cl.sessionId

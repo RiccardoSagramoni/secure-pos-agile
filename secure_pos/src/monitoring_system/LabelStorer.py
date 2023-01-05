@@ -1,0 +1,13 @@
+from database.DBManager import DBManager
+
+
+class LabelStorer:
+
+    def __int__(self):
+        self.db = DBManager('monitoringDB.db')
+
+    def store_label(self, label, table):
+        self.db.insert(label, table)
+
+    def create_table(self, query):
+        self.db.create_table(query)
