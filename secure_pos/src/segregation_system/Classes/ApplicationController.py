@@ -1,11 +1,5 @@
 import sys
 
-from SegregationSystem.communication import RestServer
-from SegregationSystem.communication.api.file_transfer import ReceiveFileApi
-from SegregationSystem.communication.database.DBManager import DBManager
-from SegregationSystem.utility.json_validation import validate_json
-
-
 class ApplicationController:
     """Class that manage all the logic inside the Segregation System"""
 
@@ -29,25 +23,12 @@ class ApplicationController:
         data_base_manager = DBManager("../utility/segregationSystemDatabase.db")
 
         # If this is the first execution we have to create our table
-        # TODO Add features names and fix the number of features
         if not self.database_exists:
             data_base_manager.create_table(
                 "CREATE TABLE ArrivedSessions "
-                "(id TEXT PRIMARY KEY UNIQUE,"
-                "time_mean FLOAT,"
-                "time_std FLOAT,"
-                "time_skew FLOAT,"
-                "amount_1 FLOAT,"
-                "amount_2 FLOAT,"
-                "amount_3 FLOAT,"
-                "amount_4 FLOAT,"
-                "amount_5 FLOAT,"
-                "amount_6 FLOAT,"
-                "amount_7 FLOAT,"
-                "amount_8 FLOAT,"
-                "amount_9 FLOAT,"
-                "amount_10 FLOAT,"
-                "type INT)")
+                "(id TEXT PRIMARY KEY UNIQUE, time_mean FLOAT, time_std FLOAT, time_skew FLOAT,"
+                "amount_1 FLOAT, amount_2 FLOAT, amount_3 FLOAT, amount_4 FLOAT, amount_5 FLOAT,"
+                "amount_6 FLOAT, amount_7 FLOAT, amount_8 FLOAT, amount_9 FLOAT, amount_10 FLOAT, type INT)")
 
         # From now on the table creation is no longer needed
         self.database_exists = True
