@@ -2,19 +2,19 @@ import json
 
 
 class Label:
-    session_id = None
+    sessionId = None
     source = None
     value = None
 
     def __int__(self, session_id, value, source):
-        self.session_id = session_id
+        self.sessionId = session_id
         self.source = source
         self.value = value
 
     def to_dict(self):
         return {
-            'session_id': self.session_id,
-            'from_where': self.source,
+            'sessionId': self.sessionId,
+            'source': self.source,
             'value': self.value
         }
 
@@ -22,6 +22,6 @@ class Label:
         with open(label_file_path, "r", encoding="UTF-8") as file:
             label_json = json.load(file)
 
-        self.session_id = label_json['session_id']
+        self.sessionId = label_json['sessionId']
         self.source = label_json['source']
         self.value = label_json['value']

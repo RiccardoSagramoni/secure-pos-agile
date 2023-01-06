@@ -2,6 +2,7 @@ from database.DBManager import DBManager
 
 
 class LabelStorer:
+    db = DBManager('monitoringDB.db')
 
     def __int__(self):
         self.db = DBManager('monitoringDB.db')
@@ -11,3 +12,9 @@ class LabelStorer:
 
     def create_table(self, query):
         self.db.create_table(query)
+
+    def delete_all_labels(self, query):
+        self.db.update(query)
+
+    def select_label(self, query):
+        return self.db.read_sql(query)

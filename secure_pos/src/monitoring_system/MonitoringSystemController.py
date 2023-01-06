@@ -19,7 +19,7 @@ class MonitoringSystemController:
     def handle_message(self):
         # When the system receives a message, generate a new thread
         thread = threading.Thread(target=self.label_manager.store_label,
-                                  args=(self.config["monitoring_window_length"]))
+                                  args=(self.config["monitoring_window_length"],))
         thread.start()
 
     def start_server(self):
@@ -38,9 +38,9 @@ class MonitoringSystemController:
         server.run(debug=True)
 
     def create_tables(self):
-        query = "CREATE TABLE expertLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)"
+        query = "CREATE TABLE if not exists expertLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)"
         self.label_manager.storer.create_table(query)
-        query = "CREATE TABLE classifierLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)"
+        query = "CREATE TABLE if not exists classifierLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)"
         self.label_manager.storer.create_table(query)
 
     def load_config(self):
@@ -61,3 +61,8 @@ class MonitoringSystemController:
         # mi metto in attesa di ricevere le label
         self.start_server()
 
+if __name__ == "__main__":
+    test = MonitoringSystemController()
+    test.load_config()
+    test.create_tables()
+    test.handle_message()
