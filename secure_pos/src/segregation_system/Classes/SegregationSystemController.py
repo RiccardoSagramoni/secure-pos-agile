@@ -1,11 +1,13 @@
+import os
 import sys
-
+import json
 import pandas as pd
 
 from src.segregation_system.Classes.DataStatsExtractor import DataStatsExtractor
 from src.communication import RestServer
 from src.communication.api.file_transfer import ReceiveFileApi
 from src.database import DBManager
+from src.segregation_system.Classes.Plotter import Plotter
 
 
 class SegregationSystemController:
@@ -13,41 +15,47 @@ class SegregationSystemController:
 
     def __init__(self):
         self.sessions_nr = 0
-        self.database_exists = False
-        self.prep_session_schema = "./../Json_schema/prep_session_schema.json"
-        self.server_start()
+        self.path_db = "./database/segregationSystemDatabase.db"
+        #self.handle_message('database/PreparedSession.json')
+        self.check_balancing()
+        sys.exit(0)
 
     def handle_message(self, filename):
         """
         Function that handle the messages arrived from the preparation system
         """
         # Store the information inside the local database
-        data_base_manager = DBManager.DBManager("../utility/segregationSystemDatabase.db")
+        data_base_manager = DBManager.DBManager(self.path_db)
 
         # If this is the first execution we have to create our table
-        if not self.database_exists:
-            data_base_manager.create_table(
-                "CREATE TABLE ArrivedSessions "
-                "(id TEXT PRIMARY KEY UNIQUE, time_mean FLOAT, time_std FLOAT, time_skew FLOAT,"
-                "amount_1 FLOAT, amount_2 FLOAT, amount_3 FLOAT, amount_4 FLOAT, amount_5 FLOAT,"
-                "amount_6 FLOAT, amount_7 FLOAT, amount_8 FLOAT, amount_9 FLOAT, amount_10 FLOAT,"
-                "label INT, type INT)")
-
-        # From now on the table creation is no longer needed
-        self.database_exists = True
+        data_base_manager.create_table(
+            "CREATE TABLE IF NOT EXISTS ArrivedSessions"
+            "(id INT PRIMARY KEY UNIQUE, time_mean FLOAT, time_std FLOAT, time_skew FLOAT,"
+            "amount_1 FLOAT, amount_2 FLOAT, amount_3 FLOAT, amount_4 FLOAT, amount_5 FLOAT,"
+            "amount_6 FLOAT, amount_7 FLOAT, amount_8 FLOAT, amount_9 FLOAT, amount_10 FLOAT,"
+            "type INT, label INT)")
 
         # Insert the record inside the table
-        data_frame = pd.read_json(filename)
-        ret = data_base_manager.insert(
-            data_frame, 'ArrivedSessions')
+        with open(filename, 'r') as f:
+            data = json.load(f)
+
+        df = pd.DataFrame(data, columns=['id', 'time_mean', 'time_std', 'time_skew', 'amount_1', 'amount_2',
+                                         'amount_3', 'amount_4', 'amount_5', 'amount_6', 'amount_7', 'amount_8',
+                                         'amount_9', 'amount_10', 'type', 'label'])
+
+        num_rows = len(df.index)
+
+        ret = data_base_manager.insert(df, 'ArrivedSessions')
+        # os.remove(filename)
+
         # if we received 7 sessions the system can continue its execution,
         # otherwise it will terminate waiting for a new message
         if ret:
-            self.sessions_nr += 1
+            self.sessions_nr += num_rows
             if self.sessions_nr == 7:
                 self.sessions_nr = 0
-                data = data_base_manager.read_sql("SELECT * FROM ArrivedSession WHERE type == -1")
-                self.check_balancing(data)
+                self.check_balancing()
+        return
 
     def server_start(self):
         """
@@ -65,11 +73,22 @@ class SegregationSystemController:
                                     filename=filename,
                                     handler=lambda: self.handle_message(filename)))
         server.run(debug=True)
-
         sys.exit(0)
 
-    def check_balancing(self, data):
-        # TODO Create first the ExtractDataStats first
-        data_extractor = DataStatsExtractor(data)
+    def check_balancing(self):
+        """
+        Function that calls the API that extracts the data
+        and plot them in order to evaluate the data balancing
+        :return: Null
+        """
+        data_extractor = DataStatsExtractor(self.path_db)
+        labels = data_extractor.count_labels()
+        value_0 = labels.pop(0).values[0][0]
+        value_1 = labels.pop(0).values[0][0]
 
+        print(value_0)
+        print(value_1)
 
+        plotter = Plotter()
+        plotter.plot_data_balancing([value_0, value_1])
+        return

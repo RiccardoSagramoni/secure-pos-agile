@@ -1,5 +1,5 @@
 import sys
-from .Classes.SegregationSystemController import SegregationSystemController
+from src.segregation_system.Classes.SegregationSystemController import SegregationSystemController
 
 
 def main():
