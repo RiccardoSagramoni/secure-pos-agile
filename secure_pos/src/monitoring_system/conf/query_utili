@@ -1,7 +1,7 @@
 CREATE TABLE expertLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)
 CREATE TABLE classifierLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)
 
-SELECT * FROM expertLabel AS ex JOIN classifierLabel AS cl ON ex.sessionId = cl.sessionId
+SELECT ex.sessionId, ex.value as expertValue, cl.value as classifierValue FROM expertLabel AS ex JOIN classifierLabel AS cl ON ex.sessionId = cl.sessionId
 
 DELETE FROM classifierLabel
 DELETE FROM expertLabel
