@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from jsonschema import exceptions, validate
@@ -14,7 +15,8 @@ def validate_json(json_data: dict, schema: dict) -> bool:
     """
     try:
         validate(instance=json_data, schema=schema)
-    except exceptions.ValidationError:
+    except exceptions.ValidationError as v:
+        logging.error(v)
         return False
     return True
 
