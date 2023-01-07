@@ -37,9 +37,11 @@ class MonitoringSystemController:
         server.run(debug=True)
 
     def create_tables(self):
-        query = "CREATE TABLE if not exists expertLabel (session_id TEXT PRIMARY KEY UNIQUE, value TEXT)"
+        query = "CREATE TABLE if not exists expertLabel" \
+                "(session_id TEXT PRIMARY KEY UNIQUE, value TEXT)"
         self.label_manager.storer.create_table(query)
-        query = "CREATE TABLE if not exists classifierLabel (session_id TEXT PRIMARY KEY UNIQUE, value TEXT)"
+        query = "CREATE TABLE if not exists classifierLabel" \
+                "(session_id TEXT PRIMARY KEY UNIQUE, value TEXT)"
         self.label_manager.storer.create_table(query)
 
     def load_config(self):

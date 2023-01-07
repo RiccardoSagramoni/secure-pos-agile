@@ -1,5 +1,6 @@
-from monitoring_system.monitoring_report import MonitoringReport
 import json
+
+from monitoring_system.monitoring_report import MonitoringReport
 
 
 class MonitoringReportGenerator:
@@ -11,17 +12,21 @@ class MonitoringReportGenerator:
 
     def generate_report_json(self):
         report_dict = self.report.to_dict()
-        with open('./conf/report' + str(self.count_report) + '.json', 'w', encoding="UTF-8") as json_file:
+        with open('./conf/report' + str(self.count_report) +
+                  '.json', 'w', encoding="UTF-8") as json_file:
             json.dump(report_dict, json_file)
 
     def count_conflicting_labels(self):
-        count = 0
+        count_conflicting_labels = 0
+        tot_labels = 0
         for row in self.labels.index:
+            tot_labels += 1
             expert_label = self.labels["expertValue"][row]
             classifier_label = self.labels["classifierValue"][row]
             if expert_label != classifier_label:
-                count += 1
-        self.report.conflicting_labels = count
+                count_conflicting_labels += 1
+        self.report.conflicting_labels = count_conflicting_labels
+        self.report.compared_labels = tot_labels
 
     def count_max_consecutive_conflicting_labels(self):
         pass
