@@ -22,15 +22,11 @@ class MonitoringSystemController:
         thread.start()
 
     def start_server(self):
-        # Path where to save the received file containing the label in json format
-        filename = 'label.json'
-
         # Instantiate server
         server = RestServer()
         server.api.add_resource(ReceiveJsonApi,
                                 "/",
                                 resource_class_kwargs={
-                                    'filename': filename,
                                     # l'handler gestisce l'archiviazione delle label
                                     'handler': lambda x: self.handle_message(x)
                                 })
