@@ -124,8 +124,21 @@
         },
         {
           "title": "Attack risk label",
-          "type": "string",
-          "pattern": "^(ATTACK|NORMAL)$"
+          "type": "object",
+          "required": [
+            "event_id",
+            "label"
+          ],
+          "properties": {
+            "event_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "label": {
+              "type": "string",
+              "pattern": "^(ATTACK|NORMAL)$"
+            }
+          }
         }
       ]
     }

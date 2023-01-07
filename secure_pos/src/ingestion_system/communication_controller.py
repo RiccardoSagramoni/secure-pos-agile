@@ -11,6 +11,8 @@ from data_objects.raw_session import RawSession
 from ingestion_system.configuration import Configuration
 from ingestion_system.raw_session_converter import RawSessionConverter
 
+RECORD_SCHEMA_PATH = "records_schema.json"
+
 
 class CommunicationController:
     
@@ -25,7 +27,8 @@ class CommunicationController:
         server = RestServer()
         server.api.add_resource(ReceiveJsonApi,
                                 "/",
-                                resource_class_kwargs={  # todo json validation
+                                resource_class_kwargs={
+                                    'json_schema': RECORD_SCHEMA_PATH,
                                     'handler': self.handle_message
                                 })
         server.run(host=self.__ip_address, port=self.__port, debug=True)
