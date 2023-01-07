@@ -1,5 +1,3 @@
-import json
-
 
 class Label:
 
@@ -14,11 +12,3 @@ class Label:
             'source': self.source,
             'value': self.value
         }
-
-    def load_from_file(self, label_file_path):
-        with open(label_file_path, "r", encoding="UTF-8") as file:
-            label_json = json.load(file)
-
-        self.session_id = label_json['session_id']
-        self.source = label_json['source']
-        self.value = label_json['value']

@@ -15,10 +15,10 @@ class MonitoringSystemController:
         self.config_schema_path = "./conf/config_schema.json"
         self.config = None
 
-    def handle_message(self, label):
+    def handle_message(self, label_json):
         # When the system receives a message, generate a new thread
         thread = threading.Thread(target=self.label_manager.store_label,
-                                  args=(self.config["monitoring_window_length"], label))
+                                  args=(self.config["monitoring_window_length"], label_json))
         thread.start()
 
     def start_server(self):
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     test.load_config()
     test.create_tables()
     label = {
-            "session_id": 1,
+            "session_id": 8,
             "source": "expert",
             "value": "attack"
             }

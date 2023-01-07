@@ -1,13 +1,14 @@
 import json
 
+from monitoring_system.label_storer import LabelStorer
 from monitoring_system.monitoring_report import MonitoringReport
 
 
 class MonitoringReportGenerator:
 
-    def __init__(self, labels):
+    def __init__(self, label_df):
         self.report = MonitoringReport()
-        self.labels = labels
+        self.labels = label_df
         self.count_report = 0
 
     def generate_report_json(self):
@@ -29,7 +30,26 @@ class MonitoringReportGenerator:
         self.report.compared_labels = tot_labels
 
     def count_max_consecutive_conflicting_labels(self):
-        pass
+        max_consecutive_conflicting_labels = 0
+        consecutive_conflicting_labels = 0
+        consecutive = False
+        first = True
+        for row in self.labels.index:
+            expert_label = self.labels["expertValue"][row]
+            classifier_label = self.labels["classifierValue"][row]
+            if expert_label != classifier_label:
+                if not consecutive:
+                    first = True
+                    consecutive_conflicting_labels = 0
+                if first or consecutive:
+                    consecutive_conflicting_labels += 1
+                    consecutive = True
+                first = False
+            else:
+                consecutive = False
+            if consecutive_conflicting_labels > max_consecutive_conflicting_labels:
+                max_consecutive_conflicting_labels = consecutive_conflicting_labels
+        self.report.max_consecutive_conflicting_labels = max_consecutive_conflicting_labels
 
     def generate_report(self):
         self.count_report += 1
@@ -42,3 +62,16 @@ class MonitoringReportGenerator:
 
         # genero il file json contente il report
         self.generate_report_json()
+
+
+if __name__ == "__main__":
+    test = LabelStorer()
+    labels = test.select_label("SELECT ex.session_id, ex.value as expertValue,"
+                               "cl.value as classifierValue "
+                               "FROM expertLabel AS ex JOIN classifierLabel"
+                               "AS cl ON ex.session_id = cl.session_id")
+    print(labels)
+
+    test1 = MonitoringReportGenerator(labels)
+    test1.generate_report()
+    test1.generate_report()
