@@ -1,3 +1,4 @@
+from data_objects.attack_risk_label import AttackRiskLabel
 from data_objects.raw_session import RawSession
 
 
@@ -15,3 +16,17 @@ class RawSessionConverter:
         for t in self.__raw_session.transactions:
             doc['transactions'].append(vars(t))
         return doc
+
+
+class AttackRiskLabelConverter:
+    
+    def __init__(self, session_id: str, label: AttackRiskLabel):
+        self.__session_id = session_id
+        self.__label = label
+    
+    def convert_to_dict(self) -> dict:
+        return {
+            'session_id': self.__session_id,
+            'source': 'expert',
+            'value': self.__label.value
+        }

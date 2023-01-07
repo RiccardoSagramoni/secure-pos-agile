@@ -7,8 +7,8 @@ from ingestion_system.raw_session_sanitizer import RawSessionSanitizer
 from ingestion_system.record_synchronizer import RecordSynchronizer
 from ingestion_system.system_mode_tracker import SystemModeTracker
 
-CONFIGURATION_FILE_PATH = ''  # todo
-CONFIGURATION_SCHEMA_PATH = ''  # TODO
+CONFIGURATION_FILE_PATH = 'configuration.json'  # todo
+CONFIGURATION_SCHEMA_PATH = 'configuration_schema.json'  # TODO
 
 
 class IngestionSystemController:
@@ -59,6 +59,6 @@ class IngestionSystemController:
         
         # If we are in monitoring window, send attack risk label to monitoring system
         if self.__system_mode_tracker.is_session_in_monitoring_window(session_id):
-            self.__communication_controller.send_attack_risk_label(raw_session.attack_risk_label)
+            self.__communication_controller.send_attack_risk_label(session_id, raw_session.attack_risk_label)
         # Send raw session to preparation system
         self.__communication_controller.send_raw_session(raw_session)
