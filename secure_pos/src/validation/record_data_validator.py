@@ -19,59 +19,59 @@ def validate_string_with_regex(string: str, regex: str) -> bool:
 class CommercialDataValidator:
     
     def __init__(self, data: CommercialData):
-        self.commercial_data = data
+        self.__commercial_data = data
     
     def validate_cardid(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.cardid,
+            self.__commercial_data.cardid,
             "^\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$"
         )
     
     def validate_posid(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.posid,
+            self.__commercial_data.posid,
             "^\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$"
         )
     
     def validate_posname(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.posname,
+            self.__commercial_data.posname,
             "^[A-Za-z\\s\\.,.:\\-\"']+$"
         )
     
     def validate_date(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.date,
+            self.__commercial_data.date,
             "^[0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2}$"
         )
     
     def validate_time(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.time,
+            self.__commercial_data.time,
             "^[0-9]{2}:[0-9]{2}:[0-9]{2}$"
         )
     
     def validate_payment_type(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.payment_type,
+            self.__commercial_data.payment_type,
             "^[A-Z]*$"
         )
     
     def validate_payment_circuit(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.payment_circuit,
+            self.__commercial_data.payment_circuit,
             "^[A-Z]*$"
         )
     
     def validate_amount(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.payment_circuit,
+            self.__commercial_data.payment_circuit,
             "^[A-Z]*$"
         )
     
     def validate_currency(self) -> bool:
         return validate_string_with_regex(
-            self.commercial_data.currency,
+            self.__commercial_data.currency,
             "^[0-9]+\\.[0-9]{2}$"
         )
     
@@ -92,29 +92,29 @@ class CommercialDataValidator:
 class GeoDataValidator:
     
     def __init__(self, data: GeoData):
-        self.geo_data = data
+        self.__geo_data = data
     
     def validate_loc_name(self) -> bool:
         return validate_string_with_regex(
-            self.geo_data.loc_name,
+            self.__geo_data.loc_name,
             "^[A-Z]{2}$"
         )
     
     def validate_p_id(self) -> bool:
         return validate_string_with_regex(
-            self.geo_data.p_id,
+            self.__geo_data.p_id,
             "^\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$"
         )
     
     def validate_longitude(self) -> bool:
         return validate_string_with_regex(
-            self.geo_data.longitude,
+            self.__geo_data.longitude,
             "^((\\-?|\\+?)?\\d+(\\.\\d+)?)$"
         )
     
     def validate_latitude(self) -> bool:
         return validate_string_with_regex(
-            self.geo_data.latitude,
+            self.__geo_data.latitude,
             "^((\\-?|\\+?)?\\d+(\\.\\d+)?)$"
         )
     
@@ -130,11 +130,11 @@ class GeoDataValidator:
 class NetworkDataValidator:
     
     def __init__(self, data: NetworkData):
-        self.network_data = data
+        self.__network_data = data
     
     def validate_ip(self) -> bool:
         return validate_string_with_regex(
-            self.network_data.ip,
+            self.__network_data.ip,
             "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}"
             "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
         )
