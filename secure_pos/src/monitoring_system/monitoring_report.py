@@ -1,13 +1,7 @@
 
 class MonitoringReport:
 
-    conflicting_labels = 0
-    compared_labels = 0
-    max_consecutive_conflicting_labels = 0
-    conflicting_labels_threshold = 10
-    max_consecutive_conflicting_labels_threshold = 10
-
-    def __int__(self):
+    def __init__(self):
         self.conflicting_labels = 0
         self.compared_labels = 0
         self.max_consecutive_conflicting_labels = 0

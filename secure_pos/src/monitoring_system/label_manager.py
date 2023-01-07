@@ -1,12 +1,10 @@
-import os
 import threading
 
 import pandas as pd
 
-from monitoring_system.Label import Label
-from monitoring_system.LabelStorer import LabelStorer
-from monitoring_system.MonitoringReportGenerator import MonitoringReportGenerator
-from utility import get_received_data_folder
+from monitoring_system.label import Label
+from monitoring_system.label_storer import LabelStorer
+from monitoring_system.monitoring_report_generator import MonitoringReportGenerator
 
 
 class LabelManager:
@@ -18,7 +16,7 @@ class LabelManager:
     # pathLabel = os.path.join(get_received_data_folder(), 'label.json')
     pathLabel = './conf/test.json'
 
-    def __int__(self, tot_labels_from_classifier, tot_labels_from_expert):
+    def __init__(self, tot_labels_from_classifier, tot_labels_from_expert):
         self.tot_labels_from_expert = tot_labels_from_expert
         self.tot_labels_from_classifier = tot_labels_from_classifier
 
@@ -31,7 +29,7 @@ class LabelManager:
     def store_label(self, monitoring_window_length):
         # blocco l'accesso al db
         self.access_to_db.acquire()
-        label = Label()
+        label = Label(None, None, None)
         label.load_from_file(self.pathLabel)
         label_dataframe = pd.DataFrame(label.to_dict(), index=[0], columns=["sessionId", "value"])
         if label.source == 'classifier':
@@ -44,8 +42,8 @@ class LabelManager:
                 self.tot_labels_from_classifier == monitoring_window_length:
 
             # carico le label in memoria
-            query = "SELECT ex.sessionId, ex.value as expertValue, cl.value as classifierValue " \
-                    "FROM expertLabel AS ex JOIN classifierLabel AS cl ON ex.sessionId = cl.sessionId"
+            query = "SELECT ex.session_id, ex.value as expertValue, cl.value as classifierValue " \
+                    "FROM expertLabel AS ex JOIN classifierLabel AS cl ON ex.session_id = cl.session_id"
             labels = self.storer.select_label(query)
 
             # le elimino dal db

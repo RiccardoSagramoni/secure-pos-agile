@@ -1,4 +1,4 @@
-from monitoring_system.MonitoringSystemController import MonitoringSystemController
+from monitoring_system.monitoring_system_controller import MonitoringSystemController
 
 if __name__ == "__main__":
 

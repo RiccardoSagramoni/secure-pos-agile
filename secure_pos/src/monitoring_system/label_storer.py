@@ -2,9 +2,8 @@ from database.DBManager import DBManager
 
 
 class LabelStorer:
-    db = DBManager('monitoringDB.db')
 
-    def __int__(self):
+    def __init__(self):
         self.db = DBManager('monitoringDB.db')
 
     def store_label(self, label, table):
@@ -22,6 +21,10 @@ class LabelStorer:
 
 if __name__ == "__main__":
     test = LabelStorer()
-    labels = test.select_label("SELECT ex.sessionId, ex.value as expertValue, cl.value as classifierValue "
+    labels = test.select_label("SELECT ex.sessionId, ex.value as expertValue, cl.value as classifierValue " \
                                "FROM expertLabel AS ex JOIN classifierLabel AS cl ON ex.sessionId = cl.sessionId")
     print(labels)
+
+    for row in labels.index:
+        print("id:" + labels["sessionId"][row])
+        print(labels["expertValue"][row])

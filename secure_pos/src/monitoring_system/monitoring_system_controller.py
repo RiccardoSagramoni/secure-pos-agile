@@ -3,7 +3,7 @@ import threading
 
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
-from monitoring_system.LabelManager import LabelManager
+from monitoring_system.label_manager import LabelManager
 from utility.json_validation import validate_json
 
 
@@ -13,10 +13,10 @@ class MonitoringSystemController:
     config_schema_path = "./conf/config_schema.json"
     config = None
 
-    def __int__(self):
+    def __init__(self):
         self.label_manager = LabelManager()
 
-    def handle_message(self):
+    def handle_message(self, label):
         # When the system receives a message, generate a new thread
         thread = threading.Thread(target=self.label_manager.store_label,
                                   args=(self.config["monitoring_window_length"],))
@@ -33,14 +33,14 @@ class MonitoringSystemController:
                                 resource_class_kwargs={
                                     'filename': filename,
                                     # l'handler gestisce l'archiviazione delle label
-                                    'handler': lambda: self.handle_message()
+                                    'handler': lambda(x): self.handle_message(x)
                                 })
         server.run(debug=True)
 
     def create_tables(self):
-        query = "CREATE TABLE if not exists expertLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)"
+        query = "CREATE TABLE if not exists expertLabel (session_id TEXT PRIMARY KEY UNIQUE, value TEXT)"
         self.label_manager.storer.create_table(query)
-        query = "CREATE TABLE if not exists classifierLabel (sessionId TEXT PRIMARY KEY UNIQUE, value TEXT)"
+        query = "CREATE TABLE if not exists classifierLabel (session_id TEXT PRIMARY KEY UNIQUE, value TEXT)"
         self.label_manager.storer.create_table(query)
 
     def load_config(self):
@@ -60,6 +60,7 @@ class MonitoringSystemController:
 
         # mi metto in attesa di ricevere le label
         self.start_server()
+
 
 if __name__ == "__main__":
     test = MonitoringSystemController()
