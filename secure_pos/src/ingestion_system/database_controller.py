@@ -58,7 +58,6 @@ class DatabaseController:
                 "label BLOB NOT NULL"
                 ")"
             )
-        return
     
     #
     def insert_transaction_record(self, json_records: dict) -> bool:

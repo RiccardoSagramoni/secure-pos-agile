@@ -48,10 +48,10 @@ class CommunicationController:
         raw_session_dict = RawSessionConverter(raw_session).convert_to_dict()
         response = requests.post(self.__preparation_system_url, json=raw_session_dict)
         if not response.ok:
-            logging.error(f"Failed to send raw session:\n{raw_session_dict}")
+            logging.error("Failed to send raw session:\n%s", raw_session_dict)
     
     def send_attack_risk_label(self, session_id: str, attack_risk_label: AttackRiskLabel) -> None:
         label_dict = AttackRiskLabelConverter(session_id, attack_risk_label)
         response = requests.post(self.__monitoring_system_url, json=label_dict)
         if not response.ok:
-            logging.error(f"Failed to send label:\n{label_dict}")
+            logging.error("Failed to send label:\n%s", label_dict)

@@ -7,7 +7,7 @@ from utility.json_validation import validate_json_data_file
 class Configuration:
     def __init__(self, json_configuration_path: str, json_schema_path: str):
         # Open configuration file
-        with open(json_configuration_path, "r") as file:
+        with open(json_configuration_path, "r", encoding="UTF-8") as file:
             # Load JSON configuration
             json_conf = json.load(file)
             # Validate configuration

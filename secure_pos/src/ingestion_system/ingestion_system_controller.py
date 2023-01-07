@@ -32,12 +32,12 @@ class IngestionSystemController:
         # Extract information for logging
         session_id = json_records['session_id']
         record_type = json_records['type']
-        logging.info(f"Received record {record_type} of session {session_id}")
+        logging.info("Received record %s of session %s", record_type, session_id)
 
         # Insert records in database
         ret = self.__database_controller.insert_transaction_record(json_records)
         if not ret:
-            logging.error(f"Impossible to insert records in db: {json_records}")
+            logging.error("Impossible to insert records in db: %s", json_records)
             return None
         
         # Register received record
@@ -46,19 +46,20 @@ class IngestionSystemController:
         # Synchronize received record with stored session
         raw_session = self.__record_synchronizer.try_session_synchronization(json_records)
         if raw_session is None:
-            logging.info(f"Session {session_id} is not completed")
+            logging.info("Session %s is not completed", session_id)
             return
         
         # Sanitize raw session
         RawSessionSanitizer(raw_session).remove_invalid_transactions()
         # Check if we have enough transactions
         if len(raw_session.transactions) < self.__configuration.min_transactions_per_session:
-            logging.warning(f"Session {session_id} rejected: "
-                            f"not enough transactions ({len(raw_session.transactions)})")
+            logging.warning("Session %s rejected: not enough transactions (%i)",
+                            session_id, len(raw_session.transactions))
             return
         
         # If we are in monitoring window, send attack risk label to monitoring system
         if self.__system_mode_tracker.is_session_in_monitoring_window(session_id):
-            self.__communication_controller.send_attack_risk_label(session_id, raw_session.attack_risk_label)
+            self.__communication_controller\
+                .send_attack_risk_label(session_id, raw_session.attack_risk_label)
         # Send raw session to preparation system
         self.__communication_controller.send_raw_session(raw_session)
