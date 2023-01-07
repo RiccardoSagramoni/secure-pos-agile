@@ -17,3 +17,13 @@ class LabelStorer:
 
     def select_label(self, query):
         return self.db.read_sql(query)
+
+
+if __name__ == "__main__":
+    test = LabelStorer()
+    test.delete_all_labels("DELETE FROM classifierLabel")
+    test.delete_all_labels("DELETE FROM expertLabel")
+    test1 = test.select_label("SELECT * FROM classifierLabel")
+    print(test1)
+    test2 = test.select_label("SELECT * FROM expertLabel")
+    print(test2)

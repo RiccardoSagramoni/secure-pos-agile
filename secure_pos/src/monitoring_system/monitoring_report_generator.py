@@ -54,11 +54,12 @@ class MonitoringReportGenerator:
     def generate_report(self):
         self.count_report += 1
 
-        # conto il numero di label discordanti
-        self.count_conflicting_labels()
+        if self.labels is not None:
+            # conto il numero di label discordanti
+            self.count_conflicting_labels()
 
-        # conto il numero massimo di label consecutive discordanti
-        self.count_max_consecutive_conflicting_labels()
+            # conto il numero massimo di label consecutive discordanti
+            self.count_max_consecutive_conflicting_labels()
 
         # genero il file json contente il report
         self.generate_report_json()
@@ -73,5 +74,4 @@ if __name__ == "__main__":
     print(labels)
 
     test1 = MonitoringReportGenerator(labels)
-    test1.generate_report()
     test1.generate_report()
