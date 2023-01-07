@@ -8,15 +8,6 @@ class MonitoringReport:
         self.conflicting_labels_threshold = 10
         self.max_consecutive_conflicting_labels_threshold = 10
 
-    def set_conflicting_labels(self, tot):
-        self.conflicting_labels = tot
-
-    def set_compared_labels(self, tot):
-        self.compared_labels = tot
-
-    def set_max_consecutive_conflicting_labels(self, tot):
-        self.max_consecutive_conflicting_labels = tot
-
     def to_dict(self):
         return {
             'conflicting_labels': self.conflicting_labels,
