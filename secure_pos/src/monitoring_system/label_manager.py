@@ -9,29 +9,26 @@ from monitoring_system.monitoring_report_generator import MonitoringReportGenera
 
 class LabelManager:
 
-    tot_labels_from_classifier = 0
-    tot_labels_from_expert = 0
-    storer = LabelStorer()
-    access_to_db = threading.Semaphore(1)
-    # pathLabel = os.path.join(get_received_data_folder(), 'label.json')
-    pathLabel = './conf/test.json'
+    def __init__(self):
+        self.tot_labels_from_expert = 0
+        self.tot_labels_from_classifier = 0
+        self.storer = LabelStorer()
+        self.access_to_db = threading.Semaphore(1)
 
-    def __init__(self, tot_labels_from_classifier, tot_labels_from_expert):
-        self.tot_labels_from_expert = tot_labels_from_expert
-        self.tot_labels_from_classifier = tot_labels_from_classifier
-
-    def count_labels(self, from_where):
-        if from_where == 'classifier':
+    def count_labels(self, source):
+        if source == 'classifier':
             self.tot_labels_from_classifier += 1
         else:
             self.tot_labels_from_expert += 1
 
-    def store_label(self, monitoring_window_length):
+    def store_label(self, monitoring_window_length, label):
         # blocco l'accesso al db
         self.access_to_db.acquire()
-        label = Label(None, None, None)
-        label.load_from_file(self.pathLabel)
-        label_dataframe = pd.DataFrame(label.to_dict(), index=[0], columns=["sessionId", "value"])
+        session_id = label["session_id"]
+        source = label["source"]
+        value = label["value"]
+        label = Label(session_id, value, source)
+        label_dataframe = pd.DataFrame(label.to_dict(), index=[0], columns=["session_id", "value"])
         if label.source == 'classifier':
             self.count_labels('classifier')
             self.storer.store_label(label_dataframe, 'classifierLabel')
@@ -53,9 +50,8 @@ class LabelManager:
             self.storer.delete_all_labels(query)
 
             # avvio il thread per produrre il report di monitoraggio
-            report = MonitoringReportGenerator()
-            thread = threading.Thread(target=report.generate_report,
-                                      args=labels)
+            report = MonitoringReportGenerator(labels)
+            thread = threading.Thread(target=report.generate_report)
             thread.start()
 
         self.access_to_db.release()

@@ -8,18 +8,17 @@ from utility.json_validation import validate_json
 
 
 class MonitoringSystemController:
-    label_manager = LabelManager()
-    config_path = "./conf/config.json"
-    config_schema_path = "./conf/config_schema.json"
-    config = None
 
     def __init__(self):
         self.label_manager = LabelManager()
+        self.config_path = "./conf/config.json"
+        self.config_schema_path = "./conf/config_schema.json"
+        self.config = None
 
     def handle_message(self, label):
         # When the system receives a message, generate a new thread
         thread = threading.Thread(target=self.label_manager.store_label,
-                                  args=(self.config["monitoring_window_length"],))
+                                  args=(self.config["monitoring_window_length"], label))
         thread.start()
 
     def start_server(self):
@@ -33,7 +32,7 @@ class MonitoringSystemController:
                                 resource_class_kwargs={
                                     'filename': filename,
                                     # l'handler gestisce l'archiviazione delle label
-                                    'handler': lambda(x): self.handle_message(x)
+                                    'handler': lambda x: self.handle_message(x)
                                 })
         server.run(debug=True)
 
@@ -66,4 +65,9 @@ if __name__ == "__main__":
     test = MonitoringSystemController()
     test.load_config()
     test.create_tables()
-    test.handle_message()
+    label = {
+            "session_id": 1,
+            "source": "expert",
+            "value": "attack"
+            }
+    test.handle_message(label)

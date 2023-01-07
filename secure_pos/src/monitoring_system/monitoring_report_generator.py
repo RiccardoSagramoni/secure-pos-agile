@@ -26,9 +26,8 @@ class MonitoringReportGenerator:
     def count_max_consecutive_conflicting_labels(self):
         pass
 
-    def generate_report(self, labels):
+    def generate_report(self):
         self.count_report += 1
-        self.labels = labels
 
         # conto il numero di label discordanti
         self.count_conflicting_labels()
