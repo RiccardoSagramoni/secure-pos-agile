@@ -7,17 +7,23 @@ class DBManager:
 
     def __init__(self, path_db: str):
         self.path_db = path_db
-
-    def create_table(self, query: str) -> None:
+    
+    def __execute_commit_query(self, query: str):
         with sqlite3.connect(self.path_db) as conn:
             cursor = conn.cursor()
             cursor.execute(query)
             conn.commit()
+    
+    def create_table(self, query: str):
+        self.__execute_commit_query(query)
 
-    def insert(self, dataframe: pd.DataFrame, table: str) -> bool:
+    def insert_dataframe(self, dataframe: pd.DataFrame, table: str) -> bool:
         with sqlite3.connect(self.path_db, timeout=15) as conn:
             res = dataframe.to_sql(table, conn, if_exists="append", index=False)
             return bool(res)
+    
+    def insert_query(self, query: str):
+        self.__execute_commit_query(query)
 
     def read_sql(self, query: str):
         try:
