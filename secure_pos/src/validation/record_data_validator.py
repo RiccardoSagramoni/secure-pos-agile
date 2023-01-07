@@ -75,7 +75,7 @@ class CommercialDataValidator:
             "^[0-9]+\\.[0-9]{2}$"
         )
     
-    def detect_invalid_attributes(self) -> int:
+    def count_invalid_attributes(self) -> int:
         return int(
             (not self.validate_cardid())
             + (not self.validate_posid())
@@ -118,7 +118,7 @@ class GeoDataValidator:
             "^((\\-?|\\+?)?\\d+(\\.\\d+)?)$"
         )
     
-    def detect_invalid_attributes(self) -> int:
+    def count_invalid_attributes(self) -> int:
         return int(
             (not self.validate_loc_name())
             + (not self.validate_p_id())
@@ -139,7 +139,7 @@ class NetworkDataValidator:
             "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
         )
     
-    def detect_invalid_attributes(self) -> int:
+    def count_invalid_attributes(self) -> int:
         return int(
             not self.validate_ip()
         )

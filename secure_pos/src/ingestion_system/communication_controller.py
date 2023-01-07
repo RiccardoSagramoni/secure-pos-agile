@@ -1,18 +1,34 @@
+import logging
 import threading
+import typing
+
+import requests
 
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
+from data_objects.attack_risk_label import AttackRiskLabel
+from data_objects.raw_session import RawSession
 from ingestion_system.configuration import Configuration
-from ingestion_system.record_synchronizer import RecordSynchronizer
+from ingestion_system.raw_session_converter import RawSessionConverter
 
 
 class CommunicationController:
     
-    def __init__(self,
-                 conf: Configuration,
-                 record_sync: RecordSynchronizer):
-        self.configuration = conf
-        self.record_synchronizer = record_sync
+    def __init__(self, conf: Configuration, handler: typing.Callable[[dict], None]):
+        self.__ip_address = conf.ip_address
+        self.__port = conf.port
+        self.__preparation_system_url = conf.preparation_system_url
+        self.__monitoring_system_url = conf.monitoring_system_url
+        self.__request_handler = handler
+    
+    def start_ingestion_rest_server(self) -> None:
+        server = RestServer()
+        server.api.add_resource(ReceiveJsonApi,
+                                "/",
+                                resource_class_kwargs={  # todo json validation
+                                    'handler': self.handle_message
+                                })
+        server.run(host=self.__ip_address, port=self.__port, debug=True)
     
     def handle_message(self, json_record: dict) -> None:
         """
@@ -20,15 +36,16 @@ class CommunicationController:
         :param json_record: data received from a client-side system.
         """
         threading.Thread(
-            target=self.record_synchronizer.handle_new_record_reception,
+            target=self.__request_handler,
             args=json_record
         ).start()
     
-    def start_ingestion_rest_server(self) -> None:
-        server = RestServer()
-        server.api.add_resource(ReceiveJsonApi,
-                                "/",
-                                resource_class_kwargs={
-                                    'handler': lambda x: self.handle_message(x)
-                                })
-        server.run(debug=True)
+    def send_raw_session(self, raw_session: RawSession) -> None:
+        # Serialize raw session
+        raw_session_dict = RawSessionConverter(raw_session).convert_to_dict()
+        response = requests.post(self.__preparation_system_url, json=raw_session_dict)
+        if not response.ok:
+            logging.error(f"Failed to send raw session:\n{raw_session_dict}")
+    
+    def send_attack_risk_label(self, attack_risk_label: AttackRiskLabel):
+        pass
