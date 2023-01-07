@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "http://example.com/example.json",
+  "title": "Records",
+  "type": "object",
+  "required": [
+    "session_id",
+    "type",
+    "data"
+  ],
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^(commercial|geo|network|label)$"
+    },
+    "data": {
+      "oneOf": [
+        {
+          "title": "Record data",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "title": "Commercial record",
+                "required": [
+                  "event_id",
+                  "cardid",
+                  "posid",
+                  "posname",
+                  "date",
+                  "time",
+                  "payment_type",
+                  "payment_circuit",
+                  "amount",
+                  "currency"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "cardid": {
+                    "type": "string"
+                  },
+                  "posid": {
+                    "type": "string"
+                  },
+                  "posname": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string"
+                  },
+                  "time": {
+                    "type": "string"
+                  },
+                  "payment_type": {
+                    "type": "string"
+                  },
+                  "payment_circuit": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "string"
+                  },
+                  "currency": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "title": "Geo record",
+                "required": [
+                  "event_id",
+                  "loc_name",
+                  "p_id",
+                  "longitude",
+                  "latitude"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "loc_name": {
+                    "type": "string"
+                  },
+                  "p_id": {
+                    "type": "string"
+                  },
+                  "longitude": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "title": "Network record",
+                "required": [
+                  "event_id",
+                  "ip"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "ip": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "title": "Attack risk label",
+          "type": "string",
+          "pattern": "^(ATTACK|NORMAL)$"
+        }
+      ]
+    }
+  }
+}
