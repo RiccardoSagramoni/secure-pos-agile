@@ -12,117 +12,147 @@
     "session_id": {
       "type": "string",
       "format": "uuid"
-    },
-    "type": {
-      "type": "string",
-      "pattern": "^(commercial|geo|network|label)$"
-    },
-    "data": {
-      "oneOf": [
-        {
-          "title": "Record data",
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^commercial$"
+        },
+        "data": {
+          "title": "Array of commercial record",
           "type": "array",
           "items": {
-            "oneOf": [
-              {
-                "type": "object",
-                "title": "Commercial record",
-                "required": [
-                  "event_id",
-                  "cardid",
-                  "posid",
-                  "posname",
-                  "date",
-                  "time",
-                  "payment_type",
-                  "payment_circuit",
-                  "amount",
-                  "currency"
-                ],
-                "properties": {
-                  "event_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "cardid": {
-                    "type": "string"
-                  },
-                  "posid": {
-                    "type": "string"
-                  },
-                  "posname": {
-                    "type": "string"
-                  },
-                  "date": {
-                    "type": "string"
-                  },
-                  "time": {
-                    "type": "string"
-                  },
-                  "payment_type": {
-                    "type": "string"
-                  },
-                  "payment_circuit": {
-                    "type": "string"
-                  },
-                  "amount": {
-                    "type": "string"
-                  },
-                  "currency": {
-                    "type": "string"
-                  }
-                }
+            "type": "object",
+            "title": "Commercial record",
+            "required": [
+              "event_id",
+              "cardid",
+              "posid",
+              "posname",
+              "date",
+              "time",
+              "payment_type",
+              "payment_circuit",
+              "amount",
+              "currency"
+            ],
+            "properties": {
+              "event_id": {
+                "type": "string",
+                "format": "uuid"
               },
-              {
-                "type": "object",
-                "title": "Geo record",
-                "required": [
-                  "event_id",
-                  "loc_name",
-                  "p_id",
-                  "longitude",
-                  "latitude"
-                ],
-                "properties": {
-                  "event_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "loc_name": {
-                    "type": "string"
-                  },
-                  "p_id": {
-                    "type": "string"
-                  },
-                  "longitude": {
-                    "type": "string"
-                  },
-                  "latitude": {
-                    "type": "string"
-                  }
-                }
+              "cardid": {
+                "type": "string"
               },
-              {
-                "type": "object",
-                "title": "Network record",
-                "required": [
-                  "event_id",
-                  "ip"
-                ],
-                "properties": {
-                  "event_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "ip": {
-                    "type": "string"
-                  }
-                }
+              "posid": {
+                "type": "string"
+              },
+              "posname": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string"
+              },
+              "time": {
+                "type": "string"
+              },
+              "payment_type": {
+                "type": "string"
+              },
+              "payment_circuit": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
               }
-            ]
+            }
           }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^geo$"
         },
-        {
+        "data": {
+          "title": "Array of geo record",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Geo record",
+            "required": [
+              "event_id",
+              "loc_name",
+              "p_id",
+              "longitude",
+              "latitude"
+            ],
+            "properties": {
+              "event_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "loc_name": {
+                "type": "string"
+              },
+              "p_id": {
+                "type": "string"
+              },
+              "longitude": {
+                "type": "string"
+              },
+              "latitude": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^network$"
+        },
+        "data": {
+          "title": "Array of network record",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Network record",
+            "required": [
+              "event_id",
+              "ip"
+            ],
+            "properties": {
+              "event_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "ip": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^label$"
+        },
+        "data": {
           "title": "Attack risk label",
           "type": "object",
           "required": [
@@ -140,7 +170,7 @@
             }
           }
         }
-      ]
+      }
     }
-  }
+  ]
 }
