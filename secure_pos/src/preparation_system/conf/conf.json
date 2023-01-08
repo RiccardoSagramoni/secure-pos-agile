@@ -1,0 +1,7 @@
+{
+  "mode": "development",
+  "ip_execution_system": "25.34.53.59",
+  "port_execution_system": 8000,
+  "ip_segregation_system": "25.34.53.60",
+  "port_segregation_system": 8000
+}

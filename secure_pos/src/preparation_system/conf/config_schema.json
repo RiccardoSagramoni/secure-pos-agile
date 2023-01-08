@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "mode": {"type": "string"},
+    "ip_execution_system": {"type": "string"},
+    "port_execution_system": {"type": "number"},
+    "ip_segregation_system": {"type": "string"},
+    "port_segregation_system": {"type": "number"}
+  }
+}
