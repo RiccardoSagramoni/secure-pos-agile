@@ -1,8 +1,12 @@
 import json
 import threading
 
+import pandas
+
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
+from data_objects.raw_session import RawSession
+from preparation_system.raw_session_sanitizer import RawSessionSanitizer
 from utility.json_validation import validate_json
 
 
@@ -13,9 +17,16 @@ class PreparationSystemController:
         self.config_schema_path = "./conf/config_schema.json"
         self.config = None
 
-    def handle_message(self, raw_session_json):
+    @staticmethod
+    def handle_message(raw_session_json):
         # When the system receives a message, generate a new thread
-        thread = threading.Thread()
+        session_id = raw_session_json["session_id"]
+        label = raw_session_json["attack_risk_label"]
+        transactions = raw_session_json["transactions"]
+        session_df = pandas.DataFrame(transactions)
+        raw_session = RawSession(session_id, session_df, label)
+        sanitizer = RawSessionSanitizer(raw_session)
+        thread = threading.Thread(target=sanitizer.detect_missing_attributes)
         thread.start()
 
     def start_server(self):
