@@ -1,0 +1,8 @@
+{
+  "development_system": {
+    "ip": "198.0.0.0",
+    "port": 8080
+  },
+  "session_nr_threshold": 7,
+  "development_mode": "True"
+}

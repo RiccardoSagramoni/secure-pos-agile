@@ -1,32 +1,22 @@
 import os
 import sys
 import json
+from threading import Semaphore
+
 import pandas as pd
 
-from src.segregation_system.Classes.DataStatsExtractor import DataStatsExtractor
+from sklearn.model_selection import train_test_split
+
+from segregation_system.Classes.DataExtractor import DataExtractor
+from segregation_system.Classes.SegregationSystemConfiguration import SegregationSystemConfiguration
+from segregation_system.utility.extract_json_response import extract_json_response
 from src.communication import RestServer
 from src.communication.api.file_transfer import ReceiveFileApi
 from src.database import DBManager
-from src.segregation_system.Classes.Plotter import Plotter
+from segregation_system.utility.plotter import plot_data_quality, plot_data_balancing
 
-
-def extract_json_response(file) -> object:
-    """
-    Function that extract the Data Analyst response from the file
-    :param file: path of the file to be checked
-    :return: string containing the response
-    """
-    if os.path.exists(file):
-        with open(file, 'r+', encoding='utf-8') as file_opened:
-            data = json.load(file_opened)
-            result = data.pop('response')
-            #data['response'] = 'None'
-
-            # Rewind needed for overwriting and reset the variable
-            #file_opened.seek(0)
-            #json.dump(data, file_opened)
-            #file_opened.truncate()
-    return result
+CONFIGURATION_PATH = 'segregation_configuration.json'
+CONFIGURATION_SCHEMA_PATH = 'segregation_configuration_schema.json'
 
 
 class SegregationSystemController:
@@ -37,17 +27,18 @@ class SegregationSystemController:
     def __init__(self):
         self.sessions_nr = 0
         self.path_db = "./database/segregationSystemDatabase.db"
-        self.filename = 'PreparedSession.json'
-        self.data_balancing_response = 'responses/balancing_response.json'
-        self.data_quality_response = 'responses/quality_response.json'
+        self.filename = './database/PreparedSession.json'
+        self.data_balancing_response = './responses/balancing_response.json'
+        self.data_quality_response = './responses/quality_response.json'
+        self.mode_semaphore = Semaphore()
         self.mode = 0
-
-        # Needed for testing, TODO remove them
+        self.config_file = SegregationSystemConfiguration(CONFIGURATION_PATH,
+                                                          CONFIGURATION_SCHEMA_PATH)
         self.check_file_existence()
 
     def handle_message(self):
         """
-        Method that handle the messages arrived from the preparation system
+        Method that handle the incoming messages (preparation system)
         """
         # If our system is involved with data balancing and quality I cannot accept more prepared sessions
         # so the system discards them
@@ -69,24 +60,31 @@ class SegregationSystemController:
         # Insert the record inside the table
         with open(self.filename, 'r', encoding='utf-8') as opened_file:
             data = json.load(opened_file)
+
+        # Error checking
+        if not data:
+            print("Error during message receiving, data not found.")
+            sys.exit(-1)
+
+        # Instantiate a data frame
         data_frame = pd.DataFrame(data,
-                                  columns=['id', 'time_mean', 'time_std', 'time_skew', 'amount_1', 'amount_2',
-                                           'amount_3', 'amount_4', 'amount_5', 'amount_6', 'amount_7', 'amount_8',
+                                  columns=['id', 'time_mean', 'time_std', 'time_skew',
+                                           'amount_1', 'amount_2', 'amount_3', 'amount_4',
+                                           'amount_5', 'amount_6', 'amount_7', 'amount_8',
                                            'amount_9', 'amount_10', 'type', 'label'])
 
-        num_rows = len(data_frame.index)
-
-        # TODO dealing with multithreading we need a semaphore to access the database
+        # TODO: dealing with multithreading we need a
+        #  semaphore to access the database
         ret = data_base_manager.insert(data_frame, 'ArrivedSessions')
         # os.remove(self.filename)
 
         # if we received 7 sessions the system can continue its execution,
         # otherwise it will terminate waiting for a new message
         if ret:
-            self.sessions_nr += num_rows
+            self.sessions_nr += 1
             if self.sessions_nr == 7:
                 self.sessions_nr = 0
-                # Refuse more Prepared sessions TODO Semaphore needed
+                self.mode_semaphore
                 self.mode = 1
                 self.check_balancing()
 
@@ -102,7 +100,7 @@ class SegregationSystemController:
         server.api.add_resource(ReceiveFileApi,
                                 "/",
                                 resource_class_kwargs={'filename': self.filename,
-                                                       'handler': lambda: self.handle_message()})
+                                                       'handler': self.handle_message()})
         server.run(debug=True)
         sys.exit(0)
 
@@ -112,13 +110,10 @@ class SegregationSystemController:
         and plot them in order to evaluate the data balancing
         :return: Null
         """
-        data_extractor = DataStatsExtractor(self.path_db)
+        data_extractor = DataExtractor(self.path_db)
         labels = data_extractor.count_labels()
-        value_0 = labels.pop(0).values[0][0]
-        value_1 = labels.pop(0).values[0][0]
 
-        plotter = Plotter()
-        plotter.plot_data_balancing([value_0, value_1])
+        plot_data_balancing(labels)
 
         # The system now needs to stop, we need to wait the Data Analyst evaluation
         sys.exit(0)
@@ -128,14 +123,42 @@ class SegregationSystemController:
         Method that calls the API that extracts the data
         and plot them in order to evaluate the data quality
         """
+        data_extractor = DataExtractor(self.path_db)
+        data = data_extractor.extract_features()
 
-        data_extractor = DataStatsExtractor(self.path_db)
-        data = data_extractor.extract_radar_diagram_data()
-
-        plotter = Plotter()
-        plotter.plot_data_quality(data)
+        plot_data_quality(data)
 
         # The system now needs to stop, we need to wait the Data Analyst evaluation
+        sys.exit(0)
+
+    def generate_datasets(self):
+        """
+        Method that manage the flow of the final phase, extracts data from the DB
+        and splits them in train, validation and test sets
+        """
+        data_extractor = DataExtractor(self.path_db)
+        data_frame_input = data_extractor.extract_features()
+
+        data_frame_result = data_extractor.extract_labels()
+
+        # Splitting the data into 'train' and 'other',
+        # aiming for 70% train 15% validation and 15% test
+        x_train, x_other, y_train, y_other = train_test_split(data_frame_input,
+                                                              data_frame_result,
+                                                              stratify=data_frame_result,
+                                                              test_size=0.3)
+
+        x_validation, x_test, y_validation, y_test = train_test_split(x_other,
+                                                                      y_other,
+                                                                      stratify=y_other,
+                                                                      test_size=0.5)
+
+
+        # Mark the records as USED TODO remove comment below
+        # database.update("UPDATE ArrivedSessions SET type = 0 WHERE type = -1")
+        print("Dataset sent, now terminate")
+        # reset the mode to accept more data from now on
+        self.mode = 0
         sys.exit(0)
 
     def check_file_existence(self):
@@ -171,11 +194,12 @@ class SegregationSystemController:
         # If the value is different from None the Analyst has evaluated the radar diagram
         if result_quality not in ['None', 'none']:
             if result_quality in ['yes', 'Yes']:
-                self.check_quality()
+                self.generate_datasets()
             elif result_quality in ['no', 'No']:
                 print('Negative response: send a configuration request to'
                       ' System Administrator for quality problems')
             else:
                 print('Unknown response: please write "yes" or "no" inside the file')
 
-        sys.exit(0)
+        # If nothing has been set means that the rest server has to be started
+        self.server_start()

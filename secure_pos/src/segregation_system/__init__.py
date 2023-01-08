@@ -1,10 +1,10 @@
 import sys
-from src.segregation_system.Classes.SegregationSystemController import SegregationSystemController
+
+from segregation_system.Classes.SegregationSystemController import SegregationSystemController
 
 
 def main():
     controller = SegregationSystemController()
-    controller.server_start()
     sys.exit(0)
 
 
