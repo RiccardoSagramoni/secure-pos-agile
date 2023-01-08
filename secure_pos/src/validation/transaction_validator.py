@@ -6,13 +6,13 @@ from validation.record_data_validator import CommercialDataValidator, GeoDataVal
 class TransactionValidator:
     
     def __init__(self, transaction: Transaction, conf: Configuration):
-        self.transaction = transaction
-        self.configuration = conf
+        self.__transaction = transaction
+        self.__max_invalid_attributes_allowed = conf.max_invalid_attributes_allowed
     
     def is_valid(self) -> bool:
         invalid_attributes_num = (
-                CommercialDataValidator(self.transaction.commercial).count_invalid_attributes()
-                + GeoDataValidator(self.transaction.geo).count_invalid_attributes()
-                + NetworkDataValidator(self.transaction.network).count_invalid_attributes()
+                CommercialDataValidator(self.__transaction.commercial).count_invalid_attributes()
+                + GeoDataValidator(self.__transaction.geo).count_invalid_attributes()
+                + NetworkDataValidator(self.__transaction.network).count_invalid_attributes()
         )
-        return invalid_attributes_num <= self.configuration.max_invalid_attributes_allowed
+        return invalid_attributes_num <= self.__max_invalid_attributes_allowed

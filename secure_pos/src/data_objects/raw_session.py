@@ -1,18 +1,11 @@
-import pandas
+from typing import List
 
 from data_objects.attack_risk_label import AttackRiskLabel
 from data_objects.transaction import Transaction
 
 
 class RawSession:
-    transactions = []
-    
-    def __init__(self, session_id: str,
-                 session_df: pandas.DataFrame, label: str):
+    def __init__(self, session_id: str, label: AttackRiskLabel, transactions: List[Transaction]):
         self.session_id = session_id
-        self.attack_risk_label = AttackRiskLabel(label)
-        
-        for _, row in session_df.iterrows():
-            self.transactions.append(
-                Transaction(row)
-            )
+        self.attack_risk_label = label
+        self.transactions = transactions
