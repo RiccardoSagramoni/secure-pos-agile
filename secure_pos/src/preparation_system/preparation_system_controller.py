@@ -34,20 +34,22 @@ class PreparationSystemController:
         prepared_session_dict = prepared_session_generator.extract_features()
         self.send_prepared_session(prepared_session_dict)
 
-    def processing_raw_session(self, raw_session):
-        sanitizer = RawSessionSanitizer(raw_session)
-        sanitizer.detect_missing_attributes()
-        sanitizer.correct_missing_attributes()
-        sanitizer.detect_outliers()
+    def processing_raw_session(self, raw_session_json):
+        raw_session = RawSessionFactory.generate_from_dict(raw_session_json)
+        sanitizer = RawSessionSanitizer(raw_session, self.config["minimum_amount_possible"],
+                                        self.config["maximum_amount_possible"])
+
+        sanitizer.correct_missing_time()
+        sanitizer.correct_missing_amount()
+
         sanitizer.correct_outliers()
 
-        self.generate_prepared_session(raw_session)
+        self.generate_prepared_session(sanitizer.raw_session)
 
     def handle_message(self, raw_session_json):
         # When the system receives a message, generate a new thread
-        raw_session = RawSessionFactory.generate_from_dict(raw_session_json)
         thread = threading.Thread(target=self.processing_raw_session,
-                                  args=[raw_session])
+                                  args=[raw_session_json])
         thread.start()
 
     def start_server(self):

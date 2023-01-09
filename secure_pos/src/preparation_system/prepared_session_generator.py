@@ -44,7 +44,9 @@ class PreparedSessionGenerator:
         for transaction in transactions:
             amount.append(float(transaction.commercial.amount))
 
-        self.prepared_session = PreparedSession(int(self.raw_session.session_id),
+        # amount va normalizzato !!!!!!!!!!!!!!!
+
+        self.prepared_session = PreparedSession(self.raw_session.session_id,
                                                 time_mean, time_std, time_skew,
                                                 amount[0], amount[1], amount[2],
                                                 amount[3], amount[4], amount[5],
