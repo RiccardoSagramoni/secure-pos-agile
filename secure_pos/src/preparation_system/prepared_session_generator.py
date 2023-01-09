@@ -13,6 +13,7 @@ class PreparedSessionGenerator:
         self.raw_session = raw_session
         self.prepared_session = None
         self.time_diff = None
+        self.norm_amount = []
 
     def generate_time_diff(self):
         transactions = self.raw_session.transactions
@@ -34,23 +35,25 @@ class PreparedSessionGenerator:
     def generate_time_skew(self):
         return skew(np.array(self.time_diff))
 
+    def generate_norm_amount(self):
+        transactions = self.raw_session.transactions
+        amount = []
+        for transaction in transactions:
+            amount.append(float(transaction.commercial.amount))
+        amount_min, amount_max = min(amount), max(amount)
+        for val in amount:
+            temp = (val - amount_min) / (amount_max - amount_min)
+            self.norm_amount.append(temp)
+
     def extract_features(self):
         self.generate_time_diff()
         time_mean = self.generate_time_mean()
         time_std = self.generate_time_std()
         time_skew = self.generate_time_skew()
-        transactions = self.raw_session.transactions
-        amount = []
-        for transaction in transactions:
-            amount.append(float(transaction.commercial.amount))
+        self.generate_norm_amount()
 
-        # amount va normalizzato !!!!!!!!!!!!!!!
-
-        self.prepared_session = PreparedSession(self.raw_session.session_id,
-                                                time_mean, time_std, time_skew,
-                                                amount[0], amount[1], amount[2],
-                                                amount[3], amount[4], amount[5],
-                                                amount[6], amount[7], amount[8],
-                                                amount[9], self.raw_session.attack_risk_label)
+        self.prepared_session = PreparedSession(self.raw_session.session_id, time_mean,
+                                                time_std, time_skew, self.norm_amount,
+                                                self.raw_session.attack_risk_label)
 
         return self.prepared_session.to_dict()
