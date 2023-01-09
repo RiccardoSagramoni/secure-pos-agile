@@ -5,6 +5,8 @@
     "ip_execution_system": {"type": "string"},
     "port_execution_system": {"type": "number"},
     "ip_segregation_system": {"type": "string"},
-    "port_segregation_system": {"type": "number"}
+    "port_segregation_system": {"type": "number"},
+    "minimum_amount_possible": {"type": "number"},
+    "maximum_amount_possible": {"type": "number"}
   }
 }
