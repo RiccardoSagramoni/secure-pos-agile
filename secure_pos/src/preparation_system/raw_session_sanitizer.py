@@ -1,4 +1,3 @@
-from preparation_system.prepared_session_generator import PreparedSessionGenerator
 
 
 class RawSessionSanitizer:
