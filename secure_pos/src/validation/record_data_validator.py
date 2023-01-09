@@ -66,13 +66,13 @@ class CommercialDataValidator:
     def validate_amount(self) -> bool:
         return validate_string_with_regex(
             self.__commercial_data.payment_circuit,
-            "^[A-Z]*$"
+            "^[0-9]+\\.[0-9]{2}$"
         )
     
     def validate_currency(self) -> bool:
         return validate_string_with_regex(
             self.__commercial_data.currency,
-            "^[0-9]+\\.[0-9]{2}$"
+            "^[A-Z]*$"
         )
     
     def count_invalid_attributes(self) -> int:

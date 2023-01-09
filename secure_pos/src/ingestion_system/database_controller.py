@@ -113,7 +113,8 @@ class DatabaseController:
             label = self.__database_manager.read_sql(
                 f"SELECT label FROM label WHERE session_id = {session_id};"
             )['label'][0]  # todo da testare con debugger!!!
-        return RawSessionFactory.generate_raw_session_from_dataframe(session_id, raw_session_df, label)
+            # todo se non esiste label, settala a None
+        return RawSessionFactory.generate_from_dataframe(session_id, raw_session_df, label)
     
     def __delete_records(self, session_id: str, table: str) -> None:
         with self.__lock:
