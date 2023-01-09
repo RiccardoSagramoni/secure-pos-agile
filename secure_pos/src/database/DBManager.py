@@ -1,6 +1,6 @@
 import os
-import pandas as pd
 import sqlite3
+import pandas as pd
 
 
 class DBManager:

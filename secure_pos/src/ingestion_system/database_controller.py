@@ -15,8 +15,9 @@ class DatabaseController:
     def __init__(self, conf: Configuration, tracker: SystemModeTracker):
         self.__database_manager = DBManager(conf.database_path)
         self.__system_mode_tracker = tracker
+        self.__create_tables()
     
-    def create_tables(self) -> None:
+    def __create_tables(self) -> None:
         with self.__lock:
             # Table for commercial data
             self.__database_manager.create_table(
@@ -69,7 +70,7 @@ class DatabaseController:
         
         with self.__lock:
             # Insert dataframe in db
-            return self.__database_manager.insert_dataframe(df, json_records['type'])
+            return self.__database_manager.insert(df, json_records['type'])
     
     #
     def __check_session_records_presence(self, session_id: str, table: str) -> bool:

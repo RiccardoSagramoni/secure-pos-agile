@@ -40,12 +40,12 @@ class CommunicationController:
         """
         threading.Thread(
             target=self.__request_handler,
-            args=json_record
+            args=[json_record]
         ).start()
     
     def send_raw_session(self, raw_session: RawSession) -> None:
         # Serialize raw session
-        raw_session_dict = RawSessionConverter(raw_session).convert_to_dict()
+        raw_session_dict = RawSessionConverter(raw_session).convert_to_json_dict()
         response = requests.post(self.__preparation_system_url, json=raw_session_dict)
         if not response.ok:
             logging.error("Failed to send raw session:\n%s", raw_session_dict)

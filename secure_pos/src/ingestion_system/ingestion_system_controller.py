@@ -7,8 +7,8 @@ from ingestion_system.raw_session_sanitizer import RawSessionSanitizer
 from ingestion_system.record_synchronizer import RecordSynchronizer
 from ingestion_system.system_mode_tracker import SystemModeTracker
 
-CONFIGURATION_FILE_PATH = 'configuration.json'  # todo
-CONFIGURATION_SCHEMA_PATH = 'configuration_schema.json'  # TODO
+CONFIGURATION_FILE_PATH = 'ingestion_system/config.json'
+CONFIGURATION_SCHEMA_PATH = 'ingestion_system/config_schema.json'
 
 
 class IngestionSystemController:
@@ -24,7 +24,7 @@ class IngestionSystemController:
         self.__record_synchronizer = \
             RecordSynchronizer(self.__database_controller)
     
-    def run(self):
+    def run(self) -> None:
         # Start REST server
         self.__communication_controller.start_ingestion_rest_server()
     
@@ -50,7 +50,7 @@ class IngestionSystemController:
             return
         
         # Sanitize raw session
-        RawSessionSanitizer(raw_session).remove_invalid_transactions()
+        RawSessionSanitizer(raw_session, self.__configuration).remove_invalid_transactions()
         # Check if we have enough transactions
         if len(raw_session.transactions) < self.__configuration.min_transactions_per_session:
             logging.warning("Session %s rejected: not enough transactions (%i)",
