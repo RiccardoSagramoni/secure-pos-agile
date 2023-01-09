@@ -1,11 +1,9 @@
 import json
 import threading
 
-import pandas
-
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
-from data_objects.raw_session import RawSession
+from factory.raw_session_factory import RawSessionFactory
 from preparation_system.prepared_session_generator import PreparedSessionGenerator
 from preparation_system.prepared_session_sender import PreparedSessionSender
 from preparation_system.raw_session_sanitizer import RawSessionSanitizer
@@ -47,13 +45,9 @@ class PreparationSystemController:
 
     def handle_message(self, raw_session_json):
         # When the system receives a message, generate a new thread
-        session_id = raw_session_json["session_id"]
-        label = raw_session_json["attack_risk_label"]
-        transactions = raw_session_json["transactions"]
-        session_df = pandas.DataFrame(transactions)
-        raw_session = RawSession(session_id, session_df, label)
+        raw_session = RawSessionFactory.generate_from_dict(raw_session_json)
         thread = threading.Thread(target=self.processing_raw_session,
-                                  args=(raw_session,))
+                                  args=[raw_session])
         thread.start()
 
     def start_server(self):
