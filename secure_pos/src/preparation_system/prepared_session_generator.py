@@ -11,11 +11,8 @@ class PreparedSessionGenerator:
 
     def __init__(self, raw_session: RawSession):
         self.raw_session = raw_session
-        self.preparedSession = None
+        self.prepared_session = None
         self.time_diff = []
-
-    def generate_prepared_session_json(self):
-        pass
 
     def generate_time_diff(self):
         pass
@@ -35,11 +32,11 @@ class PreparedSessionGenerator:
         time_std = self.generate_time_std()
         time_skew = self.generate_time_skew()
 
-        self.preparedSession = PreparedSession(self.raw_session.session_id,
+        self.prepared_session = PreparedSession(self.raw_session.session_id,
                                                time_mean,
                                                time_std,
                                                time_skew,
                                                ...,
                                                self.raw_session.attack_risk_label)
 
-        return self.preparedSession.to_dict()
+        return self.prepared_session.to_dict()

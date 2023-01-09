@@ -7,14 +7,13 @@ class RawSessionSanitizer:
         self.raw_session = raw_session
 
     def detect_outliers(self):
-        self.correct_outliers()
+        pass
 
     def correct_outliers(self):
-        prepared_session_generator = PreparedSessionGenerator(self.raw_session)
-        prepared_session_dict = prepared_session_generator.extract_features()
+        pass
 
     def detect_missing_attributes(self):
-        self.correct_missing_attributes()
+        pass
 
     def correct_missing_attributes(self):
-        self.detect_outliers()
+        pass
