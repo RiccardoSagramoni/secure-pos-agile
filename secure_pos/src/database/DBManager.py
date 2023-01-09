@@ -17,14 +17,11 @@ class DBManager:
     def create_table(self, query: str):
         self.__execute_commit_query(query)
 
-    def insert_dataframe(self, dataframe: pd.DataFrame, table: str) -> bool:
+    def insert(self, dataframe: pd.DataFrame, table: str) -> bool:
         with sqlite3.connect(self.path_db, timeout=15) as conn:
             res = dataframe.to_sql(table, conn, if_exists="append", index=False)
             return bool(res)
     
-    def insert_query(self, query: str):
-        self.__execute_commit_query(query)
-
     def read_sql(self, query: str):
         try:
             with sqlite3.connect(self.path_db, timeout=15) as conn:
@@ -35,15 +32,12 @@ class DBManager:
 
     def update(self, query: str) -> bool:
         try:
-            with sqlite3.connect(self.path_db) as conn:
-                cur = conn.cursor()
-                cur.execute(query)
-                conn.commit()
-                return True
+            self.__execute_commit_query(query)
+            return True
         except Exception:
             print("Query exception")
             return False
-
+    
     def delete_table(self, table: str) -> None:
         with sqlite3.connect(self.path_db) as conn:
             cursor = conn.cursor()
