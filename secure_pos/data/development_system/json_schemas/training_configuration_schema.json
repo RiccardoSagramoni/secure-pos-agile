@@ -1,0 +1,191 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://example.com/object1673305728.json",
+	"title": "Root",
+	"type": "object",
+	"required": [
+		"hyper_parameters",
+		"average_params",
+		"generation_number",
+		"number_of_top_classifiers",
+		"test_tolerance",
+		"validation_tolerance",
+		"is_initial_phase",
+		"best_classifier_found",
+		"test_best_classifier_passed"
+	],
+	"properties": {
+		"hyper_parameters": {
+			"$id": "#root/hyper_parameters",
+			"title": "Hyper_parameters",
+			"type": "object",
+			"required": [
+				"hidden_layer_size",
+				"activation",
+				"solver",
+				"learning_rate",
+				"learning_rate_init"
+			],
+			"properties": {
+				"hidden_layer_size": {
+					"$id": "#root/hyper_parameters/hidden_layer_size",
+					"title": "Hidden_layer_size",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/hidden_layer_size/items",
+						"title": "Items",
+						"type": "integer",
+						"default": 0
+					}
+				},
+				"activation": {
+					"$id": "#root/hyper_parameters/activation",
+					"title": "Activation",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/activation/items",
+						"title": "Items",
+						"type": "string",
+						"default": "",
+						"pattern": "^.*$"
+					}
+				},
+				"solver": {
+					"$id": "#root/hyper_parameters/solver",
+					"title": "Solver",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/solver/items",
+						"title": "Items",
+						"type": "string",
+						"default": "",
+						"pattern": "^.*$"
+					}
+				},
+				"learning_rate": {
+					"$id": "#root/hyper_parameters/learning_rate",
+					"title": "Learning_rate",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/learning_rate/items",
+						"title": "Items",
+						"type": "string",
+						"default": "",
+						"pattern": "^.*$"
+					}
+				},
+				"learning_rate_init": {
+					"$id": "#root/hyper_parameters/learning_rate_init",
+					"title": "Learning_rate_init",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/learning_rate_init/items",
+						"title": "Items",
+						"type": "number",
+						"default": 0.0
+					}
+				}
+			}
+		}
+,
+		"average_params": {
+			"$id": "#root/average_params",
+			"title": "Average_params",
+			"type": "object",
+			"required": [
+				"hidden_layer_size",
+				"activation",
+				"solver",
+				"learning_rate",
+				"learning_rate_init"
+			],
+			"properties": {
+				"hidden_layer_size": {
+					"$id": "#root/average_params/hidden_layer_size",
+					"title": "Hidden_layer_size",
+					"type": "integer",
+					"default": 0
+				},
+				"activation": {
+					"$id": "#root/average_params/activation",
+					"title": "Activation",
+					"type": "string",
+					"default": "",
+					"pattern": "^.*$"
+				},
+				"solver": {
+					"$id": "#root/average_params/solver",
+					"title": "Solver",
+					"type": "string",
+					"default": "",
+					"pattern": "^.*$"
+				},
+				"learning_rate": {
+					"$id": "#root/average_params/learning_rate",
+					"title": "Learning_rate",
+					"type": "string",
+					"default": "",
+					"pattern": "^.*$"
+				},
+				"learning_rate_init": {
+					"$id": "#root/average_params/learning_rate_init",
+					"title": "Learning_rate_init",
+					"type": "number",
+					"default": 0.0
+				}
+			}
+		}
+,
+		"generation_number": {
+			"$id": "#root/generation_number",
+			"title": "Generation_number",
+			"type": "integer",
+			"default": 0
+		},
+		"number_of_top_classifiers": {
+			"$id": "#root/number_of_top_classifiers",
+			"title": "Number_of_top_classifiers",
+			"type": "integer",
+			"default": 0
+		},
+		"test_tolerance": {
+			"$id": "#root/test_tolerance",
+			"title": "Test_tolerance",
+			"type": "number",
+			"default": 0.0
+		},
+		"validation_tolerance": {
+			"$id": "#root/validation_tolerance",
+			"title": "Validation_tolerance",
+			"type": "number",
+			"default": 0.0
+		},
+		"is_initial_phase": {
+			"$id": "#root/is_initial_phase",
+			"title": "Is_initial_phase",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		},
+		"best_classifier_found": {
+			"$id": "#root/best_classifier_found",
+			"title": "Best_classifier_found",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		},
+		"test_best_classifier_passed": {
+			"$id": "#root/test_best_classifier_passed",
+			"title": "Test_best_classifier_passed",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		}
+	}
+}

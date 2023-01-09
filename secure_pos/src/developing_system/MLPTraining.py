@@ -4,45 +4,54 @@ from pandas import read_csv
 from numpy import ravel
 import matplotlib.pyplot as plt
 
+from developing_system.TrainingConfiguration import TrainingConfiguration
+
 class MLPTraining:
 
-    def __init__(self):
+    def __init__(self, training_conf: TrainingConfiguration):
 
-        self.is_initial_phase = True
-        self.mlp = None
-        self.first_hidden_layer_size = None
-        self.generation_number = 2000
-        self.activation = None
-        self.solver = None
-        self.learning_rate = None
-        self.random_state = None
+        # data from the json training_configuration file
+        self.is_initial_phase = training_conf.is_initial_phase
+        self.generation_number = training_conf.generation_number
+        self.hyper_parameters = training_conf.average_parameters
+
+        # dataset for the training and validation
         self.training_data = read_csv('prova/trainingData.csv')
-        self.training_labels=read_csv('prova/trainingLabels.csv')
+        self.training_labels = read_csv('prova/trainingLabels.csv')
         self.validation_data = read_csv('prova/testingData.csv')
         self.validation_labels = read_csv('prova/testingLabels.csv')
+
+        # results of the single training
+        self.mlp = None
         self.validation_error = None
 
 
-    def set_hyperparameters(self, is_initial_phase, first_hidden_layer_size, activation, solver, learning_rate_mode):
+    def set_hyperparameters(self, is_initial_phase, **setted_hyper_parameters):
 
         self.is_initial_phase = is_initial_phase
-        self.first_hidden_layer_size = first_hidden_layer_size
-        self.activation = activation
-        self.solver = solver
-        self.learning_rate = learning_rate_mode
+        self.hyper_parameters = setted_hyper_parameters
 
 
     def train_neural_network(self):
 
         # declaration of the mlp with the hyperparameters
-        self.mlp = MLPClassifier( hidden_layer_sizes=self.first_hidden_layer_size, max_iter=self.generation_number,
-                                  activation= self.activation, solver= self.solver, learning_rate=self.learning_rate)
+        self.mlp = MLPClassifier( hidden_layer_sizes=self.hyper_parameters["hidden_layer_size"],
+                                  max_iter=self.generation_number,
+                                  activation= self.hyper_parameters["activation"],
+                                  solver=self.hyper_parameters["solver"],
+                                  learning_rate=self.hyper_parameters["learning_rate"],
+                                  learning_rate_init= self.hyper_parameters["learning_rate_init"])
+
         # training of the mlp using the training set
         self.mlp.fit(self.training_data, ravel(self.training_labels))
+
         # prediction of the risk labels using the validation set
         attack_risk_label_prediction = self.mlp.predict(self.validation_data)
 
-        if self.is_initial_phase:
+        # measure the accurancy using the validation set
+        self.validation_error = 1 - (accuracy_score(ravel(self.validation_labels), attack_risk_label_prediction))
+
+        if self.is_initial_phase in ["Yes", "yes"]:
 
             # plot of the loss function in function of the number of generations
             plt.plot(self.mlp.loss_curve_)
@@ -59,11 +68,3 @@ class MLPTraining:
             plt.savefig("plots/confusion_matrix.png")
             plt.show()
 
-        # measure the accurancy using the validation set
-        self.validation_error = accuracy_score(ravel(self.validation_labels), attack_risk_label_prediction)
-        print(f"Validation Error:{self.validation_error}")
-
-
-# classifier = MLPTraining()
-# classifier.set_hyperparameters(is_initial_phase = True, first_hidden_layer_size = 80, activation = 'relu', solver = 'adam', learning_rate_mode = 'constant')
-# classifier.train_neural_network()

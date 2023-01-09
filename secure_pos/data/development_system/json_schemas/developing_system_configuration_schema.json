@@ -1,0 +1,66 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://example.com/object1673305766.json",
+	"title": "Root",
+	"type": "object",
+	"required": [
+		"ip_address",
+		"port",
+		"segregation_system_url",
+		"execution_system_url",
+		"database_path",
+		"development_status",
+		"is_testing_phase"
+	],
+	"properties": {
+		"ip_address": {
+			"$id": "#root/ip_address",
+			"title": "Ip_address",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		},
+		"port": {
+			"$id": "#root/port",
+			"title": "Port",
+			"type": "integer",
+			"default": 0
+		},
+		"segregation_system_url": {
+			"$id": "#root/segregation_system_url",
+			"title": "Segregation_system_url",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		},
+		"execution_system_url": {
+			"$id": "#root/execution_system_url",
+			"title": "Execution_system_url",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		},
+		"database_path": {
+			"$id": "#root/database_path",
+			"title": "Database_path",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		},
+		"development_status": {
+			"$id": "#root/development_status",
+			"title": "Development_status",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		},
+		"is_testing_phase": {
+			"$id": "#root/is_testing_phase",
+			"title": "Is_testing_phase",
+			"type": "string",
+			"default": "",
+			"pattern": "^.*$"
+		}
+	}
+}
