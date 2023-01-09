@@ -1,13 +1,15 @@
 import json
 import logging
+import os
 
+import utility
 from utility.json_validation import validate_json_data_file
 
 
 class Configuration:
     def __init__(self, json_configuration_path: str, json_schema_path: str):
         # Open configuration file
-        with open(json_configuration_path, "r", encoding="UTF-8") as file:
+        with open(os.path.join(utility.data_folder, json_configuration_path), "r", encoding="UTF-8") as file:
             # Load JSON configuration
             json_conf = json.load(file)
             # Validate configuration
@@ -25,5 +27,5 @@ class Configuration:
             self.min_transactions_per_session = int(json_conf['min_transactions_per_session'])
             self.max_invalid_attributes_allowed = int(json_conf['max_invalid_attributes_allowed'])
             self.execution_window_length = int(json_conf['execution_window_length'])
-            self.monitoring_window_length = int(json_conf['min_transactions_per_session'])
-            self.is_development_mode = bool(json_conf['min_transactions_per_session'])
+            self.monitoring_window_length = int(json_conf['monitoring_window_length'])
+            self.is_development_mode = bool(json_conf['is_development_mode'])

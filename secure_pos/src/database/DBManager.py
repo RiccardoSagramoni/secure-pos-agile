@@ -23,20 +23,11 @@ class DBManager:
             return bool(res)
     
     def read_sql(self, query: str):
-        try:
-            with sqlite3.connect(self.path_db, timeout=15) as conn:
-                return pd.read_sql(query, conn)
-        except Exception:
-            print("Query exception")
-            return None
+        with sqlite3.connect(self.path_db, timeout=15) as conn:
+            return pd.read_sql(query, conn)
 
-    def update(self, query: str) -> bool:
-        try:
-            self.__execute_commit_query(query)
-            return True
-        except Exception:
-            print("Query exception")
-            return False
+    def update(self, query: str) -> None:
+        self.__execute_commit_query(query)
     
     def delete_table(self, table: str) -> None:
         with sqlite3.connect(self.path_db) as conn:

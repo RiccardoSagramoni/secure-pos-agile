@@ -11,7 +11,7 @@ from data_objects.raw_session import RawSession
 from ingestion_system.configuration import Configuration
 from ingestion_system.data_objects_converters import RawSessionConverter, AttackRiskLabelConverter
 
-RECORD_SCHEMA_PATH = "records_schema.json"
+RECORD_SCHEMA_PATH = "ingestion_system/records_schema.json"
 
 
 class CommunicationController:
@@ -31,7 +31,7 @@ class CommunicationController:
                                     'json_schema': RECORD_SCHEMA_PATH,
                                     'handler': self.handle_message
                                 })
-        server.run(host=self.__ip_address, port=self.__port, debug=True)
+        server.run(host=self.__ip_address, port=self.__port, debug=False)
     
     def handle_message(self, json_record: dict) -> None:
         """

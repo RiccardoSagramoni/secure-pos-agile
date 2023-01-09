@@ -11,10 +11,9 @@ class RecordSynchronizer:
     def __init__(self, db_controller: DatabaseController):
         self.__database_controller = db_controller
     
-    def try_session_synchronization(self, json_records: dict) -> typing.Optional[RawSession]:
+    def try_session_synchronization(self, session_id: str) -> typing.Optional[RawSession]:
         with self.__lock:
             # Check if we have all the necessary data of the session
-            session_id = json_records['id']
             if not self.__database_controller.is_session_completed(session_id):
                 return None
             

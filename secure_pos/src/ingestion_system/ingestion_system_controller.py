@@ -44,7 +44,7 @@ class IngestionSystemController:
         self.__system_mode_tracker.register_record_arrival(json_records)
         
         # Synchronize received record with stored session
-        raw_session = self.__record_synchronizer.try_session_synchronization(json_records)
+        raw_session = self.__record_synchronizer.try_session_synchronization(session_id)
         if raw_session is None:
             logging.info("Session %s is not completed", session_id)
             return
