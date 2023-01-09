@@ -39,10 +39,12 @@ class LabelManager:
                 self.tot_labels_from_classifier == monitoring_window_length:
 
             # carico le label in memoria
-            query = "SELECT ex.session_id, ex.value as expertValue, " \
-                    "cl.value as classifierValue " \
-                    "FROM expertLabel AS ex " \
-                    "JOIN classifierLabel AS cl ON ex.session_id = cl.session_id"
+            query = "SELECT expert.session_id, " \
+                    "expert.value as expertValue," \
+                    "classifier.value as classifierValue " \
+                    "FROM expertLabel AS expert " \
+                    "INNER JOIN classifierLabel AS classifier " \
+                    "ON expert.session_id = classifier.session_id"
             labels = self.storer.select_label(query)
 
             # le elimino dal db

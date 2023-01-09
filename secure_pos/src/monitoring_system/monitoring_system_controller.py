@@ -64,7 +64,7 @@ if __name__ == "__main__":
     test.load_config()
     test.create_tables()
     label = {
-            "session_id": 8,
+            "session_id": "ca702d9f-17b2-43fb-b6ab-28eed73a31aa",
             "source": "expert",
             "value": "attack"
             }

@@ -67,10 +67,12 @@ class MonitoringReportGenerator:
 
 if __name__ == "__main__":
     test = LabelStorer()
-    labels = test.select_label("SELECT ex.session_id, ex.value as expertValue,"
-                               "cl.value as classifierValue "
-                               "FROM expertLabel AS ex JOIN classifierLabel"
-                               "AS cl ON ex.session_id = cl.session_id")
+    labels = test.select_label("SELECT expert.session_id, "
+                               "expert.value as expertValue,"
+                               "classifier.value as classifierValue "
+                               "FROM expertLabel AS expert "
+                               "INNER JOIN classifierLabel AS classifier "
+                               "ON expert.session_id = classifier.session_id")
     print(labels)
 
     test1 = MonitoringReportGenerator(labels)
