@@ -1,3 +1,4 @@
+import json
 from statistics import mean, stdev
 
 import numpy as np
@@ -23,6 +24,7 @@ class PreparedSessionGenerator:
             hour, minute, sec = transaction.commercial.time.split(':')
             time_int = int(hour) * 3600 + int(minute) * 60 + int(sec)
             time.append(time_int)
+        time.sort()
         time_array = np.array(time)
         self.time_diff = list(np.diff(time_array))
 
@@ -30,10 +32,12 @@ class PreparedSessionGenerator:
         return mean(self.time_diff)
 
     def generate_time_std(self):
-        return stdev(self.time_diff)
+        time_diff_array = np.array(self.time_diff)
+        return np.std(time_diff_array)
 
     def generate_time_skew(self):
-        return skew(np.array(self.time_diff))
+        time_diff_array = np.array(self.time_diff)
+        return skew(time_diff_array)
 
     def generate_norm_amount(self):
         transactions = self.raw_session.transactions

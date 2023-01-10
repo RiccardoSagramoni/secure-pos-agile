@@ -10,7 +10,6 @@ from preparation_system.prepared_session_sender import PreparedSessionSender
 from preparation_system.raw_session_sanitizer import RawSessionSanitizer
 from utility.json_validation import validate_json
 
-logging.getLogger().setLevel(logging.INFO)
 
 class PreparationSystemController:
 

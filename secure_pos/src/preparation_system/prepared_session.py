@@ -1,3 +1,5 @@
+import jsons
+
 
 class PreparedSession:
 
@@ -21,9 +23,9 @@ class PreparedSession:
     def to_dict(self):
         return {
             "id": [self.session_id],
-            "time_mean": [self.time_mean],
-            "time_std": [self.time_std],
-            "time_skew": [self.time_skew],
+            "time_mean": [float(self.time_mean)],
+            "time_std": [float(self.time_std)],
+            "time_skew": [float(self.time_skew)],
             "amount_1": [self.amount_1],
             "amount_2": [self.amount_2],
             "amount_3": [self.amount_3],
