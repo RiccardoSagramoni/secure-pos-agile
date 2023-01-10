@@ -14,5 +14,6 @@ class MonitoringReport:
             'compared_labels': self.compared_labels,
             'max_consecutive_conflicting_labels': self.max_consecutive_conflicting_labels,
             'conflicting_labels_threshold': self.conflicting_labels_threshold,
-            'max_consecutive_conflicting_labels_threshold': self.max_consecutive_conflicting_labels_threshold
+            'max_consecutive_conflicting_labels_threshold':
+                self.max_consecutive_conflicting_labels_threshold
         }

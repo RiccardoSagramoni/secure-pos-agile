@@ -7,8 +7,6 @@ from monitoring_system.label import Label
 from monitoring_system.label_storer import LabelStorer
 from monitoring_system.monitoring_report_generator import MonitoringReportGenerator
 
-logging.getLogger().setLevel(logging.INFO)
-
 
 class LabelManager:
 
@@ -56,7 +54,6 @@ class LabelManager:
                     "ON expert.session_id = classifier.session_id"
             labels = self.storer.select_label(query)
 
-            logging.info("labels: " + labels.to_string())
             # le elimino dal db
             query = "DELETE FROM classifierLabel"
             self.storer.delete_all_labels(query)

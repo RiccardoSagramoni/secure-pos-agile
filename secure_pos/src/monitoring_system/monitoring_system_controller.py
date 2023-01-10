@@ -7,8 +7,6 @@ from communication.api.json_transfer import ReceiveJsonApi
 from monitoring_system.label_manager import LabelManager
 from utility.json_validation import validate_json
 
-logging.getLogger().setLevel(logging.INFO)
-
 
 class MonitoringSystemController:
 
@@ -67,15 +65,3 @@ class MonitoringSystemController:
 
         # mi metto in attesa di ricevere le label
         self.start_server()
-
-
-if __name__ == "__main__":
-    test = MonitoringSystemController()
-    test.load_config()
-    test.create_tables()
-    label = {
-            "session_id": "ca702d9f-17b2-43fb-b6ab-28eed73a31aa",
-            "source": "expert",
-            "value": "attack"
-            }
-    test.handle_message(label)

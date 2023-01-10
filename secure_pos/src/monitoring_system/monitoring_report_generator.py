@@ -1,10 +1,7 @@
 import json
 import logging
 
-from monitoring_system.label_storer import LabelStorer
 from monitoring_system.monitoring_report import MonitoringReport
-
-logging.getLogger().setLevel(logging.INFO)
 
 
 class MonitoringReportGenerator:
@@ -19,7 +16,7 @@ class MonitoringReportGenerator:
         with open("../../data/monitoring_system/report/report" + str(self.count_report) +
                   '.json', 'w', encoding="UTF-8") as json_file:
             json.dump(report_dict, json_file, indent=2)
-        logging.info("Generate monitoring report json")
+        logging.info("Generated monitoring report json")
 
     def count_conflicting_labels(self):
         count_conflicting_labels = 0
@@ -68,17 +65,3 @@ class MonitoringReportGenerator:
 
         # genero il file json contente il report
         self.generate_report_json()
-
-
-if __name__ == "__main__":
-    test = LabelStorer()
-    labels = test.select_label("SELECT expert.session_id, "
-                               "expert.value as expertValue,"
-                               "classifier.value as classifierValue "
-                               "FROM expertLabel AS expert "
-                               "INNER JOIN classifierLabel AS classifier "
-                               "ON expert.session_id = classifier.session_id")
-    print(labels)
-
-    test1 = MonitoringReportGenerator(labels)
-    test1.generate_report()
