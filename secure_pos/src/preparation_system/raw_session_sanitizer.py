@@ -1,10 +1,7 @@
-import logging
 from statistics import mean
 
 from data_objects.raw_session import RawSession
 from validation.record_data_validator import CommercialDataValidator
-
-logging.getLogger().setLevel(logging.INFO)
 
 
 class RawSessionSanitizer:
@@ -35,17 +32,17 @@ class RawSessionSanitizer:
             hour, minute, sec = time_str.split(':')
             time_int = int(hour) * 3600 + int(minute) * 60 + int(sec)
             time.append(time_int)
-        time_mean = int(mean(time))
-        logging.info("time_mean: " + str(time_mean))
-        minute = time_mean // 60
-        hour = minute // 60
-        time_mean_str = "%02d:%02d:%02d" % (hour, minute % 60, time_mean % 60)
-        logging.info("time mean str: " + time_mean_str)
+        if not time:
+            time_mean_str = "00:00:00"
+        else:
+            time_mean = int(mean(time))
+            minute = time_mean // 60
+            hour = minute // 60
+            time_mean_str = "%02d:%02d:%02d" % (hour, minute % 60, time_mean % 60)
         for transaction in transactions:
             commercial_validator = CommercialDataValidator(transaction.commercial)
             res = commercial_validator.validate_time()
             if not res:
-                logging.info("entro nell'if")
                 transaction.commercial.time = time_mean_str
 
     def correct_missing_amount(self):
@@ -58,8 +55,10 @@ class RawSessionSanitizer:
             if not res:
                 continue
             amount.append(float(amount_str))
-        logging.info("amount: " + str(amount))
-        amount_mean = mean(amount)  # todo -> fix bug "statistics.StatisticsError: mean requires at least one data point"
+        if not amount:
+            amount_mean = (self.max_amount + self.min_amount) / 2
+        else:
+            amount_mean = mean(amount)
         for transaction in transactions:
             commercial_validator = CommercialDataValidator(transaction.commercial)
             res = commercial_validator.validate_amount()

@@ -23,12 +23,12 @@ class PreparationSystemController:
         if self.config["mode"] == "development":
             # mando la prepared session al segregation system
             url = 'http://' + self.config["ip_segregation_system"] +\
-                  ':' + self.config["port_segregation_system"]
+                  ':' + str(self.config["port_segregation_system"])
             logging.info("Send prepared session to segregation system")
         else:
             # mando la prepared session all'execution system
             url = 'http://' + self.config["ip_execution_system"] +\
-                  ':' + self.config["port_execution_system"]
+                  ':' + str(self.config["port_execution_system"])
             logging.info("Send prepared session to execution system")
         sender = PreparedSessionSender(url)
         sender.send_prepared_session(prepared_session_dict)
