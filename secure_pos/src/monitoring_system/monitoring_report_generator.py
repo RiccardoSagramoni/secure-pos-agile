@@ -4,12 +4,14 @@ import logging
 from monitoring_system.label_storer import LabelStorer
 from monitoring_system.monitoring_report import MonitoringReport
 
+logging.getLogger().setLevel(logging.INFO)
+
 
 class MonitoringReportGenerator:
 
-    def __init__(self, label_df):
+    def __init__(self):
         self.report = MonitoringReport()
-        self.labels = label_df
+        self.labels = None
         self.count_report = 0
 
     def generate_report_json(self):
@@ -53,8 +55,9 @@ class MonitoringReportGenerator:
                 max_consecutive_conflicting_labels = consecutive_conflicting_labels
         self.report.max_consecutive_conflicting_labels = max_consecutive_conflicting_labels
 
-    def generate_report(self):
+    def generate_report(self, label_df):
         self.count_report += 1
+        self.labels = label_df
 
         if self.labels is not None:
             # conto il numero di label discordanti

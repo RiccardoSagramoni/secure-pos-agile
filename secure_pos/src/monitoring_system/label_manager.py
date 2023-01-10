@@ -7,6 +7,8 @@ from monitoring_system.label import Label
 from monitoring_system.label_storer import LabelStorer
 from monitoring_system.monitoring_report_generator import MonitoringReportGenerator
 
+logging.getLogger().setLevel(logging.INFO)
+
 
 class LabelManager:
 
@@ -15,6 +17,7 @@ class LabelManager:
         self.tot_labels_from_classifier = 0
         self.storer = LabelStorer()
         self.access_to_db = threading.Semaphore(1)
+        self.report = MonitoringReportGenerator()
 
     def count_labels(self, source):
         if source == 'classifier':
@@ -39,6 +42,8 @@ class LabelManager:
             self.storer.store_label(label_dataframe, 'expertLabel')
         if self.tot_labels_from_expert == monitoring_window_length or \
                 self.tot_labels_from_classifier == monitoring_window_length:
+            self.tot_labels_from_expert = 0
+            self.tot_labels_from_classifier = 0
 
             logging.info("Enough labels to generate a report")
 
@@ -59,8 +64,8 @@ class LabelManager:
 
             # avvio il thread per produrre il report di monitoraggio
             logging.info("Start monitoring report generation")
-            report = MonitoringReportGenerator(labels)
-            thread = threading.Thread(target=report.generate_report)
+            thread = threading.Thread(target=self.report.generate_report,
+                                      args=[labels])
             thread.start()
 
         self.access_to_db.release()

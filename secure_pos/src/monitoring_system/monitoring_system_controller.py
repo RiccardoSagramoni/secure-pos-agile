@@ -7,6 +7,8 @@ from communication.api.json_transfer import ReceiveJsonApi
 from monitoring_system.label_manager import LabelManager
 from utility.json_validation import validate_json
 
+logging.getLogger().setLevel(logging.INFO)
+
 
 class MonitoringSystemController:
 
