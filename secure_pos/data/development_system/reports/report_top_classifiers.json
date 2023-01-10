@@ -26,7 +26,7 @@
         "learning_rate_init": 0.001,
         "solver": "sgd"
       },
-      "training_error": 0.03252032520325199,
+      "training_error": 0.024390243902439046,
       "validation_error": 0.0
     },
     {

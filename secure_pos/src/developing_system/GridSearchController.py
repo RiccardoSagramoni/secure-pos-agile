@@ -1,4 +1,9 @@
+import os
+
+import joblib
 from sklearn.model_selection import ParameterGrid
+
+import utility
 from developing_system.TrainingConfiguration import TrainingConfiguration
 from developing_system.TopClassifier import TopClassifier
 from developing_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
@@ -24,6 +29,11 @@ class GridSearchController:
             self.top_classifiers_object_list[id_classifier - 1] = top_classifier
         else:
             self.top_classifiers_object_list.insert(id_classifier - 1, top_classifier)
+
+        filename_classifier = "classifier_number_" + str(id_classifier) + ".sav"
+        save_path = os.path.join(utility.data_folder, 'development_system/classifiers/'+ filename_classifier)
+        joblib.dump(self.mlp_training_for_grid_search.mlp, save_path)
+
 
 
     def check_validation_error_classifier(self, index, possible_hyperparameters_combination):

@@ -1,12 +1,11 @@
 import os
-
 import joblib
 
 from developing_system.TrainingConfiguration import TrainingConfiguration
 from developing_system.MLPTraining import MLPTraining
 from developing_system.GridSearchController import GridSearchController
 from developing_system.DevelopingSystemConfiguration import DevelopingSystemConfiguration
-from developing_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
+from developing_system.ClassifierArchiver import ClassifierArchiver
 from developing_system.TestBestClassifier import TestBestClassifier
 
 import utility
@@ -40,7 +39,9 @@ gs.generate_grid_search_hyperparameters(controller.training_configuration.hyper_
 for elem in gs.top_classifiers_object_list:
     elem.print()
 
-#
-# test = TestBestClassifier(controller.training_configuration, gs)
-# test.test_best_classifier()
-# test.print()
+classifier_archive_manager = ClassifierArchiver(controller.training_configuration.best_classifier_number)
+classifier_archive_manager.delete_remaining_classifiers()
+
+test = TestBestClassifier(controller.training_configuration)
+test.test_best_classifier(classifier_archive_manager.return_path_best_classifier())
+test.print()
