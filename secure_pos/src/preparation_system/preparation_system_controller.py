@@ -23,38 +23,46 @@ class PreparationSystemController:
             # mando la prepared session al segregation system
             url = 'http://' + self.config["ip_segregation_system"] +\
                   ':' + self.config["port_segregation_system"]
+            logging.info("Send prepared session to segregation system")
         else:
             # mando la prepared session all'execution system
             url = 'http://' + self.config["ip_execution_system"] +\
                   ':' + self.config["port_execution_system"]
+            logging.info("Send prepared session to execution system")
         sender = PreparedSessionSender(url)
         sender.send_prepared_session(prepared_session_dict)
 
     def generate_prepared_session(self, raw_session):
+        logging.info("Start prepared session generation")
         prepared_session_generator = PreparedSessionGenerator(raw_session)
         prepared_session_dict = prepared_session_generator.extract_features()
         self.send_prepared_session(prepared_session_dict)
 
     def processing_raw_session(self, raw_session_json):
+        logging.info("Processing raw session")
         raw_session = RawSessionFactory.generate_from_dict(raw_session_json)
         sanitizer = RawSessionSanitizer(raw_session, self.config["minimum_amount_possible"],
                                         self.config["maximum_amount_possible"])
 
         sanitizer.correct_missing_time()
         sanitizer.correct_missing_amount()
+        logging.info("Corrected missing attributes")
 
         sanitizer.correct_outliers()
+        logging.info("Corrected outliers")
 
         self.generate_prepared_session(sanitizer.raw_session)
 
     def handle_message(self, raw_session_json):
         # When the system receives a message, generate a new thread
+        logging.info("Received raw session")
         thread = threading.Thread(target=self.processing_raw_session,
                                   args=[raw_session_json])
         thread.start()
 
     def start_server(self):
         # Instantiate server
+        logging.info("Start server for receiving raw sessions")
         server = RestServer()
         server.api.add_resource(ReceiveJsonApi,
                                 "/",
@@ -73,6 +81,7 @@ class PreparationSystemController:
             logging.error("Impossible to load the preparation system "
                           "configuration: JSON file is not valid")
             raise ValueError("Preparation System configuration failed")
+        logging.info("Preparation System configured correctly")
         self.config = config
 
     def run(self):
