@@ -10,6 +10,7 @@ from preparation_system.prepared_session_sender import PreparedSessionSender
 from preparation_system.raw_session_sanitizer import RawSessionSanitizer
 from utility.json_validation import validate_json
 
+logging.getLogger().setLevel(logging.INFO)
 
 class PreparationSystemController:
 
@@ -68,7 +69,7 @@ class PreparationSystemController:
                                 "/",
                                 resource_class_kwargs={
                                     # l'handler gestisce l'archiviazione delle label
-                                    'handler': lambda x: self.handle_message(x)
+                                    'handler': self.handle_message
                                 })
         server.run(debug=True)
 

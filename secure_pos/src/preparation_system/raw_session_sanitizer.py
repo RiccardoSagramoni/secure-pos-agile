@@ -52,7 +52,7 @@ class RawSessionSanitizer:
             if not res:
                 continue
             amount.append(float(amount_str))
-        amount_mean = mean(amount)
+        amount_mean = mean(amount)  # todo -> fix bug "statistics.StatisticsError: mean requires at least one data point"
         for transaction in transactions:
             commercial_validator = CommercialDataValidator(transaction.commercial)
             res = commercial_validator.validate_amount()
