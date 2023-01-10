@@ -31,7 +31,7 @@ class MonitoringSystemController:
                                 "/",
                                 resource_class_kwargs={
                                     # l'handler gestisce l'archiviazione delle label
-                                    'handler': lambda x: self.handle_message(x)
+                                    'handler': self.handle_message
                                 })
         server.run(debug=True)
 

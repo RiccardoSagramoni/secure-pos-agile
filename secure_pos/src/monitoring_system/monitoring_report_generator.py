@@ -16,7 +16,7 @@ class MonitoringReportGenerator:
         report_dict = self.report.to_dict()
         with open('./conf/report' + str(self.count_report) +
                   '.json', 'w', encoding="UTF-8") as json_file:
-            json.dump(report_dict, json_file)
+            json.dump(report_dict, json_file, indent=2)
         logging.info("Generate monitoring report json")
 
     def count_conflicting_labels(self):
