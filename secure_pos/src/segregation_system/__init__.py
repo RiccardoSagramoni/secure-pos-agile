@@ -1,10 +1,11 @@
 import sys
 
-from segregation_system.Classes.SegregationSystemController import SegregationSystemController
+from segregation_system.Objects.SegregationSystemController import SegregationSystemController
 
 
 def main():
     controller = SegregationSystemController()
+    controller.check_response()
     sys.exit(0)
 
 

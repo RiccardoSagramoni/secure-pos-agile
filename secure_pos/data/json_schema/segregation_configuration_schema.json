@@ -1,19 +1,8 @@
 {
   "properties": {
-    "development_system":{
+    "development_system_url":{
       "description": "Structure that contains all the information needed to send a packet to development system",
-      "type": "object",
-      "properties": {
-        "ip": {
-          "description": "String containing the ip of the Development system",
-          "type": "string"
-        },
-        "port": {
-          "description": "number containing the port of the Development system",
-          "type": "number"
-        }
-      },
-      "required": ["ip","port"]
+      "type": "string"
     },
     "session_nr_threshold": {
       "description": "number representing the amount of sessions needed to be able to generate the training dataset",
@@ -24,5 +13,5 @@
       "type": "string"
     }
   },
-  "required": ["development_system","session_nr_threshold", "development_mode"]
+  "required": ["development_system_url","session_nr_threshold", "development_mode"]
 }
