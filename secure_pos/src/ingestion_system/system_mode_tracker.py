@@ -13,10 +13,9 @@ class SystemModeTracker:
         self.__execution_window_length = conf.execution_window_length
         self.__monitoring_window_length = conf.monitoring_window_length
     
-    def register_record_arrival(self, json_records: dict) -> None:
+    def register_record_arrival(self, session_id: str) -> None: # todo
         if self.__development_mode:
             return
-        session_id = json_records['session_id']
         # Add session to register if it does not exist
         with self.__lock:
             if session_id not in self.__session_register:

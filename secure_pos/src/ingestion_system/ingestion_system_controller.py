@@ -41,7 +41,7 @@ class IngestionSystemController:
             return None
         
         # Register received record
-        self.__system_mode_tracker.register_record_arrival(json_records)
+        self.__system_mode_tracker.register_record_arrival(session_id)
         
         # Synchronize received record with stored session
         raw_session = self.__record_synchronizer.try_session_synchronization(session_id)

@@ -13,14 +13,14 @@ class DatabaseController:
     __lock = threading.RLock()
     
     def __init__(self, conf: Configuration, tracker: SystemModeTracker):
-        self.__database_manager = DBManager(conf.database_path)
+        self.__database_connector = DBManager(conf.database_path)
         self.__system_mode_tracker = tracker
         self.__create_tables()
     
     def __create_tables(self) -> None:
         with self.__lock:
             # Table for commercial data
-            self.__database_manager.create_table(
+            self.__database_connector.create_table(
                 "CREATE TABLE IF NOT EXISTS commercial ("
                 "event_id TEXT PRIMARY KEY, "
                 "session_id TEXT NOT NULL,"
@@ -36,7 +36,7 @@ class DatabaseController:
                 ")"
             )
             # Table for geo data
-            self.__database_manager.create_table(
+            self.__database_connector.create_table(
                 "CREATE TABLE IF NOT EXISTS geo ("
                 "event_id TEXT PRIMARY KEY, "
                 "session_id TEXT NOT NULL, "
@@ -47,7 +47,7 @@ class DatabaseController:
                 ")"
             )
             # Table for network data
-            self.__database_manager.create_table(
+            self.__database_connector.create_table(
                 "CREATE TABLE IF NOT EXISTS network ("
                 "event_id TEXT PRIMARY KEY, "
                 "session_id TEXT NOT NULL, "
@@ -55,7 +55,7 @@ class DatabaseController:
                 ")"
             )
             # Table for labels
-            self.__database_manager.create_table(
+            self.__database_connector.create_table(
                 "CREATE TABLE IF NOT EXISTS label ("
                 "session_id TEXT PRIMARY KEY, "
                 "label TEXT NOT NULL"
@@ -79,12 +79,12 @@ class DatabaseController:
         
         with self.__lock:
             # Insert dataframe in db
-            return self.__database_manager.insert(df, json_records['type'])
+            return self.__database_connector.insert(df, json_records['type'])
     
     #
     def __check_session_records_presence(self, session_id: str, table: str) -> bool:
         with self.__lock:
-            data = self.__database_manager.read_sql(
+            data = self.__database_connector.read_sql(
                 f"SELECT event_id FROM {table} WHERE session_id = '{session_id}'"
             )
         return data is not None and not data.empty
@@ -92,7 +92,7 @@ class DatabaseController:
     #
     def __check_session_label_presence(self, session_id: str) -> bool:
         with self.__lock:
-            data = self.__database_manager.read_sql(
+            data = self.__database_connector.read_sql(
                 f"SELECT session_id FROM label WHERE session_id = '{session_id}'"
             )
         return data is not None and not data.empty
@@ -114,7 +114,7 @@ class DatabaseController:
     def get_raw_session(self, session_id: str) -> RawSession:
         with self.__lock:
             # Get raw session data
-            raw_session_df = self.__database_manager.read_sql(
+            raw_session_df = self.__database_connector.read_sql(
                 "SELECT * "
                 "FROM commercial "
                 "INNER JOIN geo USING (event_id) "
@@ -122,7 +122,7 @@ class DatabaseController:
                 f"WHERE commercial.session_id = '{session_id}';"
             )
             # Read label value for this session
-            label_df = self.__database_manager.read_sql(
+            label_df = self.__database_connector.read_sql(
                 f"SELECT label FROM label WHERE session_id = '{session_id}';"
             )
             # Check if label exist
@@ -134,7 +134,7 @@ class DatabaseController:
     
     def __delete_records(self, session_id: str, table: str) -> None:
         with self.__lock:
-            self.__database_manager.update(
+            self.__database_connector.update(
                 f"DELETE FROM {table} "
                 f"WHERE session_id = '{session_id}';"
             )
