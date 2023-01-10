@@ -10,7 +10,7 @@ from communication.api.json_transfer import ReceiveJsonApi
 from data_objects.attack_risk_label import AttackRiskLabel
 from data_objects.raw_session import RawSession
 from ingestion_system.configuration import Configuration
-from ingestion_system.data_objects_converters import RawSessionConverter, AttackRiskLabelConverter
+from ingestion_system.data_object_packagers import RawSessionPackager, AttackRiskLabelPackager
 
 RECORD_SCHEMA_PATH = "ingestion_system/records_schema.json"
 
@@ -46,13 +46,13 @@ class CommunicationController:
     
     def send_raw_session(self, raw_session: RawSession) -> None:
         # Serialize raw session
-        raw_session_dict = RawSessionConverter(raw_session).convert_to_json_dict()
+        raw_session_dict = RawSessionPackager(raw_session).package_as_json_dict()
         response = requests.post(self.__preparation_system_url, json=raw_session_dict)
         if not response.ok:
             logging.error("Failed to send raw session:\n%s", raw_session_dict)
     
     def send_attack_risk_label(self, session_id: str, attack_risk_label: AttackRiskLabel) -> None:
-        label_dict = AttackRiskLabelConverter(session_id, attack_risk_label)
+        label_dict = AttackRiskLabelPackager(session_id, attack_risk_label)
         response = requests.post(self.__monitoring_system_url, json=label_dict)
         if not response.ok:
             logging.error("Failed to send label:\n%s", label_dict)
