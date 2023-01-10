@@ -1,0 +1,49 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://it.unipi.sse/config_schema.json",
+    "type": "object",
+    "required": [
+        "ip_address",
+        "port",
+        "database_path",
+        "preparation_system_url",
+        "monitoring_system_url",
+        "min_transactions_per_session",
+        "max_invalid_attributes_allowed",
+        "execution_window_length",
+        "monitoring_window_length",
+        "is_development_mode"
+    ],
+    "properties": {
+        "ip_address": {
+            "type": "string"
+        },
+        "port": {
+            "type": "integer"
+        },
+        "database_path": {
+            "type": "string"
+        },
+        "preparation_system_url": {
+            "type": "string"
+        },
+        "monitoring_system_url": {
+            "type": "string"
+        },
+        "min_transactions_per_session": {
+            "type": "integer"
+        },
+        "max_invalid_attributes_allowed": {
+            "type": "integer"
+        },
+        "execution_window_length": {
+            "type": "integer"
+        },
+        "monitoring_window_length": {
+            "type": "integer"
+        },
+        "is_development_mode": {
+            "type": "boolean"
+        }
+    }
+}
