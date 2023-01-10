@@ -1,4 +1,5 @@
 import json
+import logging
 
 from monitoring_system.label_storer import LabelStorer
 from monitoring_system.monitoring_report import MonitoringReport
@@ -16,6 +17,7 @@ class MonitoringReportGenerator:
         with open('./conf/report' + str(self.count_report) +
                   '.json', 'w', encoding="UTF-8") as json_file:
             json.dump(report_dict, json_file)
+        logging.info("Generate monitoring report json")
 
     def count_conflicting_labels(self):
         count_conflicting_labels = 0

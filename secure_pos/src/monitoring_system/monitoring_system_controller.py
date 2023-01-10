@@ -18,12 +18,14 @@ class MonitoringSystemController:
 
     def handle_message(self, label_json):
         # When the system receives a message, generate a new thread
+        logging.info("Received label")
         thread = threading.Thread(target=self.label_manager.store_label,
                                   args=(self.config["monitoring_window_length"], label_json))
         thread.start()
 
     def start_server(self):
         # Instantiate server
+        logging.info("Start server for receiving labels")
         server = RestServer()
         server.api.add_resource(ReceiveJsonApi,
                                 "/",
@@ -34,6 +36,7 @@ class MonitoringSystemController:
         server.run(debug=True)
 
     def create_tables(self):
+        logging.info("Create tables (if not exists) for label storage")
         query = "CREATE TABLE if not exists expertLabel" \
                 "(session_id TEXT PRIMARY KEY UNIQUE, value TEXT)"
         self.label_manager.storer.create_table(query)
@@ -50,6 +53,7 @@ class MonitoringSystemController:
             logging.error("Impossible to load the monitoring system "
                           "configuration: JSON file is not valid")
             raise ValueError("Monitoring System configuration failed")
+        logging.info("Monitoring System configured correctly")
         self.config = config
 
     def run(self):

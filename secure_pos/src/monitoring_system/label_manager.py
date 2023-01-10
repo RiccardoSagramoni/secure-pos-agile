@@ -1,3 +1,4 @@
+import logging
 import threading
 
 import pandas as pd
@@ -24,6 +25,7 @@ class LabelManager:
     def store_label(self, monitoring_window_length, label):
         # blocco l'accesso al db
         self.access_to_db.acquire()
+        logging.info("Label storage")
         session_id = label["session_id"]
         source = label["source"]
         value = label["value"]
@@ -37,6 +39,8 @@ class LabelManager:
             self.storer.store_label(label_dataframe, 'expertLabel')
         if self.tot_labels_from_expert == monitoring_window_length or \
                 self.tot_labels_from_classifier == monitoring_window_length:
+
+            logging.info("Enough labels to generate a report")
 
             # carico le label in memoria
             query = "SELECT expert.session_id, " \
@@ -54,6 +58,7 @@ class LabelManager:
             self.storer.delete_all_labels(query)
 
             # avvio il thread per produrre il report di monitoraggio
+            logging.info("Start monitoring report generation")
             report = MonitoringReportGenerator(labels)
             thread = threading.Thread(target=report.generate_report)
             thread.start()
