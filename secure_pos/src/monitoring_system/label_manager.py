@@ -35,12 +35,12 @@ class LabelManager:
         label = Label(session_id, value, source)
         label_dataframe = pd.DataFrame(label.to_dict(), index=[0], columns=["session_id", "value"])
         if label.source == 'classifier':
-            self.count_labels('classifier')
             self.storer.store_label(label_dataframe, 'classifierLabel')
+            self.count_labels('classifier')
         else:
-            self.count_labels('expert')
             self.storer.store_label(label_dataframe, 'expertLabel')
-        if self.tot_labels_from_expert == monitoring_window_length or \
+            self.count_labels('expert')
+        if self.tot_labels_from_expert == monitoring_window_length and \
                 self.tot_labels_from_classifier == monitoring_window_length:
             self.tot_labels_from_expert = 0
             self.tot_labels_from_classifier = 0
@@ -56,6 +56,7 @@ class LabelManager:
                     "ON expert.session_id = classifier.session_id"
             labels = self.storer.select_label(query)
 
+            logging.info("labels: " + labels.to_string())
             # le elimino dal db
             query = "DELETE FROM classifierLabel"
             self.storer.delete_all_labels(query)
