@@ -1,4 +1,5 @@
 import json
+import logging
 import threading
 
 from communication import RestServer
@@ -11,8 +12,8 @@ class MonitoringSystemController:
 
     def __init__(self):
         self.label_manager = LabelManager()
-        self.config_path = "./conf/config.json"
-        self.config_schema_path = "./conf/config_schema.json"
+        self.config_path = "../../data/monitoring_system/conf/config.json"
+        self.config_schema_path = "../../data/monitoring_system/conf/config_schema.json"
         self.config = None
 
     def handle_message(self, label_json):
@@ -45,7 +46,10 @@ class MonitoringSystemController:
             config = json.load(file)
         with open(self.config_schema_path, "r", encoding="UTF-8") as file:
             config_schema = json.load(file)
-        validate_json(config, config_schema)
+        if not validate_json(config, config_schema):
+            logging.error("Impossible to load the monitoring system "
+                          "configuration: JSON file is not valid")
+            raise ValueError("Monitoring System configuration failed")
         self.config = config
 
     def run(self):

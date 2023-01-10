@@ -1,3 +1,5 @@
+import logging
+
 from database.DBManager import DBManager
 
 
@@ -7,7 +9,9 @@ class LabelStorer:
         self.db = DBManager('monitoringDB.db')
 
     def store_label(self, label, table):
-        self.db.insert(label, table)
+        if not self.db.insert(label, table):
+            logging.error("Impossible to store the label")
+            raise ValueError("Monitoring System label storage failed")
 
     def create_table(self, query):
         self.db.create_table(query)
