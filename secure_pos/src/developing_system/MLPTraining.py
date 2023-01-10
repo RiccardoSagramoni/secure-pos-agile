@@ -24,6 +24,7 @@ class MLPTraining:
         # results of the single training
         self.mlp = None
         self.validation_error = None
+        self.training_error = None
 
 
     def set_hyperparameters(self, is_initial_phase, **setted_hyper_parameters):
@@ -44,12 +45,15 @@ class MLPTraining:
 
         # training of the mlp using the training set
         self.mlp.fit(self.training_data, ravel(self.training_labels))
+        self.training_error = 1 - (self.mlp.score(self.training_data, ravel(self.training_labels)))
 
         # prediction of the risk labels using the validation set
         attack_risk_label_prediction = self.mlp.predict(self.validation_data)
-
         # measure the accurancy using the validation set
         self.validation_error = 1 - (accuracy_score(ravel(self.validation_labels), attack_risk_label_prediction))
+
+        print(f"training_error {self.training_error}")
+        print(f"validation_error {self.validation_error}")
 
         if self.is_initial_phase in ["Yes", "yes"]:
 

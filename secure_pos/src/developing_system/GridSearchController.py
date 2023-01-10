@@ -18,7 +18,7 @@ class GridSearchController:
         self.top_classifiers_object_list = []
 
     def save_classifier_among_top_classifier(self, id_classifier):
-        top_classifier = TopClassifier(id_classifier, self.classifier.mlp, self.classifier.validation_error, **self.classifier.hyper_parameters)
+        top_classifier = TopClassifier(id_classifier, self.classifier)
         if len(self.top_classifiers_object_list) == self.number_of_top_classifiers:
             self.top_classifiers_object_list[id_classifier - 1] = top_classifier
         else:

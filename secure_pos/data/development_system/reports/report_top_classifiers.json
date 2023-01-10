@@ -1,0 +1,67 @@
+{
+  "report_title:": "Report of the Top Classifiers",
+  "validation_tolerance": 0.03,
+  "number_of_top_classifiers": 5,
+  "top_classifiers": [
+    {
+      "classifier_id": 1,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_size": 80,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.001,
+        "solver": "adam"
+      },
+      "training_error": 0.0,
+      "validation_error": 0.0
+    },
+    {
+      "classifier_id": 2,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_size": 80,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.001,
+        "solver": "sgd"
+      },
+      "training_error": 0.0,
+      "validation_error": 0.0
+    },
+    {
+      "classifier_id": 3,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_size": 80,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.001,
+        "solver": "lbfgs"
+      },
+      "training_error": 0.0,
+      "validation_error": 0.0
+    },
+    {
+      "classifier_id": 4,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_size": 80,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.01,
+        "solver": "adam"
+      },
+      "training_error": 0.0,
+      "validation_error": 0.0
+    },
+    {
+      "classifier_id": 5,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_size": 80,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.01,
+        "solver": "sgd"
+      },
+      "training_error": 0.0,
+      "validation_error": 0.0
+    }
+  ]
+}

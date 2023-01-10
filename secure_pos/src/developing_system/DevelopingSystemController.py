@@ -2,6 +2,7 @@ from developing_system.TrainingConfiguration import TrainingConfiguration
 from developing_system.MLPTraining import MLPTraining
 from developing_system.GridSearchController import GridSearchController
 from developing_system.DevelopingSystemConfiguration import DevelopingSystemConfiguration
+from developing_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
 
 SYSTEM_CONFIGURATION_PATH = 'development_system/developing_system_configuration.json'
 SYSTEM_CONFIGURATION_SCHEMA_PATH = 'development_system/json_schemas/developing_system_configuration_schema.json'
@@ -26,5 +27,6 @@ gs.generate_grid_search_hyperparameters()
 for elem in gs.top_classifiers_object_list:
     elem.print()
 
-
+generate_report = TopClassifierReportGenerator(gs)
+generate_report.generate_report()
 
