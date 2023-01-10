@@ -1,4 +1,5 @@
 import json
+import logging
 import threading
 
 from communication import RestServer
@@ -13,8 +14,8 @@ from utility.json_validation import validate_json
 class PreparationSystemController:
 
     def __init__(self):
-        self.config_path = "./conf/conf.json"
-        self.config_schema_path = "./conf/config_schema.json"
+        self.config_path = "../../data/preparation_system/conf/conf.json"
+        self.config_schema_path = "../../data/preparation_system/conf/config_schema.json"
         self.config = None
 
     def send_prepared_session(self, prepared_session_dict):
@@ -68,7 +69,10 @@ class PreparationSystemController:
             config = json.load(file)
         with open(self.config_schema_path, "r", encoding="UTF-8") as file:
             config_schema = json.load(file)
-        validate_json(config, config_schema)
+        if not validate_json(config, config_schema):
+            logging.error("Impossible to load the preparation system "
+                          "configuration: JSON file is not valid")
+            raise ValueError("Preparation System configuration failed")
         self.config = config
 
     def run(self):
