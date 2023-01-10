@@ -1,19 +1,21 @@
+import os
+
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
 from pandas import read_csv
 from numpy import ravel
 import matplotlib.pyplot as plt
+import joblib
 
 from developing_system.TrainingConfiguration import TrainingConfiguration
+import utility
 
 class MLPTraining:
 
-    def __init__(self, training_conf: TrainingConfiguration):
+    def __init__(self, is_initial_phase):
 
         # data from the json training_configuration file
-        self.is_initial_phase = training_conf.is_initial_phase
-        self.generation_number = training_conf.generation_number
-        self.hyper_parameters = training_conf.average_parameters
+        self.is_initial_phase = is_initial_phase
 
         # dataset for the training and validation
         self.training_data = read_csv('prova/trainingData.csv')
@@ -26,22 +28,13 @@ class MLPTraining:
         self.validation_error = None
         self.training_error = None
 
+    def set_mlp(self, setted_mlp):
+        self.mlp = setted_mlp
 
-    def set_hyperparameters(self, is_initial_phase, **setted_hyper_parameters):
-
-        self.is_initial_phase = is_initial_phase
-        self.hyper_parameters = setted_hyper_parameters
-
-
-    def train_neural_network(self):
+    def train_neural_network(self, setted_hyper_parameters):
 
         # declaration of the mlp with the hyperparameters
-        self.mlp = MLPClassifier( hidden_layer_sizes=self.hyper_parameters["hidden_layer_size"],
-                                  max_iter=self.generation_number,
-                                  activation= self.hyper_parameters["activation"],
-                                  solver=self.hyper_parameters["solver"],
-                                  learning_rate=self.hyper_parameters["learning_rate"],
-                                  learning_rate_init= self.hyper_parameters["learning_rate_init"])
+        self.mlp = MLPClassifier(**setted_hyper_parameters)
 
         # training of the mlp using the training set
         self.mlp.fit(self.training_data, ravel(self.training_labels))
@@ -51,9 +44,6 @@ class MLPTraining:
         attack_risk_label_prediction = self.mlp.predict(self.validation_data)
         # measure the accurancy using the validation set
         self.validation_error = 1 - (accuracy_score(ravel(self.validation_labels), attack_risk_label_prediction))
-
-        print(f"training_error {self.training_error}")
-        print(f"validation_error {self.validation_error}")
 
         if self.is_initial_phase in ["Yes", "yes"]:
 
@@ -65,10 +55,5 @@ class MLPTraining:
             plt.savefig("plots/loss_function_plot.png")
             plt.show()
 
-            # creation of the confusion matrix plot
-            confusion_mat = confusion_matrix(attack_risk_label_prediction, ravel(self.validation_labels), labels=self.mlp.classes_)
-            display_confusion_matrix = ConfusionMatrixDisplay(confusion_matrix=confusion_mat, display_labels = self.mlp.classes_)
-            display_confusion_matrix.plot()
-            plt.savefig("plots/confusion_matrix.png")
-            plt.show()
-
+            save_path = os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav')
+            joblib.dump(self.mlp, save_path)

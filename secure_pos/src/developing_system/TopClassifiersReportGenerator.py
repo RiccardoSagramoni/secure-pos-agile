@@ -1,16 +1,13 @@
 import json
 import jsons
 import os
-
-from developing_system.GridSearchController import GridSearchController
 import utility
 
 REPORT_TOP_CLASSIFIERS_PATH = 'development_system/reports/report_top_classifiers.json'
 
-
 class TopClassifierReportGenerator:
 
-    def __init__(self, grid_search: GridSearchController):
+    def __init__(self, grid_search):
 
         self.grid_search = grid_search
 
@@ -24,7 +21,7 @@ class TopClassifierReportGenerator:
         }
 
         for classifier in self.grid_search.top_classifiers_object_list:
-            report['top_classifiers'].append(jsons.dump(classifier, strip_privates=True))
+            report['top_classifiers'].append(jsons.dump(classifier))
 
         with open(os.path.join(utility.data_folder, REPORT_TOP_CLASSIFIERS_PATH), 'w') as report_file:
             report_file.write(json.dumps(report, indent=2))

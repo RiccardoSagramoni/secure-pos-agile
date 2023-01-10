@@ -1,6 +1,7 @@
 from sklearn.model_selection import ParameterGrid
 from developing_system.TrainingConfiguration import TrainingConfiguration
 from developing_system.TopClassifier import TopClassifier
+from developing_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
 
 
 class GridSearchController:
@@ -10,45 +11,47 @@ class GridSearchController:
         # data from the json training_configuration file
         self.validation_tolerance = training_conf.validation_tolerance
         self.number_of_top_classifiers = training_conf.number_of_top_classifiers
-        self.hyper_parameters = training_conf.hyper_parameters
 
         # necessary field for the gridsearch algorithm
-        self.classifier = mlp_classifier
+        self.mlp_training_for_grid_search = mlp_classifier
         self.validation_errors_of_top_classifiers = dict.fromkeys([1, 2, 3, 4, 5])
         self.top_classifiers_object_list = []
 
-    def save_classifier_among_top_classifier(self, id_classifier):
-        top_classifier = TopClassifier(id_classifier, self.classifier)
+
+    def save_classifier_among_top_classifier(self, id_classifier, possible_hyperparameters_combination):
+        top_classifier = TopClassifier(id_classifier, self.mlp_training_for_grid_search, possible_hyperparameters_combination)
         if len(self.top_classifiers_object_list) == self.number_of_top_classifiers:
             self.top_classifiers_object_list[id_classifier - 1] = top_classifier
         else:
             self.top_classifiers_object_list.insert(id_classifier - 1, top_classifier)
 
 
-    def check_validation_error_classifier(self, index):
+    def check_validation_error_classifier(self, index, possible_hyperparameters_combination):
 
         if index <= self.number_of_top_classifiers:
-            self.validation_errors_of_top_classifiers.update({index: self.classifier.validation_error})
-            self.save_classifier_among_top_classifier(index)
+            self.validation_errors_of_top_classifiers.update({index: self.mlp_training_for_grid_search.validation_error})
+            self.save_classifier_among_top_classifier(index, possible_hyperparameters_combination)
 
         else:
             key_value_with_max_validation_error = max(self.validation_errors_of_top_classifiers, key=self.validation_errors_of_top_classifiers.get)
-            if self.classifier.validation_error not in self.validation_errors_of_top_classifiers.values() and self.classifier.validation_error < self.validation_errors_of_top_classifiers.get(key_value_with_max_validation_error):
-                self.validation_errors_of_top_classifiers.update({key_value_with_max_validation_error: self.classifier.validation_error})
-                self.save_classifier_among_top_classifier(key_value_with_max_validation_error)
+            if self.mlp_training_for_grid_search.validation_error not in self.validation_errors_of_top_classifiers.values() and self.mlp_training_for_grid_search.validation_error < self.validation_errors_of_top_classifiers.get(key_value_with_max_validation_error):
+                self.validation_errors_of_top_classifiers.update({key_value_with_max_validation_error: self.mlp_training_for_grid_search.validation_error})
+                self.save_classifier_among_top_classifier(key_value_with_max_validation_error, possible_hyperparameters_combination)
 
 
-    def generate_grid_search_hyperparameters(self):
+    def generate_grid_search_hyperparameters(self, setted_hyper_parameters):
 
-        grid_search = list(ParameterGrid(self.hyper_parameters))
+        grid_search = list(ParameterGrid(setted_hyper_parameters))
         index = 1
         for possible_hyperparameters_combination in grid_search:
             print(f"Combinazione {index}")
-            self.classifier.set_hyperparameters(False, **possible_hyperparameters_combination)
-            self.classifier.train_neural_network()
-            self.check_validation_error_classifier(index)
+            self.mlp_training_for_grid_search.train_neural_network(possible_hyperparameters_combination)
+            self.check_validation_error_classifier(index, possible_hyperparameters_combination)
             index = index + 1
 
         print(self.validation_errors_of_top_classifiers)
+
+        top_classifiers_report = TopClassifierReportGenerator(self)
+        top_classifiers_report.generate_report()
 
 

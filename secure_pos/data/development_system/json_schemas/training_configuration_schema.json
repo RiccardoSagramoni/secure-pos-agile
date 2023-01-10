@@ -1,18 +1,17 @@
 {
 	"definitions": {},
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://example.com/object1673305728.json",
+	"$id": "https://example.com/object1673373935.json",
 	"title": "Root",
 	"type": "object",
 	"required": [
 		"hyper_parameters",
 		"average_params",
-		"generation_number",
 		"number_of_top_classifiers",
 		"test_tolerance",
 		"validation_tolerance",
 		"is_initial_phase",
-		"best_classifier_found",
+		"best_classifier_number",
 		"test_best_classifier_passed"
 	],
 	"properties": {
@@ -21,22 +20,25 @@
 			"title": "Hyper_parameters",
 			"type": "object",
 			"required": [
-				"hidden_layer_size",
+				"hidden_layer_sizes",
 				"activation",
 				"solver",
 				"learning_rate",
 				"learning_rate_init"
 			],
 			"properties": {
-				"hidden_layer_size": {
-					"$id": "#root/hyper_parameters/hidden_layer_size",
-					"title": "Hidden_layer_size",
+				"hidden_layer_sizes": {
+					"$id": "#root/hyper_parameters/hidden_layer_sizes",
+					"title": "Hidden_layer_sizes",
 					"type": "array",
 					"default": [],
 					"items":{
-						"$id": "#root/hyper_parameters/hidden_layer_size/items",
+						"$id": "#root/hyper_parameters/hidden_layer_sizes/items",
 						"title": "Items",
 						"type": "integer",
+						"examples": [
+							80
+						],
 						"default": 0
 					}
 				},
@@ -50,6 +52,9 @@
 						"title": "Items",
 						"type": "string",
 						"default": "",
+						"examples": [
+							"relu"
+						],
 						"pattern": "^.*$"
 					}
 				},
@@ -63,6 +68,9 @@
 						"title": "Items",
 						"type": "string",
 						"default": "",
+						"examples": [
+							"adam"
+						],
 						"pattern": "^.*$"
 					}
 				},
@@ -76,6 +84,9 @@
 						"title": "Items",
 						"type": "string",
 						"default": "",
+						"examples": [
+							"constant"
+						],
 						"pattern": "^.*$"
 					}
 				},
@@ -88,6 +99,9 @@
 						"$id": "#root/hyper_parameters/learning_rate_init/items",
 						"title": "Items",
 						"type": "number",
+						"examples": [
+							0.001
+						],
 						"default": 0.0
 					}
 				}
@@ -99,17 +113,31 @@
 			"title": "Average_params",
 			"type": "object",
 			"required": [
-				"hidden_layer_size",
+				"hidden_layer_sizes",
+				"max_iter",
 				"activation",
 				"solver",
 				"learning_rate",
-				"learning_rate_init"
+				"learning_rate_init",
+				"random_state"
 			],
 			"properties": {
-				"hidden_layer_size": {
-					"$id": "#root/average_params/hidden_layer_size",
-					"title": "Hidden_layer_size",
+				"hidden_layer_sizes": {
+					"$id": "#root/average_params/hidden_layer_sizes",
+					"title": "Hidden_layer_sizes",
 					"type": "integer",
+					"examples": [
+						80
+					],
+					"default": 0
+				},
+				"max_iter": {
+					"$id": "#root/average_params/max_iter",
+					"title": "Max_iter",
+					"type": "integer",
+					"examples": [
+						1000
+					],
 					"default": 0
 				},
 				"activation": {
@@ -117,6 +145,9 @@
 					"title": "Activation",
 					"type": "string",
 					"default": "",
+					"examples": [
+						"relu"
+					],
 					"pattern": "^.*$"
 				},
 				"solver": {
@@ -124,6 +155,9 @@
 					"title": "Solver",
 					"type": "string",
 					"default": "",
+					"examples": [
+						"adam"
+					],
 					"pattern": "^.*$"
 				},
 				"learning_rate": {
@@ -131,39 +165,57 @@
 					"title": "Learning_rate",
 					"type": "string",
 					"default": "",
+					"examples": [
+						"constant"
+					],
 					"pattern": "^.*$"
 				},
 				"learning_rate_init": {
 					"$id": "#root/average_params/learning_rate_init",
 					"title": "Learning_rate_init",
 					"type": "number",
+					"examples": [
+						0.001
+					],
 					"default": 0.0
+				},
+				"random_state": {
+					"$id": "#root/average_params/random_state",
+					"title": "Random_state",
+					"type": "integer",
+					"examples": [
+						0
+					],
+					"default": 0
 				}
 			}
 		}
 ,
-		"generation_number": {
-			"$id": "#root/generation_number",
-			"title": "Generation_number",
-			"type": "integer",
-			"default": 0
-		},
 		"number_of_top_classifiers": {
 			"$id": "#root/number_of_top_classifiers",
 			"title": "Number_of_top_classifiers",
 			"type": "integer",
+			"examples": [
+				5
+			],
 			"default": 0
 		},
 		"test_tolerance": {
 			"$id": "#root/test_tolerance",
 			"title": "Test_tolerance",
 			"type": "number",
+			"examples": [
+				0.03
+			],
 			"default": 0.0
 		},
 		"validation_tolerance": {
 			"$id": "#root/validation_tolerance",
 			"title": "Validation_tolerance",
 			"type": "number",
+			"examples": [
+				0.03
+			],
 			"default": 0.0
 		},
 		"is_initial_phase": {
@@ -171,20 +223,28 @@
 			"title": "Is_initial_phase",
 			"type": "string",
 			"default": "",
+			"examples": [
+				"Yes"
+			],
 			"pattern": "^.*$"
 		},
-		"best_classifier_found": {
-			"$id": "#root/best_classifier_found",
-			"title": "Best_classifier_found",
-			"type": "string",
-			"default": "",
-			"pattern": "^.*$"
+		"best_classifier_number": {
+			"$id": "#root/best_classifier_number",
+			"title": "Best_classifier_number",
+			"type": "integer",
+			"examples": [
+				2
+			],
+			"default": 0
 		},
 		"test_best_classifier_passed": {
 			"$id": "#root/test_best_classifier_passed",
 			"title": "Test_best_classifier_passed",
 			"type": "string",
 			"default": "",
+			"examples": [
+				"No"
+			],
 			"pattern": "^.*$"
 		}
 	}

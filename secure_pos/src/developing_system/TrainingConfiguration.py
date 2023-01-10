@@ -22,10 +22,9 @@ class TrainingConfiguration:
             # Add JSON attributes to current object
             self.hyper_parameters = json_training_conf['hyper_parameters']
             self.average_parameters = json_training_conf['average_params']
-            self.generation_number = json_training_conf['generation_number']
             self.test_tolerance = json_training_conf['test_tolerance']
             self.number_of_top_classifiers = int(json_training_conf['number_of_top_classifiers'])
             self.validation_tolerance = json_training_conf['validation_tolerance']
             self.is_initial_phase = json_training_conf['is_initial_phase']
-            self.best_classifier_found = json_training_conf['best_classifier_found']
+            self.best_classifier_number = int(json_training_conf['best_classifier_number'])
             self.test_best_classifier_passed = json_training_conf['test_best_classifier_passed']
