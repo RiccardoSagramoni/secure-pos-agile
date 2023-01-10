@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from data_objects.record_data import CommercialData, GeoData, NetworkData
 
@@ -40,16 +41,18 @@ class CommercialDataValidator:
         )
     
     def validate_date(self) -> bool:
-        return validate_string_with_regex(
-            self.__commercial_data.date,
-            "^[0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2}$"
-        )
+        try:
+            datetime.strptime(self.__commercial_data.date, '%Y-%m-%d')
+            return True
+        except ValueError:
+            return False
     
     def validate_time(self) -> bool:
-        return validate_string_with_regex(
-            self.__commercial_data.time,
-            "^[0-9]{2}:[0-9]{2}:[0-9]{2}$"
-        )
+        try:
+            datetime.strptime(self.__commercial_data.time, '%H:%M:%S')
+            return True
+        except ValueError:
+            return False
     
     def validate_payment_type(self) -> bool:
         return validate_string_with_regex(
@@ -64,10 +67,11 @@ class CommercialDataValidator:
         )
     
     def validate_amount(self) -> bool:
-        return validate_string_with_regex(
-            self.__commercial_data.payment_circuit,
-            "^[0-9]+\\.[0-9]{2}$"
-        )
+        try:
+            float(self.__commercial_data.amount)
+            return True
+        except ValueError:
+            return False
     
     def validate_currency(self) -> bool:
         return validate_string_with_regex(

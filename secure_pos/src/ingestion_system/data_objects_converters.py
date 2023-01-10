@@ -1,3 +1,5 @@
+import jsons
+
 from data_objects.attack_risk_label import AttackRiskLabel
 from data_objects.raw_session import RawSession
 
@@ -10,11 +12,13 @@ class RawSessionConverter:
     def convert_to_json_dict(self) -> dict:
         doc = {
             'session_id': self.__raw_session.session_id,
-            'attack_risk_label': self.__raw_session.attack_risk_label,
+            'attack_risk_label': self.__raw_session.attack_risk_label.value,
             'transactions': []
         }
         for t in self.__raw_session.transactions:
-            doc['transactions'].append(vars(t))
+            doc['transactions'].append(
+                jsons.dump(t)
+            )
         return doc
 
 

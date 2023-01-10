@@ -52,13 +52,12 @@ def main():
             'session_id': session_id,
             'type': 'network',
             'data': network
+        },
+        {
+            'session_id': session_id,
+            'type': 'label',
+            'data': label
         }
-        # ,
-        # {
-        #     'session_id': session_id,
-        #     'type': 'label',
-        #     'data': label
-        # }
     ]
     print("Invio!")
     # Send data to ingestion system
