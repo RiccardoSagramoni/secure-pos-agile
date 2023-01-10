@@ -1,6 +1,3 @@
-import jsons
-
-
 class PreparedSession:
 
     def __init__(self, session_id, time_mean, time_std, time_skew, amount, label):
