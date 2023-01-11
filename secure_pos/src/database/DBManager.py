@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 
 
+
 class DBManager:  # todo change name to database_connector.DatabaseConnector
     """
     Class responsible to handle the "low level" accesses to the database.
@@ -19,7 +20,7 @@ class DBManager:  # todo change name to database_connector.DatabaseConnector
     
     def create_table(self, query: str):
         self.__execute_commit_query(query)
-    
+
     def insert(self, dataframe: pd.DataFrame, table: str) -> bool:
         with sqlite3.connect(self.__database_path, timeout=15) as conn:
             res = dataframe.to_sql(table, conn, if_exists="append", index=False)
