@@ -10,18 +10,19 @@ import joblib
 from developing_system.InitialPhaseTrainingReportGenerator import InitialPhaseTrainingReportGenerator
 import utility
 
+
 class MLPTraining:
 
-    def __init__(self, is_initial_phase):
+    def __init__(self, is_initial_phase, ml_sets_archive_handler):
 
         # data from the json training_configuration file
         self.is_initial_phase_over = is_initial_phase
 
         # dataset for the training and validation
-        self.training_data = read_csv('prova/trainingData.csv')
-        self.training_labels = read_csv('prova/trainingLabels.csv')
-        self.validation_data = read_csv('prova/testingData.csv')
-        self.validation_labels = read_csv('prova/testingLabels.csv')
+        self.training_data = ml_sets_archive_handler.get_ml_sets(0, False)
+        self.training_labels = ml_sets_archive_handler.get_ml_sets(0, True)
+        self.validation_data = ml_sets_archive_handler.get_ml_sets(1, False)
+        self.validation_labels = ml_sets_archive_handler.get_ml_sets(1, True)
 
         # results of the single training
         self.mlp = None

@@ -22,6 +22,5 @@ class DevelopingSystemConfiguration:
             # Add JSON attributes to current object
             self.ip_address = json_development_system_conf['ip_address']
             self.port = int(json_development_system_conf['port'])
-            self.segregation_system_url = json_development_system_conf['segregation_system_url']
             self.execution_system_url = json_development_system_conf['execution_system_url']
             self.is_testing_phase = json_development_system_conf['is_testing_phase']

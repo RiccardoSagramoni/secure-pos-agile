@@ -1,8 +1,14 @@
+import logging
 import os
 import sys
+import threading
+import time
+
+import pandas as pd
 
 import joblib
 import json
+from os import path
 
 from developing_system.TrainingConfiguration import TrainingConfiguration
 from developing_system.MLPTraining import MLPTraining
@@ -12,6 +18,7 @@ from developing_system.ClassifierArchiver import ClassifierArchiver
 from developing_system.TestBestClassifier import TestBestClassifier
 from developing_system.TestBestClassifierReportGenerator import TestBestCLassifierReportGenerator
 from developing_system.CommunicationController import CommunicationController
+from developing_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
 
 import utility
 
@@ -21,17 +28,24 @@ SYSTEM_CONFIGURATION_SCHEMA_PATH = 'development_system/json_schemas/developing_s
 TRAINING_CONFIGURATION_PATH = 'development_system/configuration_files/training_configuration.json'
 TRAINING_CONFIGURATION_SCHEMA_PATH = 'development_system/json_schemas/training_configuration_schema.json'
 
+ML_SETS_ARCHIVE_PATH = 'development_system/ml_sets_archive/ml_sets_archive.db'
+ML_SETS_JSON_FILE_PATH = 'development_system/received_files/ml_set_for_training_classifier.json'
+
+
 class DevelopingSystemController:
+
+    semaphore = threading.Semaphore(0)
 
     def __init__(self):
         self.training_configuration = TrainingConfiguration(TRAINING_CONFIGURATION_PATH, TRAINING_CONFIGURATION_SCHEMA_PATH)
         self.developing_system_configuration = DevelopingSystemConfiguration(SYSTEM_CONFIGURATION_PATH, SYSTEM_CONFIGURATION_SCHEMA_PATH)
         self.communication_controller = CommunicationController(self.developing_system_configuration, self)
+        self.ml_sets_archive_handler = MachineLearningSetsArchiver(os.path.join(utility.data_folder, ML_SETS_ARCHIVE_PATH))
 
 
     def execution_of_the_initial_phase_training(self):
 
-        initial_phase_classifier = MLPTraining(self.training_configuration.is_initial_phase_over)
+        initial_phase_classifier = MLPTraining(self.training_configuration.is_initial_phase_over, self.ml_sets_archive_handler)
         initial_phase_classifier.train_neural_network(self.training_configuration.average_parameters)
 
 
@@ -57,7 +71,22 @@ class DevelopingSystemController:
             json.dump(json_data, write_file, indent=2)
 
     def run(self):
-        self.communication_controller.start_developing_rest_server()
+
+        if path.exists(os.path.join(utility.data_folder,ML_SETS_ARCHIVE_PATH)):
+
+            self.identify_the_top_mlp_classifiers()
+            sys.exit(0)
+
+        else:
+
+            flask_thread = threading.Thread(target=self.communication_controller.start_developing_rest_server, daemon=True)
+            flask_thread.start()
+            self.semaphore.acquire()
+
+            time.sleep(1)
+            self.identify_the_top_mlp_classifiers()
+            sys.exit(0)
+
 
     def analysis_of_the_best_classifier(self):
 
@@ -71,7 +100,7 @@ class DevelopingSystemController:
                 if i['classifier_id'] == self.training_configuration.best_classifier_number:
                     training_error_best_classifier = i['training_error']
 
-        test = TestBestClassifier(self.training_configuration)
+        test = TestBestClassifier(self.training_configuration, self.ml_sets_archive_handler)
         test.test_best_classifier(classifier_archive_manager.return_path_best_classifier())
         test.print()
 
@@ -99,3 +128,28 @@ class DevelopingSystemController:
         else:
             self.analysis_of_the_best_classifier()
             sys.exit(0)
+
+    def save_ml_sets_in_the_archive(self, json_data):
+
+        file_json_path = os.path.join(utility.data_folder, ML_SETS_JSON_FILE_PATH)
+
+        with open(file_json_path, 'w') as file_to_save:
+            json.dump(json_data, file_to_save, indent=2)
+
+        self.ml_sets_archive_handler.create_ml_sets_table()
+
+        data_frame = pd.DataFrame(json_data,
+                                  columns= ['id','time_mean', 'time_median', 'time_std',
+                                           'time_kurtosis', 'time_skewness', 'amount_mean',
+                                           'amount_median', 'amount_std', 'amount_kurtosis',
+                                           'amount_skewness', 'type', 'label'])
+
+        ret = self.ml_sets_archive_handler.insert_ml_sets(data_frame)
+        if not ret:
+            logging.error("Failed to insert the data received in the archive")
+            sys.exit(0)
+
+
+
+
+

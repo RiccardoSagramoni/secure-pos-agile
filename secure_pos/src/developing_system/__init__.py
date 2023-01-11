@@ -1,3 +1,4 @@
+import os
 import sys
 
 from developing_system.DevelopingSystemController import DevelopingSystemController
@@ -5,7 +6,8 @@ from developing_system.DevelopingSystemController import DevelopingSystemControl
 def main():
     controller = DevelopingSystemController()
     controller.run()
-    sys.exit(0)
+    # controller.identify_the_top_mlp_classifiers()
+    sys.exit()
 
 if __name__ == "__main__":
     main()

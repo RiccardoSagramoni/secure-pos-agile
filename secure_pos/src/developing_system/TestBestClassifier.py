@@ -9,12 +9,12 @@ from developing_system.TrainingConfiguration import TrainingConfiguration
 class TestBestClassifier:
 
 
-    def __init__(self, training_conf:TrainingConfiguration):
+    def __init__(self, training_conf:TrainingConfiguration, ml_sets_archive_handler):
 
         self.test_tolerance = training_conf.test_tolerance
         self.id_best_classifier = training_conf.best_classifier_number
-        self.test_data = read_csv('prova/testingData.csv')
-        self.test_labels = read_csv('prova/testingLabels.csv')
+        self.test_data = ml_sets_archive_handler.get_ml_sets(2, False)
+        self.test_labels = ml_sets_archive_handler.get_ml_sets(2, True)
         self.test_error = None
 
 

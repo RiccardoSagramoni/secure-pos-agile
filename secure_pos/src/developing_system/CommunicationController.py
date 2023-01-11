@@ -1,14 +1,10 @@
 import logging
-import os
-import json
+import threading
 
 import requests
-import utility
 
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
-
-ML_SETS_JSON_FILE_PATH = 'development_system/received_files/ml_set_for_training_classifier.json'
 
 class CommunicationController:
 
@@ -16,16 +12,14 @@ class CommunicationController:
 
         self.ip_address = developing_system_configuration.ip_address
         self.port = developing_system_configuration.port
-        self.segregation_system_url = developing_system_configuration.segregation_system_url
         self.execution_system_url = developing_system_configuration.execution_system_url
         self.development_system_controller = development_system_controller
 
     def handle_message(self, json_record: dict) -> None:
 
-        with open(os.path.join(utility.data_folder, ML_SETS_JSON_FILE_PATH), 'w') as file_to_save:
-            json.dump(json_record, file_to_save, indent=2)
+        self.development_system_controller.save_ml_sets_in_the_archive(json_record)
+        self.development_system_controller.semaphore.release()
 
-        self.development_system_controller.identify_the_top_mlp_classifiers()
 
     def start_developing_rest_server(self) -> None:
 

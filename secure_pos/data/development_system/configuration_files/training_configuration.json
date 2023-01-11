@@ -23,7 +23,7 @@
   },
   "average_params": {
     "hidden_layer_sizes": 80,
-    "max_iter": 1000,
+    "max_iter": 1500,
     "activation": "relu",
     "solver": "adam",
     "learning_rate": "constant",
