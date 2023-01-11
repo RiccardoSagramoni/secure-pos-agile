@@ -31,7 +31,8 @@ class LabelManager:
             source = label["source"]
             value = label["value"]
             label = Label(session_id, value, source)
-            label_dataframe = pd.DataFrame(label.to_dict(), index=[0], columns=["session_id", "value"])
+            label_dataframe = pd.DataFrame(label.to_dict(), index=[0],
+                                           columns=["session_id", "value"])
             if label.source == 'classifier':
                 self.storer.store_label(label_dataframe, 'classifierLabel')
                 self.count_labels('classifier')
