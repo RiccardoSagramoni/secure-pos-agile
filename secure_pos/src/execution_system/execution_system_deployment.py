@@ -1,6 +1,7 @@
 import joblib
 
-CLASSIFIER_MODEL_PATH = "execution_system/classifier_model.sav"
+from execution_system.communication_controller import CLASSIFIER_MODEL_PATH
+
 
 
 class ExecutionSystemDeployment:

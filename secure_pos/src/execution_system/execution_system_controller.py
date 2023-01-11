@@ -19,8 +19,7 @@ class ExecutionSystemController:
                                     self.handle_new_prepared_session_reception,
                                     self.handle_classifier_model_deployment)
         self.__system_mode_tracker = SystemModeTracker(self.__configuration)
-        self.__deployment_classifier = ExecutionSystemDeployment()
-        self.__attack_risk_classifier = AttackRiskClassifier()
+        self.__deployed_classifier_model = DeployedClassifierModel()
 
     def run(self):
         # Start REST server
@@ -32,17 +31,24 @@ class ExecutionSystemController:
         self.__system_mode_tracker.development_mode = False
 
     def handle_new_prepared_session_reception(self, json_session: dict) -> None:
-        # Classify session
-        session_id = json_session['session_id']
-        if not self.__system_mode_tracker.development_mode:
-            prepared_session = pd.DataFrame(data=json_session)
-            session_risk_level = self.__attack_risk_classifier.provide_attack_risk_level(
-                self.__deployment_classifier.get_classifier_model(),
-                prepared_session
-            )
-            if self.__system_mode_tracker.is_session_in_monitoring_window():
-                self.__communication_controller.send_attack_risk_label(
-                    self.__attack_risk_classifier.attack_risk_label_converter(session_id))
+        if self.__system_mode_tracker.development_mode:
+            return
 
-            if session_risk_level > 0:
-                print("Attack detected")
+        # Get prepared session
+        session_id = json_session['session_id']
+        prepared_session = pd.DataFrame(data=json_session)
+
+        # Classify session
+        attack_risk_classifier = \
+            AttackRiskClassifier(self.__deployed_classifier_model.get_classifier_model(),
+                                 session_id, prepared_session)
+        session_risk_level = attack_risk_classifier.provide_attack_risk_level()
+
+        # Send label to monitoring system
+        if self.__system_mode_tracker.is_session_in_monitoring_window():
+            self.__communication_controller.send_attack_risk_label(
+                attack_risk_classifier.attack_risk_label_converter()
+            )
+
+        if session_risk_level > 0:
+            print("Attack detected")
