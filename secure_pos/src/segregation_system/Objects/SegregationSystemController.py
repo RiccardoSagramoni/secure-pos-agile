@@ -1,5 +1,6 @@
+import json
+import os
 import sys
-from threading import Semaphore
 
 import pandas as pd
 
@@ -7,9 +8,14 @@ from sklearn.model_selection import train_test_split
 
 from segregation_system.Objects import DataExtractor
 from segregation_system.Objects.CommunicationController import CommunicationController
+from segregation_system.Objects.DBHandler import DBHandler
 from segregation_system.Objects.SegregationSystemConfiguration import SegregationSystemConfiguration
 from segregation_system.Objects.ResponseExtractor import ResponseExtractor
 from segregation_system.Objects.Plotters import PlotterHistogram, PlotterRadarDiagram
+
+PATH_DB = "./database/segregationSystemDatabase.db"
+BALANCING_REPORT_PATH = "./graphs/Balancing_plot.png"
+QUALITY_REPORT_PATH = "./graphs/radar_diagram.png"
 
 
 class SegregationSystemController:
@@ -18,9 +24,8 @@ class SegregationSystemController:
     """
 
     def __init__(self):
-        self.path_db = "./database/segregationSystemDatabase.db"
-        self.db_semaphore = Semaphore(1)
         self.config_file = SegregationSystemConfiguration()
+        self.db_handler = DBHandler(PATH_DB)
 
     def check_balancing(self):
         """
@@ -28,7 +33,7 @@ class SegregationSystemController:
         and plot them in order to evaluate the data balancing
         :return: Null
         """
-        data_extractor = DataExtractor.DataExtractor(self.path_db, self.db_semaphore)
+        data_extractor = DataExtractor.DataExtractor(self.db_handler)
         labels = data_extractor.count_labels()
 
         plotter = PlotterHistogram(labels)
@@ -42,7 +47,7 @@ class SegregationSystemController:
         Method that calls the API that extracts the data
         and plot them in order to evaluate the data quality
         """
-        data_extractor = DataExtractor.DataExtractor(self.path_db, self.db_semaphore)
+        data_extractor = DataExtractor.DataExtractor(self.db_handler)
         data = data_extractor.extract_features()
 
         plotter = PlotterRadarDiagram(data)
@@ -57,7 +62,7 @@ class SegregationSystemController:
         and splits them in train, validation and test sets
         """
 
-        data_extractor = DataExtractor.DataExtractor(self.path_db, self.db_semaphore)
+        data_extractor = DataExtractor.DataExtractor(self.db_handler)
         data_frame_input = data_extractor.extract_features()
 
         data_frame_result = data_extractor.extract_labels()
@@ -93,10 +98,15 @@ class SegregationSystemController:
         # Mark the records as USED TODO remove comment below
         # database.update("UPDATE ArrivedSessions SET type = 0 WHERE type = -1")
 
-        cc = CommunicationController(self.db_semaphore, self.path_db, self)
-        cc.send_datasets(res, self.config_file.development_system_url)
+        communication_controller = CommunicationController(self.db_handler,
+                                                           self.config_file.development_system_url,
+                                                           self)
+        communication_controller.send_datasets(res)
         print("Dataset sent, now terminate")
 
+        # remove the generated graphs
+        os.remove(BALANCING_REPORT_PATH)
+        os.remove(QUALITY_REPORT_PATH)
         # reset the mode to accept more data from now on
         sys.exit(0)
 
@@ -142,9 +152,7 @@ class SegregationSystemController:
 
         # If nothing has been set means that the rest server has to be started
 
-        communication_handler = CommunicationController(self.db_semaphore,
-                                                        self.path_db,
-                                                        self.config_file.development_system_url,
-                                                        self)
-        #communication_handler.init_rest_server()
-        communication_handler.handle_message()
+        communication_controller = CommunicationController(self.db_handler,
+                                                           self.config_file.development_system_url,
+                                                           self)
+        #communication_controller.init_rest_server()

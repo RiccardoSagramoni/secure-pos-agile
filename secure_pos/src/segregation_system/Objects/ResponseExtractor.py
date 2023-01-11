@@ -11,7 +11,7 @@ class ResponseExtractor:
     """
 
     def __init__(self):
-        self.schema_path = 'segregation_response_schema.json'
+        self.schema_path = './json_schema/segregation_response_schema.json'
         self.data_balancing_response_path = './responses/balancing_response.json'
         self.data_quality_response_path = './responses/quality_response.json'
 

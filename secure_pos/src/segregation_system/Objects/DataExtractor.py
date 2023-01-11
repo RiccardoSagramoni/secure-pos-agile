@@ -1,7 +1,6 @@
 import pandas as pd
 
 from segregation_system.Objects.CollectedSessions import CollectedSessions
-from src.database.DBManager import DBManager
 
 
 class DataExtractor:
@@ -10,18 +9,9 @@ class DataExtractor:
     the required data and return it to the front-end
     """
 
-    def __init__(self, path_db, semaphore):
-        self.database = DBManager(path_db)
-        # Paying attention to critical runs
-        semaphore.acquire()
-        # Extracts data
-        features = self.database.read_sql('SELECT time_mean, time_std, time_skew,'
-                                          'amount_1, amount_2, amount_3, amount_4, amount_5,'
-                                          'amount_6, amount_7, amount_8, amount_9, amount_10 '
-                                          'FROM ArrivedSessions WHERE type = -1')
-        # Extracts labels for current data
-        labels = self.database.read_sql('SELECT label FROM ArrivedSessions WHERE type = -1')
-        semaphore.release()
+    def __init__(self, db_handler):
+
+        [features, labels] = db_handler.extract_all_unallocated_data()
 
         self.current_sessions = CollectedSessions(features, labels)
 
@@ -53,9 +43,10 @@ class DataExtractor:
         data = self.current_sessions.get_features()
         # Extract all the unallocated data
         data_frame = pd.DataFrame(data,
-                                  columns=['time_mean', 'time_std', 'time_skew', 'amount_1', 'amount_2',
-                                           'amount_3', 'amount_4', 'amount_5', 'amount_6', 'amount_7', 'amount_8',
-                                           'amount_9', 'amount_10'])
+                                  columns=['time_mean', 'time_median', 'time_std',
+                                           'time_kurtosis', 'time_skewness', 'amount_mean',
+                                           'amount_median', 'amount_std', 'amount_kurtosis',
+                                           'amount_skewness'])
 
         return data_frame
 
@@ -66,3 +57,4 @@ class DataExtractor:
                                   columns=['label'])
 
         return data_frame
+

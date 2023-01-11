@@ -4,7 +4,7 @@ import logging
 from utility.json_validation import validate_json_data_file
 
 CONFIGURATION_PATH = 'segregation_configuration.json'
-CONFIGURATION_SCHEMA_PATH = 'segregation_configuration_schema.json'
+CONFIGURATION_SCHEMA_PATH = './json_schema/segregation_configuration_schema.json'
 
 
 class SegregationSystemConfiguration:
@@ -23,4 +23,3 @@ class SegregationSystemConfiguration:
             self.development_system_url = json_conf['development_system_url']
             self.session_nr_threshold = int(json_conf['session_nr_threshold'])
             self.development_mode = json_conf['development_mode']
-
