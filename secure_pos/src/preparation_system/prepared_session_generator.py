@@ -65,32 +65,19 @@ class PreparedSessionGenerator:
 
     def extract_features(self):
         self.generate_time_diff()
-        if self.time_diff:
-            time_mean = self.generate_mean(self.time_diff)
-            time_median = self.generate_median(self.time_diff)
-            time_std = self.generate_std(self.time_diff)
-            time_kurtosis = self.generate_kurtosis(self.time_diff)
-            time_skew = self.generate_skew(self.time_diff)
-        else:
-            time_mean = 0
-            time_median = 0
-            time_std = 0
-            time_kurtosis = 0
-            time_skew = 0
+
+        time_mean = self.generate_mean(self.time_diff)
+        time_median = self.generate_median(self.time_diff)
+        time_std = self.generate_std(self.time_diff)
+        time_kurtosis = self.generate_kurtosis(self.time_diff)
+        time_skew = self.generate_skew(self.time_diff)
 
         self.get_amount()
-        if self.amount:
-            amount_mean = self.generate_mean(self.amount)
-            amount_median = self.generate_median(self.amount)
-            amount_std = self.generate_std(self.amount)
-            amount_kurtosis = self.generate_kurtosis(self.amount)
-            amount_skew = self.generate_skew(self.amount)
-        else:
-            amount_mean = 0
-            amount_median = 0
-            amount_std = 0
-            amount_kurtosis = 0
-            amount_skew = 0
+        amount_mean = self.generate_mean(self.amount)
+        amount_median = self.generate_median(self.amount)
+        amount_std = self.generate_std(self.amount)
+        amount_kurtosis = self.generate_kurtosis(self.amount)
+        amount_skew = self.generate_skew(self.amount)
 
         self.prepared_session = PreparedSession(self.raw_session.session_id, time_mean,
                                                 time_std, time_skew, time_median,
