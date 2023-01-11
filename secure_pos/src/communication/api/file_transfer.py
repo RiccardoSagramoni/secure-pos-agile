@@ -9,25 +9,24 @@ import flask
 from flask import request
 from flask_restful import Resource
 
-from utility import get_received_data_folder
+from utility import project_folder
 
 
 class ReceiveFileApi(Resource):
     """
     This API allows other nodes to send files to the Flask application.
     """
-    
     def __init__(self,
                  filename: str,
                  handler: Callable[[], None] = None):
         """
         Initialize the API.
-        :param filename: path where to save the received file (relative to the received data folder).
+        :param filename: path where to save the received file (relative to the received data folder)
         :param handler: optional function to call after the file has been saved in the filesystem.
                         The handler function should not take too much time to return
                         (start a new thread, if necessary).
         """
-        self.filename = os.path.join(get_received_data_folder(), filename)
+        self.filename = os.path.join(project_folder, filename)
         self.handle_request = handler
     
     def post(self):

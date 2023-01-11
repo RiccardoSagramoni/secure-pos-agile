@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://it.unipi.sse/config_schema.json",
+    "type": "object",
+    "required": [
+        "system_ip",
+        "system_port",
+        "monitoring_system_url",
+        "execution_window_length",
+        "monitoring_window_length"
+    ],
+    "properties": {
+        "system_ip": {
+            "type": "string"
+        },
+        "system_port": {
+            "type": "integer"
+        },
+        "monitoring_system_url": {
+            "type": "string"
+        },
+        "execution_window_length": {
+            "type": "integer"
+        },
+        "monitoring_window_length": {
+            "type": "integer"
+        }
+    }
+}

@@ -2,5 +2,5 @@ from enum import Enum
 
 
 class AttackRiskLabel(Enum):
-    NORMAL = "NORMAL"
-    ATTACK = "ATTACK"
+    NORMAL = "NORMAL"   # 0
+    ATTACK = "ATTACK"   # 1
