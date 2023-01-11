@@ -1,13 +1,10 @@
 import json
-import logging
 
 import numpy as np
 from scipy.stats import skew, kurtosis
 
 from data_objects.raw_session import RawSession
 from preparation_system.prepared_session import PreparedSession
-
-logging.getLogger().setLevel(logging.INFO)
 
 
 class PreparedSessionGenerator:
@@ -58,12 +55,12 @@ class PreparedSessionGenerator:
     def get_amount(self):
         transactions = self.raw_session.transactions
         for transaction in transactions:
-            logging.info("amount trans: " + transaction.commercial.amount)
             self.amount.append(float(transaction.commercial.amount))
 
     def generate_prepared_session_json(self):
         prepared_session_dict = self.prepared_session.to_dict()
-        with open("../../data/preparation_system/prepared_session.json", 'w', encoding="UTF-8") as json_file:
+        with open("../../data/preparation_system/prepared_session.json",
+                  'w', encoding="UTF-8") as json_file:
             json.dump(prepared_session_dict, json_file, indent=2)
 
     def extract_features(self):
