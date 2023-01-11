@@ -63,6 +63,12 @@ class PreparedSessionGenerator:
                   'w', encoding="UTF-8") as json_file:
             json.dump(prepared_session_dict, json_file, indent=2)
 
+    def generate_label_class(self):
+        if self.raw_session.attack_risk_label == "ATTACK":
+            return 1
+        else:
+            return 0
+
     def extract_features(self):
         self.generate_time_diff()
 
@@ -79,10 +85,12 @@ class PreparedSessionGenerator:
         amount_kurtosis = self.generate_kurtosis(self.amount)
         amount_skew = self.generate_skew(self.amount)
 
+        label_class = self.generate_label_class()
+
         self.prepared_session = PreparedSession(self.raw_session.session_id, time_mean,
                                                 time_std, time_skew, time_median,
                                                 time_kurtosis, amount_mean, amount_median,
                                                 amount_std, amount_kurtosis, amount_skew,
-                                                self.raw_session.attack_risk_label)
+                                                label_class)
 
         return self.prepared_session.to_dict()
