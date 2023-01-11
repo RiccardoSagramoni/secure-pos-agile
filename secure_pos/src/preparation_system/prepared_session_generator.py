@@ -64,7 +64,7 @@ class PreparedSessionGenerator:
             json.dump(prepared_session_dict, json_file, indent=2)
 
     def generate_label_class(self):
-        if self.raw_session.attack_risk_label == "ATTACK":
+        if self.raw_session.attack_risk_label.ATTACK:
             return 1
         else:
             return 0
