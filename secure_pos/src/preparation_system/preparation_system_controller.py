@@ -40,7 +40,7 @@ class PreparationSystemController:
 
     def processing_raw_session(self, raw_session_json):
         logging.info("Processing raw session")
-        raw_session = RawSessionFactory.generate_from_dict(raw_session_json)
+        raw_session = RawSessionFactory.generate_from_json_dict(raw_session_json)
         sanitizer = RawSessionSanitizer(raw_session, self.config["minimum_amount_possible"],
                                         self.config["maximum_amount_possible"])
 
