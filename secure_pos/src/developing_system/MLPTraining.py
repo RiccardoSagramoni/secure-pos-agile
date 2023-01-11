@@ -55,8 +55,7 @@ class MLPTraining:
             plt.savefig(os.path.join(utility.data_folder, 'development_system/reports/initial_phase/loss_function_plot.png'))
             plt.show()
 
-            initial_phase_training_report = InitialPhaseTrainingReportGenerator()
-            initial_phase_training_report.generate_report(self.training_error, self.validation_error, setted_hyper_parameters)
+            InitialPhaseTrainingReportGenerator().generate_report(self.training_error, self.validation_error, setted_hyper_parameters)
 
             save_path = os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav')
             joblib.dump(self.mlp, save_path)

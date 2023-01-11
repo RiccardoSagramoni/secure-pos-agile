@@ -1,7 +1,0 @@
-{
-  "report_title:": "Report of the Test of the best classifier",
-  "id_best_classifier": 2,
-  "test_tolerance": 0.03,
-  "test_error": 0.012195121951219523,
-  "training_error": 0.016260162601625994
-}

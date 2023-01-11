@@ -24,8 +24,4 @@ class DevelopingSystemConfiguration:
             self.port = int(json_development_system_conf['port'])
             self.segregation_system_url = json_development_system_conf['segregation_system_url']
             self.execution_system_url = json_development_system_conf['execution_system_url']
-            self.database_path = json_development_system_conf['database_path']
-
-
-            self.development_status = json_development_system_conf['development_status']
             self.is_testing_phase = json_development_system_conf['is_testing_phase']

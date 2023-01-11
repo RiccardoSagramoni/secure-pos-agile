@@ -3,7 +3,5 @@
   "port": 8000,
   "segregation_system_url": "http://198.0.0.0:8000",
   "execution_system_url":  "http://198.0.0.0:8000",
-  "database_path" : "database_path",
-  "development_status": "running",
   "is_testing_phase": "False"
 }

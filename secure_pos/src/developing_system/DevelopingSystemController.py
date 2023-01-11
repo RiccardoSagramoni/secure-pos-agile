@@ -11,6 +11,7 @@ from developing_system.DevelopingSystemConfiguration import DevelopingSystemConf
 from developing_system.ClassifierArchiver import ClassifierArchiver
 from developing_system.TestBestClassifier import TestBestClassifier
 from developing_system.TestBestClassifierReportGenerator import TestBestCLassifierReportGenerator
+from developing_system.CommunicationController import CommunicationController
 
 import utility
 
@@ -25,27 +26,38 @@ class DevelopingSystemController:
     def __init__(self):
         self.training_configuration = TrainingConfiguration(TRAINING_CONFIGURATION_PATH, TRAINING_CONFIGURATION_SCHEMA_PATH)
         self.developing_system_configuration = DevelopingSystemConfiguration(SYSTEM_CONFIGURATION_PATH, SYSTEM_CONFIGURATION_SCHEMA_PATH)
+        self.communication_controller = CommunicationController(self.developing_system_configuration, self)
+
 
     def execution_of_the_initial_phase_training(self):
 
         initial_phase_classifier = MLPTraining(self.training_configuration.is_initial_phase_over)
         initial_phase_classifier.train_neural_network(self.training_configuration.average_parameters)
+
+
     def execution_of_the_grid_search_algorithm(self):
 
-        load_path = os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav')
-        loaded_classifier = joblib.load(load_path)
+        loaded_classifier = joblib.load(os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav'))
         classifier_for_grid_search = MLPTraining(self.training_configuration.is_initial_phase_over)
         classifier_for_grid_search.set_mlp(loaded_classifier)
-        gs = GridSearchController(classifier_for_grid_search, self.training_configuration)
-        gs.generate_grid_search_hyperparameters(self.training_configuration.hyper_parameters)
-        for elem in gs.top_classifiers_object_list:
+        grid_search_controller = GridSearchController(classifier_for_grid_search, self.training_configuration)
+        grid_search_controller.generate_grid_search_hyperparameters(self.training_configuration.hyper_parameters)
+        for elem in grid_search_controller.top_classifiers_object_list:
             elem.print()
 
     def reset_of_the_system(self):
         classifier_archive_manager = ClassifierArchiver(self.training_configuration.best_classifier_number)
         classifier_archive_manager.delete_remaining_classifiers()
-        # bisogna settare il valore initial a yes
-        # bisogna settare il grid a no a yes
+        with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'r') as read_file:
+            json_data = json.load(read_file)
+            json_data['is_initial_phase_over'] = "No"
+            json_data['is_grid_search_over'] = "No"
+
+        with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'w') as write_file:
+            json.dump(json_data, write_file, indent=2)
+
+    def run(self):
+        self.communication_controller.start_developing_rest_server()
 
     def analysis_of_the_best_classifier(self):
 
@@ -63,8 +75,7 @@ class DevelopingSystemController:
         test.test_best_classifier(classifier_archive_manager.return_path_best_classifier())
         test.print()
 
-        test_best_classifier_report = TestBestCLassifierReportGenerator()
-        test_best_classifier_report.generate_report(test, training_error_best_classifier)
+        TestBestCLassifierReportGenerator().generate_report(test, training_error_best_classifier)
 
     def identify_the_top_mlp_classifiers(self):
 
