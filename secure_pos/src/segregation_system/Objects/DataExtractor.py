@@ -12,7 +12,6 @@ class DataExtractor:
     def __init__(self, db_handler):
 
         [features, labels] = db_handler.extract_all_unallocated_data()
-
         self.current_sessions = CollectedSessions(features, labels)
 
     def count_labels(self):

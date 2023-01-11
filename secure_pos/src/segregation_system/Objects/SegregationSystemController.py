@@ -93,7 +93,7 @@ class SegregationSystemController:
         #pd.concat([x_train, x_validation, x_test], ignore_index=True)
         res = pd.concat([x_train, x_other], ignore_index=True)
 
-        res.to_json('./to_fab.json')
+        res.to_json('./to_fab.json', indent=2)
 
         # Mark the records as USED TODO remove comment below
         # database.update("UPDATE ArrivedSessions SET type = 0 WHERE type = -1")
@@ -156,3 +156,6 @@ class SegregationSystemController:
                                                            self.config_file.development_system_url,
                                                            self)
         #communication_controller.init_rest_server()
+        with open('./database/PreparedSession.json', 'r', encoding='utf-8') as opened_file:
+            data = json.load(opened_file)
+        communication_controller.handle_message(data)
