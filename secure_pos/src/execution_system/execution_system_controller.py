@@ -3,7 +3,7 @@ import pandas as pd
 from execution_system.execution_configuration import ExecutionConfiguration
 from execution_system.communication_controller import CommunicationController
 from execution_system.system_mode_tracker import SystemModeTracker
-from execution_system.execution_system_deployment import ExecutionSystemDeployment
+from execution_system.execution_system_deployment import DeployedClassifierModel
 from execution_system.attack_risk_classifier import AttackRiskClassifier
 
 CONFIGURATION_FILE = 'execution_system/execution_config.json'
@@ -27,7 +27,7 @@ class ExecutionSystemController:
 
     def handle_classifier_model_deployment(self) -> None:
         # Start classifier
-        self.__deployment_classifier.load_classifier_model()
+        self.__deployed_classifier_model.load_classifier_model()
         self.__system_mode_tracker.development_mode = False
 
     def handle_new_prepared_session_reception(self, json_session: dict) -> None:

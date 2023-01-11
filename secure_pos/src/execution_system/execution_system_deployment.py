@@ -3,10 +3,11 @@ import joblib
 from execution_system.communication_controller import CLASSIFIER_MODEL_PATH
 
 
+class DeployedClassifierModel:
+    __classifier_model = None
 
-class ExecutionSystemDeployment:
     def __init__(self):
-        self.__classifier_model = None
+        pass
 
     def load_classifier_model(self):
         self.__classifier_model = joblib.load(CLASSIFIER_MODEL_PATH)
