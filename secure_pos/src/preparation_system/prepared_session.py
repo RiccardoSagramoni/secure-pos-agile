@@ -23,12 +23,12 @@ class PreparedSession:
             "time_median": [float(self.time_median)],
             "time_std": [float(self.time_std)],
             "time_kurtosis": [float(self.time_kurtosis)],
-            "time_skew": [float(self.time_skew)],
+            "time_skewness": [float(self.time_skew)],
             "amount_mean": [float(self.amount_mean)],
             "amount_median": [float(self.amount_median)],
             "amount_std": [float(self.amount_std)],
             "amount_kurtosis": [float(self.amount_kurtosis)],
-            "amount_skew": [float(self.amount_skew)],
+            "amount_skewness": [float(self.amount_skew)],
             "type": [-1],
             "label": [self.label]
         }
