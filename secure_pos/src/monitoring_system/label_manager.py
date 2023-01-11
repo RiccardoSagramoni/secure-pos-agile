@@ -57,16 +57,17 @@ class LabelManager:
 
                 session_id_list = labels["session_id"].to_list()
 
-                # le elimino dal db
-                query = "DELETE FROM expertLabel " \
-                        "WHERE session_id IN (" + \
-                        str(session_id_list)[1:-1] + ")"
-                self.storer.delete_all_labels(query)
+                if session_id_list:
+                    # le elimino dal db
+                    query = "DELETE FROM expertLabel " \
+                            "WHERE session_id IN (" + \
+                            str(session_id_list)[1:-1] + ")"
+                    self.storer.delete_all_labels(query)
 
-                query = "DELETE FROM classifierLabel " \
-                        "WHERE session_id IN (" + \
-                        str(session_id_list)[1:-1] + ")"
-                self.storer.delete_all_labels(query)
+                    query = "DELETE FROM classifierLabel " \
+                            "WHERE session_id IN (" + \
+                            str(session_id_list)[1:-1] + ")"
+                    self.storer.delete_all_labels(query)
 
                 # avvio il thread per produrre il report di monitoraggio
                 logging.info("Start monitoring report generation")
