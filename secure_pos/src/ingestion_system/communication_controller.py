@@ -81,6 +81,7 @@ class CommunicationController:
         # Serialize attack risk label
         label_dict = AttackRiskLabelPackager(session_id, attack_risk_label)
         # Send serialized label
+        logging.info("Send session %s", session_id)
         try:
             response = requests.post(self.__monitoring_system_url, json=label_dict)
             if not response.ok:

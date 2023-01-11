@@ -18,10 +18,13 @@ class RawSessionFactory:
             transactions.append(
                 TransactionFactory.generate_from_json_dict(doc)
             )
+        label = session_dict.get('attack_risk_label') # returns None if label does not exist
+        if label is not None:
+            label = AttackRiskLabel(label)
         # Generate raw session object
         return RawSession(
             session_dict['session_id'],
-            session_dict.get('attack_risk_label'),  # returns None if label does not exist
+            label,
             transactions
         )
     
