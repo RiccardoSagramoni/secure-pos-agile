@@ -3,6 +3,7 @@ import json
 import numpy as np
 from scipy.stats import skew, kurtosis
 
+from data_objects.attack_risk_label import AttackRiskLabel
 from data_objects.raw_session import RawSession
 from preparation_system.prepared_session import PreparedSession
 
@@ -64,7 +65,7 @@ class PreparedSessionGenerator:
             json.dump(prepared_session_dict, json_file, indent=2)
 
     def generate_label_class(self):
-        if self.raw_session.attack_risk_label.ATTACK:
+        if self.raw_session.attack_risk_label == AttackRiskLabel.ATTACK:
             return 1
         else:
             return 0
