@@ -7,11 +7,12 @@ import utility
 from developing_system.TrainingConfiguration import TrainingConfiguration
 from developing_system.TopClassifier import TopClassifier
 from developing_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
+from developing_system.MLPTraining import MLPTraining
 
 
 class GridSearchController:
 
-    def __init__(self, mlp_classifier, training_conf:TrainingConfiguration):
+    def __init__(self, mlp_classifier: MLPTraining, training_conf:TrainingConfiguration):
 
         # data from the json training_configuration file
         self.validation_tolerance = training_conf.validation_tolerance

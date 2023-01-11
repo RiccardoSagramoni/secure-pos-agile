@@ -3,9 +3,7 @@ import os
 import sys
 import threading
 import time
-
 import pandas as pd
-
 import joblib
 import json
 from os import path
@@ -52,7 +50,7 @@ class DevelopingSystemController:
     def execution_of_the_grid_search_algorithm(self):
 
         loaded_classifier = joblib.load(os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav'))
-        classifier_for_grid_search = MLPTraining(self.training_configuration.is_initial_phase_over)
+        classifier_for_grid_search = MLPTraining(self.training_configuration.is_initial_phase_over, self.ml_sets_archive_handler)
         classifier_for_grid_search.set_mlp(loaded_classifier)
         grid_search_controller = GridSearchController(classifier_for_grid_search, self.training_configuration)
         grid_search_controller.generate_grid_search_hyperparameters(self.training_configuration.hyper_parameters)
@@ -100,11 +98,11 @@ class DevelopingSystemController:
                 if i['classifier_id'] == self.training_configuration.best_classifier_number:
                     training_error_best_classifier = i['training_error']
 
-        test = TestBestClassifier(self.training_configuration, self.ml_sets_archive_handler)
+        test = TestBestClassifier(self.training_configuration, training_error_best_classifier, self.ml_sets_archive_handler)
         test.test_best_classifier(classifier_archive_manager.return_path_best_classifier())
         test.print()
 
-        TestBestCLassifierReportGenerator().generate_report(test, training_error_best_classifier)
+
 
     def identify_the_top_mlp_classifiers(self):
 

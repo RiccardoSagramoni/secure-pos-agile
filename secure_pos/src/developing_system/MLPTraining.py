@@ -1,19 +1,19 @@
 import os
 
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
-from pandas import read_csv
+from sklearn.metrics import  accuracy_score
 from numpy import ravel
 import matplotlib.pyplot as plt
 import joblib
 
 from developing_system.InitialPhaseTrainingReportGenerator import InitialPhaseTrainingReportGenerator
+from developing_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
 import utility
 
 
 class MLPTraining:
 
-    def __init__(self, is_initial_phase, ml_sets_archive_handler):
+    def __init__(self, is_initial_phase, ml_sets_archive_handler: MachineLearningSetsArchiver):
 
         # data from the json training_configuration file
         self.is_initial_phase_over = is_initial_phase
