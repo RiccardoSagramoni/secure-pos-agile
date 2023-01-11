@@ -1,10 +1,13 @@
-from statistics import mean
+import json
+import logging
 
 import numpy as np
-from scipy.stats import skew
+from scipy.stats import skew, kurtosis
 
 from data_objects.raw_session import RawSession
 from preparation_system.prepared_session import PreparedSession
+
+logging.getLogger().setLevel(logging.INFO)
 
 
 class PreparedSessionGenerator:
@@ -13,7 +16,7 @@ class PreparedSessionGenerator:
         self.raw_session = raw_session
         self.prepared_session = None
         self.time_diff = None
-        self.norm_amount = []
+        self.amount = []
 
     def generate_time_diff(self):
         transactions = self.raw_session.transactions
@@ -27,36 +30,75 @@ class PreparedSessionGenerator:
         time_array = np.array(time)
         self.time_diff = list(np.diff(time_array))
 
-    def generate_time_mean(self):
-        return mean(self.time_diff)
+    @staticmethod
+    def generate_mean(data_list):
+        data_array = np.array(data_list)
+        return np.mean(data_array)
 
-    def generate_time_std(self):
-        time_diff_array = np.array(self.time_diff)
-        return np.std(time_diff_array)
+    @staticmethod
+    def generate_std(data_list):
+        data_array = np.array(data_list)
+        return np.std(data_array)
 
-    def generate_time_skew(self):
-        time_diff_array = np.array(self.time_diff)
-        return skew(time_diff_array)
+    @staticmethod
+    def generate_skew(data_list):
+        data_array = np.array(data_list)
+        return skew(data_array)
 
-    def generate_norm_amount(self):
+    @staticmethod
+    def generate_median(data_list):
+        data_array = np.array(data_list)
+        return np.median(data_array)
+
+    @staticmethod
+    def generate_kurtosis(data_list):
+        data_array = np.array(data_list)
+        return kurtosis(data_array)
+
+    def get_amount(self):
         transactions = self.raw_session.transactions
-        amount = []
         for transaction in transactions:
-            amount.append(float(transaction.commercial.amount))
-        amount_min, amount_max = min(amount), max(amount)
-        for val in amount:
-            temp = (val - amount_min) / (amount_max - amount_min)
-            self.norm_amount.append(temp)
+            logging.info("amount trans: " + transaction.commercial.amount)
+            self.amount.append(float(transaction.commercial.amount))
+
+    def generate_prepared_session_json(self):
+        prepared_session_dict = self.prepared_session.to_dict()
+        with open("../../data/preparation_system/prepared_session.json", 'w', encoding="UTF-8") as json_file:
+            json.dump(prepared_session_dict, json_file, indent=2)
 
     def extract_features(self):
         self.generate_time_diff()
-        time_mean = self.generate_time_mean()
-        time_std = self.generate_time_std()
-        time_skew = self.generate_time_skew()
-        self.generate_norm_amount()
+        if self.time_diff:
+            time_mean = self.generate_mean(self.time_diff)
+            time_median = self.generate_median(self.time_diff)
+            time_std = self.generate_std(self.time_diff)
+            time_kurtosis = self.generate_kurtosis(self.time_diff)
+            time_skew = self.generate_skew(self.time_diff)
+        else:
+            time_mean = 0
+            time_median = 0
+            time_std = 0
+            time_kurtosis = 0
+            time_skew = 0
+
+        self.get_amount()
+        if self.amount:
+            amount_mean = self.generate_mean(self.amount)
+            amount_median = self.generate_median(self.amount)
+            amount_std = self.generate_std(self.amount)
+            amount_kurtosis = self.generate_kurtosis(self.amount)
+            amount_skew = self.generate_skew(self.amount)
+        else:
+            amount_mean = 0
+            amount_median = 0
+            amount_std = 0
+            amount_kurtosis = 0
+            amount_skew = 0
 
         self.prepared_session = PreparedSession(self.raw_session.session_id, time_mean,
-                                                time_std, time_skew, self.norm_amount,
+                                                time_std, time_skew, time_median,
+                                                time_kurtosis, amount_mean, amount_median,
+                                                amount_std, amount_kurtosis, amount_skew,
                                                 self.raw_session.attack_risk_label)
 
         return self.prepared_session.to_dict()
