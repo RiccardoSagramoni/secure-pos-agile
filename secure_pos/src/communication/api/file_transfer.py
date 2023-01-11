@@ -4,12 +4,13 @@ In order to use the API, add them as resources to your Flask application.
 """
 import os
 from typing import Callable
+import joblib
 
 import flask
 from flask import request
 from flask_restful import Resource
 
-from utility import project_folder
+from utility import data_folder
 
 
 class ReceiveFileApi(Resource):
@@ -26,7 +27,7 @@ class ReceiveFileApi(Resource):
                         The handler function should not take too much time to return
                         (start a new thread, if necessary).
         """
-        self.filename = os.path.join(project_folder, filename)
+        self.filename = os.path.join(data_folder, filename)
         self.handle_request = handler
     
     def post(self):
@@ -42,7 +43,7 @@ class ReceiveFileApi(Resource):
         
         # Save the file in the filesystem
         file = request.files['file']
-        file.save(self.filename)
+        joblib.dump(file, self.filename)
         
         # Execute the handler function if it was specified
         if self.handle_request is not None:

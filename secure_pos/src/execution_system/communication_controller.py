@@ -8,8 +8,8 @@ from communication.api.json_transfer import ReceiveJsonApi
 from communication.api.file_transfer import ReceiveFileApi
 from execution_system.execution_configuration import ExecutionConfiguration
 
-CLASSIFIER_MODEL_PATH = "execution_system/classifier_model.sav"
-SESSION_SCHEMA_PATH = "execution_system/prepared_session_schema.json"
+CLASSIFIER_MODEL_PATH = 'execution_system/classifier_model.sav'
+SESSION_SCHEMA_PATH = 'execution_system/prepared_session_schema.json'
 
 
 class CommunicationController:
@@ -54,7 +54,7 @@ class CommunicationController:
             args=[json_session]
         ).start()
 
-    def send_attack_risk_label(self, monitoring_label):
-        response = requests.post(self.__monitoring_system_url, json=monitoring_label)
+    def send_attack_risk_label(self, monitoring_label_dict: dict):
+        response = requests.post(self.__monitoring_system_url, json=monitoring_label_dict)
         if not response.ok:
-            logging.error("Failed to send label:\n%s", monitoring_label)
+            logging.error("Failed to send label:\n%s", monitoring_label_dict)
