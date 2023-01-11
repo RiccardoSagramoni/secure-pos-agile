@@ -118,16 +118,28 @@ class DevelopingSystemController:
                     sys.exit(0)
                 else:
                     print("Unknown value for 'is_initial_phase_over' param, in the training configuration file: please insert 'yes' or 'no'")
+                    sys.exit(0)
 
             elif self.training_configuration.is_grid_search_over in ['Yes', 'yes', 'YES']:
                 self.reset_of_the_system()
                 sys.exit(0)
+
             else:
+
                 print("Unknown value for 'is_grid_search_over' param, in the training configuration file: please insert 'yes' or 'no'")
+                sys.exit(0)
 
         else:
-            self.analysis_of_the_best_classifier()
-            sys.exit(0)
+
+            if self.training_configuration.test_best_classifier_passed in ['None', 'none', 'NONE']:
+                self.analysis_of_the_best_classifier()
+                sys.exit(0)
+
+            else:
+                if self.training_configuration.test_best_classifier_passed in ['Yes', 'yes', 'YES']:
+
+                    self.communication_controller.send_classifier_to_execution_system(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH))
+                    sys.exit(0)
 
     def save_ml_sets_in_the_archive(self, json_data):
 

@@ -36,5 +36,5 @@
   "is_initial_phase_over": "No",
   "is_grid_search_over": "No",
   "best_classifier_number": 0,
-  "test_best_classifier_passed": "No"
+  "test_best_classifier_passed": "None"
 }
