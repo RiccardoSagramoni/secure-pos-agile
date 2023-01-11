@@ -26,8 +26,8 @@
         "learning_rate_init": 0.001,
         "solver": "sgd"
       },
-      "training_error": 0.024390243902439046,
-      "validation_error": 0.0
+      "training_error": 0.016260162601625994,
+      "validation_error": 0.012195121951219523
     },
     {
       "classifier_filename": "classifier_number_3.sav",

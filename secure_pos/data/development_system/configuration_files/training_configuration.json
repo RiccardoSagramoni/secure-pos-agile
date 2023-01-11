@@ -18,7 +18,8 @@
   "number_of_top_classifiers": 5,
   "test_tolerance": 0.03,
   "validation_tolerance": 0.03,
-  "is_initial_phase": "Yes",
+  "is_initial_phase_over": "Yes",
+  "is_grid_search_over": "Yes",
   "best_classifier_number": 2,
   "test_best_classifier_passed": "No"
 }

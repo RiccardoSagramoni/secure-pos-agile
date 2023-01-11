@@ -7,7 +7,7 @@ from numpy import ravel
 import matplotlib.pyplot as plt
 import joblib
 
-from developing_system.TrainingConfiguration import TrainingConfiguration
+from developing_system.InitialPhaseTrainingReportGenerator import InitialPhaseTrainingReportGenerator
 import utility
 
 class MLPTraining:
@@ -15,7 +15,7 @@ class MLPTraining:
     def __init__(self, is_initial_phase):
 
         # data from the json training_configuration file
-        self.is_initial_phase = is_initial_phase
+        self.is_initial_phase_over = is_initial_phase
 
         # dataset for the training and validation
         self.training_data = read_csv('prova/trainingData.csv')
@@ -45,15 +45,18 @@ class MLPTraining:
         # measure the accurancy using the validation set
         self.validation_error = 1 - (accuracy_score(ravel(self.validation_labels), attack_risk_label_prediction))
 
-        if self.is_initial_phase in ["Yes", "yes"]:
+        if self.is_initial_phase_over in ['No', 'no', 'NO']:
 
             # plot of the loss function in function of the number of generations
             plt.plot(self.mlp.loss_curve_)
             plt.xlabel("Number of Generations")
             plt.ylabel("Loss Function")
             plt.title("LOSS FUNCTION PLOT")
-            plt.savefig("plots/loss_function_plot.png")
+            plt.savefig(os.path.join(utility.data_folder, 'development_system/reports/initial_phase/loss_function_plot.png'))
             plt.show()
+
+            initial_phase_training_report = InitialPhaseTrainingReportGenerator()
+            initial_phase_training_report.generate_report(self.training_error, self.validation_error, setted_hyper_parameters)
 
             save_path = os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav')
             joblib.dump(self.mlp, save_path)

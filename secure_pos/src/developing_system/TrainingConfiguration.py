@@ -25,6 +25,7 @@ class TrainingConfiguration:
             self.test_tolerance = json_training_conf['test_tolerance']
             self.number_of_top_classifiers = int(json_training_conf['number_of_top_classifiers'])
             self.validation_tolerance = json_training_conf['validation_tolerance']
-            self.is_initial_phase = json_training_conf['is_initial_phase']
+            self.is_initial_phase_over = json_training_conf['is_initial_phase_over']
+            self.is_grid_search_over = json_training_conf['is_grid_search_over']
             self.best_classifier_number = int(json_training_conf['best_classifier_number'])
             self.test_best_classifier_passed = json_training_conf['test_best_classifier_passed']

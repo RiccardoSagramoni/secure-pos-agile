@@ -1,7 +1,7 @@
 {
 	"definitions": {},
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://example.com/object1673373935.json",
+	"$id": "https://example.com/object1673397498.json",
 	"title": "Root",
 	"type": "object",
 	"required": [
@@ -10,7 +10,8 @@
 		"number_of_top_classifiers",
 		"test_tolerance",
 		"validation_tolerance",
-		"is_initial_phase",
+		"is_initial_phase_over",
+		"is_grid_search_over",
 		"best_classifier_number",
 		"test_best_classifier_passed"
 	],
@@ -218,13 +219,23 @@
 			],
 			"default": 0.0
 		},
-		"is_initial_phase": {
-			"$id": "#root/is_initial_phase",
-			"title": "Is_initial_phase",
+		"is_initial_phase_over": {
+			"$id": "#root/is_initial_phase_over",
+			"title": "Is_initial_phase_over",
 			"type": "string",
 			"default": "",
 			"examples": [
-				"Yes"
+				"No"
+			],
+			"pattern": "^.*$"
+		},
+		"is_grid_search_over": {
+			"$id": "#root/is_grid_search_over",
+			"title": "Is_grid_search_over",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"No"
 			],
 			"pattern": "^.*$"
 		},
