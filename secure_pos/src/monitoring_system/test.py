@@ -4,7 +4,7 @@ import requests
 
 
 def send_label(label_json):
-    response = requests.post("http://127.0.0.1:8000/", json=label_json)
+    response = requests.post("http://127.0.0.1:8001/", json=label_json)
     if not response.ok:
         logging.error("Failed to send label:\n%s", label_json)
 

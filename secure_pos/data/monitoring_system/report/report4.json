@@ -1,7 +1,7 @@
 {
   "conflicting_labels": 13,
   "compared_labels": 30,
-  "max_consecutive_conflicting_labels": 4,
+  "max_consecutive_conflicting_labels": 5,
   "conflicting_labels_threshold": 10,
   "max_consecutive_conflicting_labels_threshold": 10
 }

@@ -1,5 +1,6 @@
 import json
 import logging
+import threading
 
 from monitoring_system.monitoring_report import MonitoringReport
 
@@ -10,6 +11,7 @@ class MonitoringReportGenerator:
         self.report = MonitoringReport()
         self.labels = None
         self.count_report = 0
+        self.lock = threading.RLock()
 
     def generate_report_json(self):
         report_dict = self.report.to_dict()
@@ -53,15 +55,16 @@ class MonitoringReportGenerator:
         self.report.max_consecutive_conflicting_labels = max_consecutive_conflicting_labels
 
     def generate_report(self, label_df):
-        self.count_report += 1
-        self.labels = label_df
+        with self.lock:
+            self.count_report += 1
+            self.labels = label_df
 
-        if self.labels is not None:
-            # conto il numero di label discordanti
-            self.count_conflicting_labels()
+            if self.labels is not None:
+                # conto il numero di label discordanti
+                self.count_conflicting_labels()
 
-            # conto il numero massimo di label consecutive discordanti
-            self.count_max_consecutive_conflicting_labels()
+                # conto il numero massimo di label consecutive discordanti
+                self.count_max_consecutive_conflicting_labels()
 
-        # genero il file json contente il report
-        self.generate_report_json()
+            # genero il file json contente il report
+            self.generate_report_json()
