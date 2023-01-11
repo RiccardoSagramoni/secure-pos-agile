@@ -18,6 +18,9 @@ def validate_string_with_regex(string: str, regex: str) -> bool:
 
 
 class CommercialDataValidator:
+    """
+    Class responsible for validating a CommercialData object.
+    """
     
     def __init__(self, data: CommercialData):
         self.__commercial_data = data
@@ -68,8 +71,8 @@ class CommercialDataValidator:
     
     def validate_amount(self) -> bool:
         try:
-            float(self.__commercial_data.amount)
-            return True
+            amount = float(self.__commercial_data.amount)
+            return amount >= 0
         except ValueError:
             return False
     
@@ -94,6 +97,9 @@ class CommercialDataValidator:
 
 
 class GeoDataValidator:
+    """
+    Class responsible for validating a GeoData object.
+    """
     
     def __init__(self, data: GeoData):
         self.__geo_data = data
@@ -132,6 +138,9 @@ class GeoDataValidator:
 
 
 class NetworkDataValidator:
+    """
+    Class responsible for validating a NetworkData object.
+    """
     
     def __init__(self, data: NetworkData):
         self.__network_data = data

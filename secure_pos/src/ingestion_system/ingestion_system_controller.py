@@ -12,6 +12,12 @@ CONFIGURATION_SCHEMA_PATH = 'ingestion_system/config_schema.json'
 
 
 class IngestionSystemController:
+    """
+    Class responsible for executing the main logic workflow of the ingestion system.
+    
+    - It configures the system and all the necessary resources.
+    - It handles the reception of a new record.
+    """
     
     def __init__(self):
         self.__configuration = Configuration(CONFIGURATION_FILE_PATH, CONFIGURATION_SCHEMA_PATH)
@@ -25,10 +31,17 @@ class IngestionSystemController:
             RecordSynchronizer(self.__database_controller)
     
     def run(self) -> None:
+        """
+        Start the ingestion system.
+        """
         # Start REST server
         self.__communication_controller.start_ingestion_rest_server()
     
     def handle_new_record_reception(self, json_records: dict) -> None:
+        """
+        Handle a new record whenever it's received by the REST endpoint.
+        :param json_records: received JSON data
+        """
         # Extract information for logging
         session_id = json_records['session_id']
         record_type = json_records['type']
@@ -38,7 +51,7 @@ class IngestionSystemController:
         ret = self.__database_controller.insert_transaction_record(json_records)
         if not ret:
             logging.error("Impossible to insert records in db: %s", json_records)
-            return None
+            return
         
         # Register received record
         self.__system_mode_tracker.register_record_arrival(session_id)
@@ -63,3 +76,5 @@ class IngestionSystemController:
                 .send_attack_risk_label(session_id, raw_session.attack_risk_label)
         # Send raw session to preparation system
         self.__communication_controller.send_raw_session(raw_session)
+        # Unregister session from system mode tracker
+        self.__system_mode_tracker.unregister_session(session_id)

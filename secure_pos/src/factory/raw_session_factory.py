@@ -6,13 +6,17 @@ from factory.transaction_factory import TransactionFactory
 
 
 class RawSessionFactory:
+    """
+    Factory responsible for generating RawSession objects.
+    """
+    
     @staticmethod
-    def generate_from_dict(session_dict: dict) -> RawSession:
+    def generate_from_json_dict(session_dict: dict) -> RawSession:
         # Generate list of transaction objects
         transactions = []
         for doc in session_dict['transactions']:
             transactions.append(
-                TransactionFactory.generate_from_dict(doc)
+                TransactionFactory.generate_from_json_dict(doc)
             )
         # Generate raw session object
         return RawSession(

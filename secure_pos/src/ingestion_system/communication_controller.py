@@ -15,6 +15,15 @@ RECORD_SCHEMA_PATH = "ingestion_system/records_schema.json"
 
 
 class CommunicationController:
+    """
+    Class responsible for:
+    
+    - Configuring and start a REST endpoint
+    - Receiving transaction records in JSON format from the client-side systems
+      and starting a thread for the ingestion process
+    - Sending the raw sessions to the preparation system and the attack risk labels
+      to the monitoring system.
+    """
     
     def __init__(self, conf: Configuration, handler: typing.Callable[[dict], None]):
         self.__ip_address = conf.ip_address
@@ -24,14 +33,19 @@ class CommunicationController:
         self.__request_handler = handler
     
     def start_ingestion_rest_server(self) -> None:
+        """
+        Configure and start REST endpoint.
+        """
+        # Configure the REST server
         server = RestServer()
         server.api.add_resource(ReceiveJsonApi,
                                 "/",
                                 resource_class_kwargs={
-                                    'json_schema': RECORD_SCHEMA_PATH,
+                                    'json_schema_path': RECORD_SCHEMA_PATH,
                                     'handler': self.handle_message
                                 })
-        server.run(host=self.__ip_address, port=self.__port, debug=False)
+        # Start the REST server
+        server.run(host=self.__ip_address, port=self.__port)
     
     def handle_message(self, json_record: dict) -> None:
         """
@@ -44,14 +58,32 @@ class CommunicationController:
         ).start()
     
     def send_raw_session(self, raw_session: RawSession) -> None:
+        """
+        Send a raw session in JSON format to the preparation system.
+        :param raw_session: RawSession object to package and send
+        """
         # Serialize raw session
         raw_session_dict = RawSessionPackager(raw_session).package_as_json_dict()
-        response = requests.post(self.__preparation_system_url, json=raw_session_dict)
-        if not response.ok:
-            logging.error("Failed to send raw session:\n%s", raw_session_dict)
+        # Send serialized raw session
+        try:
+            response = requests.post(self.__preparation_system_url, json=raw_session_dict)
+            if not response.ok:
+                logging.error("Failed to send raw session %s", raw_session.session_id)
+        except requests.exceptions.RequestException as ex:
+            logging.error("Unable to send raw session %s.\tException %s", raw_session.session_id, ex)
     
     def send_attack_risk_label(self, session_id: str, attack_risk_label: AttackRiskLabel) -> None:
+        """
+        Send an attack risk label to the monitoring system.
+        :param session_id: id of the session
+        :param attack_risk_label: label
+        """
+        # Serialize attack risk label
         label_dict = AttackRiskLabelPackager(session_id, attack_risk_label)
-        response = requests.post(self.__monitoring_system_url, json=label_dict)
-        if not response.ok:
-            logging.error("Failed to send label:\n%s", label_dict)
+        # Send serialized label
+        try:
+            response = requests.post(self.__monitoring_system_url, json=label_dict)
+            if not response.ok:
+                logging.error("Failed to send label:\n%s", label_dict)
+        except requests.exceptions.RequestException as ex:
+            logging.error("Unable to send raw session %s.\tException %s", session_id, ex)

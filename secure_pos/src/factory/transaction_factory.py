@@ -5,12 +5,16 @@ from factory.record_data_factory import CommercialDataFactory, GeoDataFactory, N
 
 
 class TransactionFactory:
+    """
+    Factory responsible for generating Transaction objects.
+    """
+    
     @staticmethod
-    def generate_from_dict(data: dict) -> Transaction:
+    def generate_from_json_dict(data: dict) -> Transaction:
         return Transaction(
-            commercial=CommercialDataFactory.generate_from_dict(data['commercial']),
-            geo=GeoDataFactory.generate_from_dict(data['geo']),
-            network=NetworkDataFactory.generate_from_dict(data['network'])
+            commercial=CommercialDataFactory.generate_from_json_dict(data['commercial']),
+            geo=GeoDataFactory.generate_from_json_dict(data['geo']),
+            network=NetworkDataFactory.generate_from_json_dict(data['network'])
         )
     
     @staticmethod

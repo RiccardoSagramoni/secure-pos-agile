@@ -5,6 +5,10 @@ from data_objects.raw_session import RawSession
 
 
 class RawSessionPackager:
+    """
+    Class responsible for packaging a RawSession object in a JSON object,
+    in order to send it to the preparation system.
+    """
     
     def __init__(self, raw_session: RawSession):
         self.__raw_session = raw_session
@@ -15,14 +19,18 @@ class RawSessionPackager:
             'attack_risk_label': self.__raw_session.attack_risk_label.value,
             'transactions': []
         }
-        for t in self.__raw_session.transactions:
+        for transaction in self.__raw_session.transactions:
             doc['transactions'].append(
-                jsons.dump(t)
+                jsons.dump(transaction)
             )
         return doc
 
 
 class AttackRiskLabelPackager:
+    """
+    Class responsible for packaging a AttackRiskLabel object in a JSON object,
+    in order to send it to the monitoring system.
+    """
     
     def __init__(self, session_id: str, label: AttackRiskLabel):
         self.__session_id = session_id

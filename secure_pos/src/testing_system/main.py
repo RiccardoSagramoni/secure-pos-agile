@@ -1,5 +1,4 @@
 import os
-import threading
 import time
 from typing import Tuple
 
@@ -61,11 +60,10 @@ def main():
     ]
     print("Invio!")
     # Send data to ingestion system
-    for d in data:
-        response = requests.post("http://127.0.0.1:8000/", json=d)
+    for record in data:
+        response = requests.post("http://127.0.0.1:8000/", json=record)
         print(response.text)
         time.sleep(1)
-    return
 
 
 if __name__ == "__main__":

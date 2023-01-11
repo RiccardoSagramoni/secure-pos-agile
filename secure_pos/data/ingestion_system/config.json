@@ -2,7 +2,7 @@
     "ip_address": "0.0.0.0",
     "port": 8000,
     "database_path": "ingestion_system.db",
-    "preparation_system_url": "http://10.0.0.1:8000/",
+    "preparation_system_url": "http://25.34.53.59:8000/",
     "monitoring_system_url": "http://10.0.0.2:8000/",
     "min_transactions_per_session": 5,
     "max_invalid_attributes_allowed": 5,

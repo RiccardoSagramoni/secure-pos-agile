@@ -3,7 +3,10 @@ import sqlite3
 import pandas as pd
 
 
-class DBManager:
+class DBManager:  # todo change name to database_connector.DatabaseConnector
+    """
+    Class responsible to handle the "low level" accesses to the database.
+    """
 
     def __init__(self, db_path: str):
         self.__database_path = db_path
