@@ -29,13 +29,13 @@ class ResponseExtractor:
                                   "configuration: JSON file is not valid")
                     raise ValueError("Segregation System configuration failed")
                 result = data.pop('response')
-                # TODO Remove comments
-                # data['response'] = 'None'
+
+                data['response'] = 'None'
 
                 # Rewind needed for overwriting and reset the variable
-                # file_opened.seek(0)
-                # json.dump(data, file_opened)
-                # file_opened.truncate()
+                file_opened.seek(0)
+                json.dump(data, file_opened)
+                file_opened.truncate()
         return result
 
     def extract_json_response_quality(self) -> object:
@@ -52,11 +52,11 @@ class ResponseExtractor:
                                   "configuration: JSON file is not valid")
                     raise ValueError("Segregation System configuration failed")
                 result = data.pop('response')
-                # TODO Remove comments
-                # data['response'] = 'None'
+
+                data['response'] = 'None'
 
                 # Rewind needed for overwriting and reset the variable
-                # file_opened.seek(0)
-                # json.dump(data, file_opened)
-                # file_opened.truncate()
+                file_opened.seek(0)
+                json.dump(data, file_opened)
+                file_opened.truncate()
         return result

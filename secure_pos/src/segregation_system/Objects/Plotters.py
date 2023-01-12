@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pandas as pd
@@ -25,7 +26,7 @@ class PlotterHistogram:
         plt.savefig("./graphs/Balancing_plot.png")
 
         # Suspension 'til evaluation completed
-        sys.exit(0)
+        os._exit(0)
 
 
 class PlotterRadarDiagram:

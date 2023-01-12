@@ -1,7 +1,6 @@
-import os
-import sys
-import json
-import pandas as pd
+import logging
+import threading
+import requests
 
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
@@ -15,8 +14,6 @@ class CommunicationController:
     def __init__(self, db_handler, url, segregation_system_controller):
         self.filename = './database/PreparedSession.json'
         self.db_handler = db_handler
-        self.mode = 0
-        self.sessions_nr = 0
         self.dev_system_url = url
         self.segregation_system_controller = segregation_system_controller
 
@@ -36,36 +33,19 @@ class CommunicationController:
         """
         Method that handle the incoming messages (preparation system)
         """
-        # If our system is involved with data balancing and quality I cannot
-        # accept more prepared sessions so the system discards them
-        if self.mode == 1:
-            sys.exit(0)
-
-        self.db_handler.create_arrived_session_table()
-
-        # Instantiate a data frame
-        data_frame = pd.DataFrame(file_json,
-                                  columns=['id','time_mean', 'time_median', 'time_std',
-                                           'time_kurtosis', 'time_skewness', 'amount_mean',
-                                           'amount_median', 'amount_std', 'amount_kurtosis',
-                                           'amount_skewness', 'type', 'label'])
-
-        ret = self.db_handler.insert_session(data_frame)
-
-        # if we received 7 sessions the system can continue its execution,
-        # otherwise it will terminate waiting for a new message
-        if ret:
-            self.sessions_nr += 7
-            if self.sessions_nr == self.segregation_system_controller.\
-                                        config_file.session_nr_threshold:
-                self.sessions_nr = 0
-                self.mode = 1
-                self.db_handler.normalize_current_data()
-                self.segregation_system_controller.check_balancing()
-                sys.exit(0)
+        logging.info("received new session")
+        thread = threading.Thread(target=self.segregation_system_controller.manage_message,
+                                  args=[file_json])
+        thread.start()
 
     def send_datasets(self, json_to_send):
-        # TODO
-        return
-
-
+        """
+        Method that sends the generated datasets to the development system
+        :param json_to_send: data to send
+        """
+        try:
+            response = requests.post(self.dev_system_url, json=json_to_send)
+            if not response.ok:
+                logging.error("Failed to send raw dataset")
+        except requests.exceptions.RequestException as ex:
+            logging.error("Unable to send raw datasets.\tException %s", ex)

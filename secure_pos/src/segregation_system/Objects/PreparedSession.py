@@ -11,6 +11,7 @@ class PreparedSession:
         self.amount_std = features[7]
         self.amount_kurtosis = features[8]
         self.amount_skewness = features[9]
+        self.id = features[10]
         self.label = label
 
     def get_features(self) -> object:
@@ -30,3 +31,14 @@ class PreparedSession:
         :return: integer representing the label
         """
         return [self.label]
+
+    def get_all(self):
+        """
+        Function that extracts the data of a specific session
+        :return: Array containing all the current data
+        """
+        array = [self.id, self.time_mean, self.time_median, self.time_std,
+                 self.time_kurtosis, self.time_skewness, self.amount_mean,
+                 self.amount_median, self.amount_std, self.amount_kurtosis,
+                 self.amount_skewness]
+        return array

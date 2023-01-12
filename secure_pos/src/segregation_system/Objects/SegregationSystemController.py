@@ -1,6 +1,6 @@
-import json
 import os
 import sys
+import threading
 
 import pandas as pd
 
@@ -26,6 +26,9 @@ class SegregationSystemController:
     def __init__(self):
         self.config_file = SegregationSystemConfiguration()
         self.db_handler = DBHandler(PATH_DB)
+        self.lock = threading.RLock()
+        self.mode = 0
+        self.sessions_nr = 0
 
     def check_balancing(self):
         """
@@ -33,6 +36,7 @@ class SegregationSystemController:
         and plot them in order to evaluate the data balancing
         :return: Null
         """
+
         data_extractor = DataExtractor.DataExtractor(self.db_handler)
         labels = data_extractor.count_labels()
 
@@ -63,7 +67,7 @@ class SegregationSystemController:
         """
 
         data_extractor = DataExtractor.DataExtractor(self.db_handler)
-        data_frame_input = data_extractor.extract_features()
+        data_frame_input = data_extractor.extract_all()
 
         data_frame_result = data_extractor.extract_labels()
 
@@ -74,40 +78,41 @@ class SegregationSystemController:
                                                               stratify=data_frame_result,
                                                               test_size=0.3)
 
-        #x_validation, x_test, y_validation, y_test = train_test_split(x_other,
-        #                                                              y_other,
-        #                                                              stratify=y_other,
-        #                                                              test_size=0.5)
+        x_validation, x_test, y_validation, y_test = train_test_split(x_other,
+                                                                      y_other,
+                                                                      stratify=y_other,
+                                                                      test_size=0.5)
         # Set data type
-        x_train['type'] = 0
-        #x_validation['type'] = 1
-        #x_test['type'] = 2
-        x_other['type'] = 1
+        x_train['type'] = 0         # train type
+        x_validation['type'] = 1    # validation type
+        x_test['type'] = 2          # test type
 
-        # Merge input with
+        # concatenate input and output
         x_train['label'] = y_train['label']
-        #x_validation['label'] = y_validation['label'] TODO fix code lines
-        #x_test['label'] = y_test['label']
-        x_other['label'] = y_other['label']
+        x_validation['label'] = y_validation['label']
+        x_test['label'] = y_test['label']
 
-        #pd.concat([x_train, x_validation, x_test], ignore_index=True)
-        res = pd.concat([x_train, x_other], ignore_index=True)
+        res = pd.concat([x_train, x_validation, x_test], ignore_index=True)
 
-        res.to_json('./to_fab.json', indent=2)
-
-        # Mark the records as USED TODO remove comment below
-        # database.update("UPDATE ArrivedSessions SET type = 0 WHERE type = -1")
+        # Update the type and mark the records as used
+        self.db_handler.update_type()
 
         communication_controller = CommunicationController(self.db_handler,
                                                            self.config_file.development_system_url,
                                                            self)
-        communication_controller.send_datasets(res)
+        communication_controller.send_datasets(res.to_dict())
         print("Dataset sent, now terminate")
 
         # remove the generated graphs
-        os.remove(BALANCING_REPORT_PATH)
-        os.remove(QUALITY_REPORT_PATH)
+        try:
+            os.remove(BALANCING_REPORT_PATH)
+            os.remove(QUALITY_REPORT_PATH)
+        except FileNotFoundError as ex:
+            print(f"Error during file removal: {ex}")
         # reset the mode to accept more data from now on
+        with self.lock:
+            self.mode = 0
+
         sys.exit(0)
 
     def check_response(self):
@@ -155,7 +160,40 @@ class SegregationSystemController:
         communication_controller = CommunicationController(self.db_handler,
                                                            self.config_file.development_system_url,
                                                            self)
-        #communication_controller.init_rest_server()
-        with open('./database/PreparedSession.json', 'r', encoding='utf-8') as opened_file:
-            data = json.load(opened_file)
-        communication_controller.handle_message(data)
+        communication_controller.init_rest_server()
+
+    def manage_message(self, file_json):
+        """
+        Function that manage the flow after receiving a message from preparation system
+        :param file_json: arrived data
+        :return: None
+        """
+        # If our system is involved with data balancing and quality I cannot
+        # accept more prepared sessions so the system discards them
+        with self.lock:
+            if self.mode == 1:
+                return
+
+            self.db_handler.create_arrived_session_table()
+
+            # Instantiate a data frame
+            data_frame = pd.DataFrame(file_json,
+                                      columns=['id', 'time_mean', 'time_median', 'time_std',
+                                               'time_kurtosis', 'time_skewness', 'amount_mean',
+                                               'amount_median', 'amount_std', 'amount_kurtosis',
+                                               'amount_skewness', 'type', 'label'])
+
+            ret = self.db_handler.insert_session(data_frame)
+
+            # if we received 7 sessions the system can continue its execution,
+            # otherwise it will terminate waiting for a new message
+            if not ret:
+                return
+            self.sessions_nr += 1
+            print(self.sessions_nr)
+            if self.sessions_nr != self.config_file.session_nr_threshold:
+                sys.exit(0)
+
+            self.sessions_nr = 0
+            self.mode = 1
+        self.check_balancing()

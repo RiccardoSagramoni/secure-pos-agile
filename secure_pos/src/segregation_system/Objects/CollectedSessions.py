@@ -6,12 +6,12 @@ class CollectedSessions:
     """
     Class representing the collection of sessions we are currently working on
     """
-    def __init__(self, features, labels):
+    def __init__(self, data, labels):
         self.prep_sessions = []
         self.sessions_count = 0
 
-        for i in range(len(features)):
-            p_s = PreparedSession(features.values[i, :], labels.values[i])
+        for i in range(len(data)):
+            p_s = PreparedSession(data.values[i, :], labels.values[i])
             self.prep_sessions.append(p_s)
             self.sessions_count += 1
 
@@ -40,3 +40,16 @@ class CollectedSessions:
             labels.loc[i] = label[0][0]
 
         return labels
+
+    def get_all(self):
+        """
+        Extracts a list of features we are currently working on: [[...features...],[...features...],...]
+        :return: list of the list of features
+        """
+        data = []
+
+        for i in range(self.sessions_count):
+            _all = self.prep_sessions[i].get_all()
+            data.append(_all)
+
+        return data

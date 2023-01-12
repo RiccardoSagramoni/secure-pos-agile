@@ -11,5 +11,5 @@
     "amount_kurtosis" : [100, 120, 100, 21, 54, 79, 102],
     "amount_skewness" : [100, 120, 100, 32, 84, 42, 80],
     "type" : [-1,-1,-1,-1,-1,-1,-1],
-    "label" : ["ATTACK", "NORMAL", "NORMAL", "ATTACK", "NORMAL", "NORMAL", "ATTACK"]
+    "label" : [1, 0, 0, 1, 0, 0, 1]
 }

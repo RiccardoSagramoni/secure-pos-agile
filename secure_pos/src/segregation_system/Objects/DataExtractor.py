@@ -12,6 +12,7 @@ class DataExtractor:
     def __init__(self, db_handler):
 
         [features, labels] = db_handler.extract_all_unallocated_data()
+
         self.current_sessions = CollectedSessions(features, labels)
 
     def count_labels(self):
@@ -25,7 +26,7 @@ class DataExtractor:
         count_attack = 0
 
         for i in range(len(labels)):
-            if labels['label'][i] == 'NORMAL':
+            if labels['label'][i] == 0:
                 count_normal += 1
             else:
                 count_attack += 1
@@ -50,10 +51,28 @@ class DataExtractor:
         return data_frame
 
     def extract_labels(self):
-
+        """
+        Method that extract all the labels from the data we are currently working on
+        """
         data = self.current_sessions.get_labels()
         data_frame = pd.DataFrame(data,
                                   columns=['label'])
+
+        return data_frame
+
+    def extract_all(self) -> object:
+        """
+        Function that performs a query that extract the data
+        needed to be sent to the development system
+        :return: Dataframe
+        """
+        data = self.current_sessions.get_all()
+        # Extract all the unallocated data
+        data_frame = pd.DataFrame(data,
+                                  columns=['id', 'time_mean', 'time_median', 'time_std',
+                                           'time_kurtosis', 'time_skewness', 'amount_mean',
+                                           'amount_median', 'amount_std', 'amount_kurtosis',
+                                           'amount_skewness'])
 
         return data_frame
 
