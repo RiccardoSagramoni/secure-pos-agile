@@ -1,9 +1,9 @@
 import pandas as pd
 
-from execution_system.execution_configuration import ExecutionConfiguration
+from execution_system.execution_system_configuration import ExecutionSystemConfiguration
 from execution_system.communication_controller import CommunicationController
 from execution_system.system_mode_tracker import SystemModeTracker
-from execution_system.execution_system_deployment import DeployedClassifierModel
+from execution_system.classifier_model_deployment import ClassifierModelDeployment
 from execution_system.attack_risk_classifier import AttackRiskClassifier
 
 CONFIGURATION_FILE = 'execution_system/execution_config.json'
@@ -13,13 +13,13 @@ CONFIGURATION_SCHEMA = 'execution_system/execution_config_schema.json'
 class ExecutionSystemController:
 
     def __init__(self):
-        self.__configuration = ExecutionConfiguration(CONFIGURATION_FILE, CONFIGURATION_SCHEMA)
+        self.__configuration = ExecutionSystemConfiguration(CONFIGURATION_FILE, CONFIGURATION_SCHEMA)
         self.__communication_controller = \
             CommunicationController(self.__configuration,
                                     self.handle_new_prepared_session_reception,
                                     self.handle_classifier_model_deployment)
         self.__system_mode_tracker = SystemModeTracker(self.__configuration)
-        self.__deployed_classifier_model = DeployedClassifierModel()
+        self.__deployed_classifier_model = ClassifierModelDeployment()
 
     def run(self):
         # Start REST server

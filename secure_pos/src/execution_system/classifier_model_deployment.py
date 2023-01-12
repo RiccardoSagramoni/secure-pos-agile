@@ -6,7 +6,7 @@ from execution_system.communication_controller import CLASSIFIER_MODEL_PATH
 from utility import data_folder
 
 
-class DeployedClassifierModel:
+class ClassifierModelDeployment:
     __classifier_model = None
 
     def __init__(self):

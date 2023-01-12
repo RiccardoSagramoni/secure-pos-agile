@@ -6,7 +6,7 @@ import requests
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
 from communication.api.file_transfer import ReceiveFileApi
-from execution_system.execution_configuration import ExecutionConfiguration
+from execution_system.execution_system_configuration import ExecutionSystemConfiguration
 
 CLASSIFIER_MODEL_PATH = 'execution_system/classifier_model.sav'
 SESSION_SCHEMA_PATH = 'execution_system/prepared_session_schema.json'
@@ -14,7 +14,7 @@ SESSION_SCHEMA_PATH = 'execution_system/prepared_session_schema.json'
 
 class CommunicationController:
 
-    def __init__(self, conf: ExecutionConfiguration,
+    def __init__(self, conf: ExecutionSystemConfiguration,
                  execution_handler: typing.Callable[[dict], None],
                  deployment_handler: typing.Callable[[dict], None]):
         self.__ip_address = conf.system_ip

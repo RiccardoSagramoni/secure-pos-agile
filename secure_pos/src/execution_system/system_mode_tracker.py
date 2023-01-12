@@ -1,13 +1,13 @@
 import threading
 
-from execution_system.execution_configuration import ExecutionConfiguration
+from execution_system.execution_system_configuration import ExecutionSystemConfiguration
 
 
 class SystemModeTracker:
     __lock = threading.RLock()
     __session_num = 0
 
-    def __init__(self, conf: ExecutionConfiguration):
+    def __init__(self, conf: ExecutionSystemConfiguration):
         self.development_mode = True
         self.__execution_window_length = conf.execution_window_length
         self.__monitoring_window_length = conf.monitoring_window_length

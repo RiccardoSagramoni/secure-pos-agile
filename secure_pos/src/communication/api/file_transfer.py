@@ -43,7 +43,7 @@ class ReceiveFileApi(Resource):
         
         # Save the file in the filesystem
         file = request.files['file']
-        joblib.dump(file, self.filename)
+        file.save(self.filename)
         
         # Execute the handler function if it was specified
         if self.handle_request is not None:

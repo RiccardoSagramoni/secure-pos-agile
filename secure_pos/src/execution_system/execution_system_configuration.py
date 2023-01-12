@@ -6,7 +6,7 @@ import utility
 from utility.json_validation import validate_json_data_file
 
 
-class ExecutionConfiguration:
+class ExecutionSystemConfiguration:
     def __init__(self, json_configuration_path: str, json_schema_path: str):
         # Open configuration file
         with open(os.path.join(utility.data_folder, json_configuration_path), "r", encoding="UTF-8") as file:
