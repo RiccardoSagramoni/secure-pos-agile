@@ -17,8 +17,9 @@ class DatabaseController:
     __lock = threading.RLock()
     
     def __init__(self, conf: Configuration, tracker: SystemModeTracker):
-        self.__database_connector = DBManager(conf.database_path)
         self.__system_mode_tracker = tracker
+        self.__database_connector = DBManager(conf.database_path)
+        self.__database_connector.drop_database()
         self.__create_tables()
     
     def __create_tables(self) -> None:

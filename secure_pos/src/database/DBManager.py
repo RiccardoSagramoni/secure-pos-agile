@@ -36,4 +36,7 @@ class DBManager:  # todo change name to database_connector.DatabaseConnector
         self.__execute_commit_query(f"DROP TABLE IF EXISTS {table};")
     
     def drop_database(self) -> None:
-        os.remove(self.__database_path)
+        try:
+            os.remove(self.__database_path)
+        except FileNotFoundError:
+            return

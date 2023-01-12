@@ -37,7 +37,7 @@ class CommunicationController:
         Configure and start REST endpoint.
         """
         # Configure the REST server
-        server = RestServer()
+        server = RestServer(name="INGESTION SYSTEM")
         server.api.add_resource(ReceiveJsonApi,
                                 "/",
                                 resource_class_kwargs={

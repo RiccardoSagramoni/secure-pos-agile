@@ -18,7 +18,8 @@ def parse_dataset() -> typing.Tuple[DataFrame, DataFrame, DataFrame, DataFrame]:
     )
 
 
-def get_data_for_testing(commercial, geo, network, label, start_index=0, window_size=10) -> typing.Tuple[list, list, list, dict]:
+def get_data_for_testing(commercial, geo, network, label,
+                         start_index=0, window_size=10) -> typing.Tuple[list, list, list, dict]:
     return (
         commercial.iloc[start_index: start_index + window_size].to_dict(orient='records'),
         geo.iloc[start_index: start_index + window_size].to_dict(orient='records'),
@@ -28,7 +29,7 @@ def get_data_for_testing(commercial, geo, network, label, start_index=0, window_
 
 
 def replace_broken_label(label):
-    if label['label'] != "ATTACK" and label['label'] != "NORMAL":
+    if label['label'] not in ["ATTACK", "NORMAL"]:
         label['label'] = "NORMAL"
     return label
 
