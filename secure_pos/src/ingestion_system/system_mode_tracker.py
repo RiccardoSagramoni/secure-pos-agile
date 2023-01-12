@@ -55,7 +55,7 @@ class SystemModeTracker:
         with self.__lock:
             # Check if session is registered
             if session_id not in self.__session_register:
-                raise ValueError("Session has not been registered")
+                raise ValueError(f"Session {session_id} has not been registered")
             # Check if session is inside monitoring window
             return self.__session_register[session_id] >= self.__execution_window_length
     

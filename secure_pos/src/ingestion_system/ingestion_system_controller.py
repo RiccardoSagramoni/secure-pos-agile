@@ -46,7 +46,7 @@ class IngestionSystemController:
         session_id = json_records['session_id']
         record_type = json_records['type']
         logging.info("Received record %s of session %s", record_type, session_id)
-
+        
         # Insert records in database
         ret = self.__database_controller.insert_transaction_record(json_records)
         if not ret:

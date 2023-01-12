@@ -26,7 +26,10 @@ class RecordSynchronizer:
         """
         with self.__lock:
             # Check if we have all the necessary data of the session
-            if not self.__database_controller.is_session_completed(session_id):
+            try:
+                if not self.__database_controller.is_session_completed(session_id):
+                    return None
+            except ValueError:
                 return None
             
             # Get raw session and remove it from database
