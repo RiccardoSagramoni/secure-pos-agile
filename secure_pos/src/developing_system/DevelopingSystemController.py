@@ -37,7 +37,7 @@ class DevelopingSystemController:
     def __init__(self):
         self.training_configuration = TrainingConfiguration(TRAINING_CONFIGURATION_PATH, TRAINING_CONFIGURATION_SCHEMA_PATH)
         self.developing_system_configuration = DevelopingSystemConfiguration(SYSTEM_CONFIGURATION_PATH, SYSTEM_CONFIGURATION_SCHEMA_PATH)
-        self.communication_controller = CommunicationController(self.developing_system_configuration, self)
+        self.communication_controller = CommunicationController(self.developing_system_configuration, self.save_ml_sets_in_the_archive, self.semaphore.release)
         self.ml_sets_archive_handler = MachineLearningSetsArchiver(os.path.join(utility.data_folder, ML_SETS_ARCHIVE_PATH))
 
 
@@ -136,7 +136,8 @@ class DevelopingSystemController:
             else:
                 if self.training_configuration.test_best_classifier_passed in ['Yes', 'yes', 'YES']:
 
-                    self.communication_controller.send_classifier_to_execution_system(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH))
+                    classifier_archive_manager = ClassifierArchiver(self.training_configuration.best_classifier_number)
+                    self.communication_controller.send_classifier_to_execution_system(classifier_archive_manager.return_path_best_classifier())
                     sys.exit(0)
 
     def save_ml_sets_in_the_archive(self, json_data):

@@ -27,7 +27,7 @@ class TestBestClassifier:
         # measure the accurancy using the validation set
         self.test_error = 1 - (accuracy_score(ravel(self.test_labels), attack_risk_label_prediction))
 
-        TestBestCLassifierReportGenerator().generate_report(self)
+        TestBestCLassifierReportGenerator().generate_report(self.test_tolerance, self.id_best_classifier, self.training_error, self.test_error)
 
 
     def print(self):

@@ -62,6 +62,6 @@ class GridSearchController:
 
         print(self.validation_errors_of_top_classifiers)
 
-        TopClassifierReportGenerator().generate_report(self)
+        TopClassifierReportGenerator().generate_report( self.validation_tolerance, self.number_of_top_classifiers, self.top_classifiers_object_list)
 
 

@@ -8,17 +8,18 @@ from communication.api.json_transfer import ReceiveJsonApi
 
 class CommunicationController:
 
-    def __init__(self, developing_system_configuration, development_system_controller):
+    def __init__(self, developing_system_configuration, handler, semaphore_handler):
 
         self.ip_address = developing_system_configuration.ip_address
         self.port = developing_system_configuration.port
         self.execution_system_url = developing_system_configuration.execution_system_url
-        self.development_system_controller = development_system_controller
+        self.development_system_controller_handler = handler
+        self.semaphore_handler = semaphore_handler
 
     def handle_message(self, json_record: dict) -> None:
 
-        self.development_system_controller.save_ml_sets_in_the_archive(json_record)
-        self.development_system_controller.semaphore.release()
+        self.development_system_controller_handler(json_record)
+        self.semaphore_handler()
 
 
     def start_developing_rest_server(self) -> None:
