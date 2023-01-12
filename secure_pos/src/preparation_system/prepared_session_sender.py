@@ -13,5 +13,5 @@ class PreparedSessionSender:
             response = requests.post(self.url, json=prepared_session_dict)
             if not response.ok:
                 logging.error("Failed to send prepared session:\n%s", prepared_session_dict)
-        except requests.exceptions.RequestException as ex:
+        except requests.exceptions.RequestException:
             logging.error("Unable to send prepared session")
