@@ -15,13 +15,15 @@ class MonitoringSystemController:
         self.config_path = "../../data/monitoring_system/conf/config.json"
         self.config_schema_path = "../../data/monitoring_system/conf/config_schema.json"
         self.config = None
+        self.testing = False
 
     def handle_message(self, label_json):
-        # When the system receives a message, generate a new thread
-        logging.info("Received label")
-        thread = threading.Thread(target=self.label_manager.store_label,
-                                  args=(self.config["monitoring_window_length"], label_json))
-        thread.start()
+        if not self.testing:
+            # When the system receives a message, generate a new thread
+            logging.info("Received label")
+            thread = threading.Thread(target=self.label_manager.store_label,
+                                      args=(self.config["monitoring_window_length"], label_json))
+            thread.start()
 
     def start_server(self):
         # Instantiate server
