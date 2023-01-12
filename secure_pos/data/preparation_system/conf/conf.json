@@ -1,6 +1,6 @@
 {
-  "mode": "development",
-  "ip_execution_system": "25.34.53.59",
+  "mode": "execution",
+  "ip_execution_system": "25.20.54.175",
   "port_execution_system": 8000,
   "ip_segregation_system": "25.20.30.97",
   "port_segregation_system": 8000,
