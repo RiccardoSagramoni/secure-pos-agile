@@ -79,9 +79,9 @@ class CommunicationController:
         :param attack_risk_label: label
         """
         # Serialize attack risk label
-        label_dict = AttackRiskLabelPackager(session_id, attack_risk_label)
+        label_dict = AttackRiskLabelPackager(session_id, attack_risk_label).package_as_json_dict()
         # Send serialized label
-        logging.info("Send session %s", session_id)
+        logging.info("Send attack risk label of session %s", session_id)
         try:
             response = requests.post(self.__monitoring_system_url, json=label_dict)
             if not response.ok:
