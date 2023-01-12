@@ -1,0 +1,72 @@
+{
+  "report_title:": "Report of the Top Classifiers",
+  "validation_tolerance": 0.03,
+  "number_of_top_classifiers": 5,
+  "top_classifiers": [
+    {
+      "classifier_filename": "classifier_number_1.sav",
+      "classifier_id": 1,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_sizes": 80,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.001,
+        "solver": "adam"
+      },
+      "training_error": 0.35,
+      "validation_error": 0.4666666666666667
+    },
+    {
+      "classifier_filename": "classifier_number_2.sav",
+      "classifier_id": 2,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_sizes": 80,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.001,
+        "solver": "sgd"
+      },
+      "training_error": 0.44285714285714284,
+      "validation_error": 0.4666666666666667
+    },
+    {
+      "classifier_filename": "classifier_number_3.sav",
+      "classifier_id": 3,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_sizes": 100,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.001,
+        "solver": "adam"
+      },
+      "training_error": 0.30714285714285716,
+      "validation_error": 0.4
+    },
+    {
+      "classifier_filename": "classifier_number_4.sav",
+      "classifier_id": 4,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_sizes": 100,
+        "learning_rate": "constant",
+        "learning_rate_init": 0.01,
+        "solver": "adam"
+      },
+      "training_error": 0.16428571428571426,
+      "validation_error": 0.43333333333333335
+    },
+    {
+      "classifier_filename": "classifier_number_5.sav",
+      "classifier_id": 5,
+      "hyper_parameters": {
+        "activation": "relu",
+        "hidden_layer_sizes": 80,
+        "learning_rate": "invscaling",
+        "learning_rate_init": 0.001,
+        "solver": "adam"
+      },
+      "training_error": 0.3142857142857143,
+      "validation_error": 0.4666666666666667
+    }
+  ]
+}

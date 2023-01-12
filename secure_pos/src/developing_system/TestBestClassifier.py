@@ -6,15 +6,19 @@ from developing_system.TrainingConfiguration import TrainingConfiguration
 from developing_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
 from developing_system.TestBestClassifierReportGenerator import TestBestCLassifierReportGenerator
 
+TEST_SETS = 2
+
 class TestBestClassifier:
 
 
     def __init__(self, training_conf: TrainingConfiguration, training_error_best_classifier, ml_sets_archive_handler: MachineLearningSetsArchiver):
 
+        [test_data, test_labels] = ml_sets_archive_handler.get_ml_sets(TEST_SETS)
+
         self.test_tolerance = training_conf.test_tolerance
         self.id_best_classifier = training_conf.best_classifier_number
-        self.test_data = ml_sets_archive_handler.get_ml_sets(2, False)
-        self.test_labels = ml_sets_archive_handler.get_ml_sets(2, True)
+        self.test_data = test_data
+        self.test_labels = test_labels
         self.training_error = training_error_best_classifier
         self.test_error = None
 

@@ -14,21 +14,23 @@ from developing_system.GridSearchController import GridSearchController
 from developing_system.DevelopingSystemConfiguration import DevelopingSystemConfiguration
 from developing_system.ClassifierArchiver import ClassifierArchiver
 from developing_system.TestBestClassifier import TestBestClassifier
-from developing_system.TestBestClassifierReportGenerator import TestBestCLassifierReportGenerator
-from developing_system.CommunicationController import CommunicationController
+from developing_system.DevelopmentSystemCommunicationController import DevelopmentSystemCommunicationController
 from developing_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
 
 import utility
 
 SYSTEM_CONFIGURATION_PATH = 'development_system/configuration_files/developing_system_configuration.json'
 SYSTEM_CONFIGURATION_SCHEMA_PATH = 'development_system/json_schemas/developing_system_configuration_schema.json'
-
 TRAINING_CONFIGURATION_PATH = 'development_system/configuration_files/training_configuration.json'
 TRAINING_CONFIGURATION_SCHEMA_PATH = 'development_system/json_schemas/training_configuration_schema.json'
 
 ML_SETS_ARCHIVE_PATH = 'development_system/ml_sets_archive/ml_sets_archive.db'
 ML_SETS_JSON_FILE_PATH = 'development_system/received_files/ml_set_for_training_classifier.json'
-
+DIRECTORY_CLASSIFIER_PATH = 'development_system/classifiers'
+DIRECTORY_DB_PATH = os.path.join(utility.data_folder,'development_system/ml_sets_archive')
+DIRECTORY_INITIAL_PHASE_REPORT_PATH = os.path.join(utility.data_folder,'development_system/reports/initial_phase')
+DIRECTORY_BEST_CLASSIFIER_REPORT_PATH = os.path.join(utility.data_folder,'development_system/reports/best_classifier')
+DIRECTORY_TOP_CLASSIFIERS_REPORT_PATH = os.path.join(utility.data_folder,'development_system/reports/top_classifiers')
 
 class DevelopingSystemController:
 
@@ -37,7 +39,7 @@ class DevelopingSystemController:
     def __init__(self):
         self.training_configuration = TrainingConfiguration(TRAINING_CONFIGURATION_PATH, TRAINING_CONFIGURATION_SCHEMA_PATH)
         self.developing_system_configuration = DevelopingSystemConfiguration(SYSTEM_CONFIGURATION_PATH, SYSTEM_CONFIGURATION_SCHEMA_PATH)
-        self.communication_controller = CommunicationController(self.developing_system_configuration, self.save_ml_sets_in_the_archive, self.semaphore.release)
+        self.communication_controller = DevelopmentSystemCommunicationController(self.developing_system_configuration, self.save_ml_sets_in_the_archive, self.semaphore.release)
         self.ml_sets_archive_handler = MachineLearningSetsArchiver(os.path.join(utility.data_folder, ML_SETS_ARCHIVE_PATH))
 
 
@@ -67,6 +69,7 @@ class DevelopingSystemController:
 
         with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'w') as write_file:
             json.dump(json_data, write_file, indent=2)
+
 
     def run(self):
 
@@ -139,6 +142,8 @@ class DevelopingSystemController:
                     classifier_archive_manager = ClassifierArchiver(self.training_configuration.best_classifier_number)
                     self.communication_controller.send_classifier_to_execution_system(classifier_archive_manager.return_path_best_classifier())
                     sys.exit(0)
+
+
 
     def save_ml_sets_in_the_archive(self, json_data):
 

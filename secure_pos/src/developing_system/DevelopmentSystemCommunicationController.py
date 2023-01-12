@@ -6,9 +6,11 @@ import requests
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
 
-class CommunicationController:
+from developing_system.DevelopingSystemConfiguration import DevelopingSystemConfiguration
 
-    def __init__(self, developing_system_configuration, handler, semaphore_handler):
+class DevelopmentSystemCommunicationController:
+
+    def __init__(self, developing_system_configuration: DevelopingSystemConfiguration, handler, semaphore_handler):
 
         self.ip_address = developing_system_configuration.ip_address
         self.port = developing_system_configuration.port
@@ -34,7 +36,11 @@ class CommunicationController:
 
 
     def send_classifier_to_execution_system(self, classifier_path):
-        with open(classifier_path, 'rb') as file_to_send:
-            response = requests.post(self.execution_system_url, files={'file': file_to_send})
-        if not response.ok:
-            logging.error("Failed to send the classifier to the execution system")
+
+        try:
+            with open(classifier_path, 'rb') as file_to_send:
+                response = requests.post(self.execution_system_url, files={'file': file_to_send})
+            if not response.ok:
+                logging.error("Failed to send the classifier to the execution system")
+        except requests.exceptions.RequestException as ex:
+            logging.error("Error during the send of the classifier: %s", ex)

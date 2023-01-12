@@ -10,6 +10,8 @@ from developing_system.InitialPhaseTrainingReportGenerator import InitialPhaseTr
 from developing_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
 import utility
 
+TRAINING_SETS = 0
+VALIDATION_SETS = 1
 
 class MLPTraining:
 
@@ -18,11 +20,14 @@ class MLPTraining:
         # data from the json training_configuration file
         self.is_initial_phase_over = is_initial_phase
 
+        [training_data, training_labels] = ml_sets_archive_handler.get_ml_sets(TRAINING_SETS)
+        [validation_data, validation_labels] = ml_sets_archive_handler.get_ml_sets(VALIDATION_SETS)
+
         # dataset for the training and validation
-        self.training_data = ml_sets_archive_handler.get_ml_sets(0, False)
-        self.training_labels = ml_sets_archive_handler.get_ml_sets(0, True)
-        self.validation_data = ml_sets_archive_handler.get_ml_sets(1, False)
-        self.validation_labels = ml_sets_archive_handler.get_ml_sets(1, True)
+        self.training_data = training_data
+        self.training_labels = training_labels
+        self.validation_data = validation_data
+        self.validation_labels = validation_labels
 
         # results of the single training
         self.mlp = None
