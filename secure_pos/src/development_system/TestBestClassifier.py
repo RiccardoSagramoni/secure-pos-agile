@@ -2,9 +2,9 @@ import joblib
 from sklearn.metrics import accuracy_score
 from numpy import ravel
 
-from developing_system.TrainingConfiguration import TrainingConfiguration
-from developing_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
-from developing_system.TestBestClassifierReportGenerator import TestBestCLassifierReportGenerator
+from development_system.TrainingConfiguration import TrainingConfiguration
+from development_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
+from development_system.TestBestClassifierReportGenerator import TestBestCLassifierReportGenerator
 
 TEST_SETS = 2
 

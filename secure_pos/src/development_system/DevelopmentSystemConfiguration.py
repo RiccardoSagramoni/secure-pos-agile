@@ -5,7 +5,7 @@ import os
 import utility
 from utility.json_validation import validate_json_data_file
 
-class DevelopingSystemConfiguration:
+class DevelopmentSystemConfiguration:
 
     def __init__(self, json_development_system_configuration_path: str, json_schema_path: str):
 

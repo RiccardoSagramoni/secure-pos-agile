@@ -4,10 +4,10 @@ import joblib
 from sklearn.model_selection import ParameterGrid
 
 import utility
-from developing_system.TrainingConfiguration import TrainingConfiguration
-from developing_system.TopClassifier import TopClassifier
-from developing_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
-from developing_system.MLPTraining import MLPTraining
+from development_system.TrainingConfiguration import TrainingConfiguration
+from development_system.TopClassifier import TopClassifier
+from development_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
+from development_system.MLPTraining import MLPTraining
 
 
 class GridSearchController:

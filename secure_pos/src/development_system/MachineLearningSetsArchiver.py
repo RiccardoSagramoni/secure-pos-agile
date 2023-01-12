@@ -22,6 +22,12 @@ class MachineLearningSetsArchiver:
                 "type INT, label VARCHAR(20))"
             )
 
+    def drop_ml_sets_db(self):
+        with self.semaphore:
+            self.db_connection.delete_table("MachineLearningSets")
+            self.db_connection.drop_database()
+
+
     def insert_ml_sets(self, data_frame):
 
         with self.semaphore:

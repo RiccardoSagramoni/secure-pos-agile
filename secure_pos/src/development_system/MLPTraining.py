@@ -6,8 +6,8 @@ from numpy import ravel
 import matplotlib.pyplot as plt
 import joblib
 
-from developing_system.InitialPhaseTrainingReportGenerator import InitialPhaseTrainingReportGenerator
-from developing_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
+from development_system.InitialPhaseTrainingReportGenerator import InitialPhaseTrainingReportGenerator
+from development_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
 import utility
 
 TRAINING_SETS = 0

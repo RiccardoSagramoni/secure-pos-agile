@@ -6,11 +6,11 @@ import requests
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
 
-from developing_system.DevelopingSystemConfiguration import DevelopingSystemConfiguration
+from development_system.DevelopmentSystemConfiguration import DevelopmentSystemConfiguration
 
 class DevelopmentSystemCommunicationController:
 
-    def __init__(self, developing_system_configuration: DevelopingSystemConfiguration, handler, semaphore_handler):
+    def __init__(self, developing_system_configuration: DevelopmentSystemConfiguration, handler, semaphore_handler):
 
         self.ip_address = developing_system_configuration.ip_address
         self.port = developing_system_configuration.port
