@@ -13,15 +13,17 @@ class AttackRiskClassifier:
         self.__session_id = session_id
         self.__prepared_session = prepared_session
 
-    def provide_attack_risk_level(self):
+    def provide_attack_risk_level(self) -> int:
+        print("get attack risk")
         self.__session_risk = self.__classifier_model.predict(self.__prepared_session)
+        print(self.__session_risk)
         self.__monitoring_label = \
-            AttackRiskLabel.ATTACK if self.__session_risk == 1 else AttackRiskLabel.NORMAL
-        return self.__session_risk
+            AttackRiskLabel.ATTACK if self.__session_risk[0] == '1' else AttackRiskLabel.NORMAL
+        return self.__session_risk[0]
 
-    def attack_risk_label_converter(self):
+    def attack_risk_label_converter(self) -> dict:
         return {
             'session_id': self.__session_id,
             'source': 'classifier',
-            'value': self.__monitoring_label
+            'value': self.__monitoring_label.value
         }

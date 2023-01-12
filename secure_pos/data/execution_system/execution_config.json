@@ -1,7 +1,8 @@
 {
     "system_ip": "0.0.0.0",
     "system_port": 8000,
-    "monitoring_system_url": "http://25.34.53.59:8000/",
-    "execution_window_length": 5000,
-    "monitoring_window_length": 50
+    "monitoring_system_url": "http://25.34.53.59:8001/",
+    "execution_window_length": 0,
+    "monitoring_window_length": 50,
+    "is_testing": "No"
 }

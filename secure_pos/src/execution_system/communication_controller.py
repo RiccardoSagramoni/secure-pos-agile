@@ -36,7 +36,6 @@ class CommunicationController:
         server.api.add_resource(ReceiveJsonApi,
                                 "/",
                                 resource_class_kwargs={
-                                    'json_schema': SESSION_SCHEMA_PATH,
                                     'handler': self.handle_message_execution
                                 })
         server.run(host=self.__ip_address, port=self.__port, debug=False)
@@ -55,6 +54,7 @@ class CommunicationController:
         ).start()
 
     def send_attack_risk_label(self, monitoring_label_dict: dict):
+        print("sent label to monitoring")
         response = requests.post(self.__monitoring_system_url, json=monitoring_label_dict)
         if not response.ok:
             logging.error("Failed to send label:\n%s", monitoring_label_dict)
