@@ -1,4 +1,4 @@
-from testing_system.tester import DevelopmentTester
+from testing_system.tester_development import DevelopmentTester
 from testing_system.tester_execution import ExecutionTester
 
 
