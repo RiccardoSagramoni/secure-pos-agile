@@ -102,7 +102,7 @@ class ExecutionTester:
     def __execution_send_raw_sessions(self,
                                       num_sessions,
                                       execution_length,
-                                      monitoring_length) -> dict:
+                                      monitoring_length):
         for i in range(num_sessions):
             session_index = i % self.TOTAL_NUM_SESSIONS
             
@@ -166,9 +166,6 @@ class ExecutionTester:
             time.sleep(2)
     
     def __run_execution_testing(self, num_sessions, execution_len, monitoring_len):
-        # Get timestamp
-        start_timestamp = datetime.now()
-        
         # Send raw sessions
         self.__execution_send_raw_sessions(num_sessions, execution_len, monitoring_len)
         
@@ -176,25 +173,21 @@ class ExecutionTester:
         self.semaphore.acquire()
         
         # Get difference between start and end timestamp
-        end_timestamp_str = self.received_response["timestamp"]
-        end_timestamp = datetime.strptime(end_timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
-        diff_timestamp = end_timestamp - start_timestamp
-        diff = diff_timestamp.total_seconds()
-        
-        # Write performance on csv
-        # id dello scenario | diff
-        scenario_id = self.received_response["scenario_id"]
-        result_dict = {
-            "scenario_id": scenario_id,
-            "diff": diff
-        }
-        result_df = pd.DataFrame(result_dict, index=[0])
+        results = []
+        for diff in self.diff_timestamp_list:
+            results.append(
+                {
+                    "scenario_id": 5,
+                    "diff": diff
+                }
+            )
+        result_df = pd.DataFrame(results)
         result_df.to_csv("execution.csv", sep=',', encoding="UTF-8", mode='a', header=False, index=False)
     
     #
     def start_execution_testing(self, num_session_list: list, execution_len, monitoring_len) -> None:
         # Create development.csv file
-        with open("development.csv", "w") as file:
+        with open("execution.csv", "w") as file:
             file.write("scenario_id,diff\n")
         
         # Start REST server
