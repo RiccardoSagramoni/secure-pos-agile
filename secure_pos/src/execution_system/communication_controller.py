@@ -15,9 +15,14 @@ TESTING_URL = 'http://25.34.31.202:1234'
 
 
 def send_testing_timestamp(scenario_id: int, session_id: str = None) -> None:
+    """
+    send timenstamp to tester system during testing phase
+    :param scenario_id: id of the scenario to evaluate
+    :param session_id: id of the current session, only in execution mode
+    """
     print("sending testing timestamp")
     # get timestamp and convert to string
-    end_timestamp = datetime.strptime(str(datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
+    end_timestamp = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S.%f")
     testing_msg = {
         'scenario_id': scenario_id,
         'session_id': session_id,
