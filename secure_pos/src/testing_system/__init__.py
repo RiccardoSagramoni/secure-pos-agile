@@ -1,14 +1,7 @@
 import sys
 
-from testing_system.tester_development import DevelopmentTester
+from testing_system.tester_elasticity import ElasticityTester
 from testing_system.tester_execution import ExecutionTester
-
-
-def development_testing():
-    test_system = DevelopmentTester()
-    num_sessions = [20]
-    # num_sessions = [50, 100, 200, 300, 400, 500]
-    test_system.start_development_testing(num_sessions)
 
 
 def execution_testing():
@@ -21,9 +14,15 @@ def execution_testing():
     
     test_system.start_execution_testing(num_sessions, execution_len, monitoring_len)
 
+    
+def elasticity_testing():
+    test_system = ElasticityTester()
+    how_many_classifier = [5, 10, 15, 20, 25]
+    test_system.start_development_testing(how_many_classifier)
+
 
 if __name__ == "__main__":
-    development_testing()
-    # execution_testing()
+    execution_testing()
+    # elasticity_testing()
     print("FINE TESTING")
     sys.exit(0)

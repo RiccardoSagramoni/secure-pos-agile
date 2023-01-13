@@ -12,7 +12,7 @@ from utility import data_folder
 
 CONFIGURATION_FILE = 'execution_system/execution_config.json'
 CONFIGURATION_SCHEMA = 'execution_system/execution_config_schema.json'
-TESTING_MODE = 'No'
+TESTING_MODE = False
 
 
 class ExecutionSystemController:
@@ -36,11 +36,12 @@ class ExecutionSystemController:
         self.__system_mode_tracker.development_mode = False
 
         # send timestamp for testing
-        if TESTING_MODE == 'Yes':
+        if TESTING_MODE:
             send_testing_timestamp(scenario_id=4)
 
     def handle_new_prepared_session_reception(self, json_session: dict) -> None:
-        if os.path.exists(os.path.join(data_folder, CLASSIFIER_MODEL_PATH)):
+        if os.path.exists(os.path.join(data_folder, CLASSIFIER_MODEL_PATH)) \
+                and self.__system_mode_tracker.development_mode:
             self.handle_classifier_model_deployment()
 
         if self.__system_mode_tracker.development_mode:
@@ -67,5 +68,5 @@ class ExecutionSystemController:
         if session_risk_level == '1':
             print("Attack detected")
 
-        if TESTING_MODE == 'Yes':
+        if TESTING_MODE:
             send_testing_timestamp(scenario_id=5, session_id=session_id)

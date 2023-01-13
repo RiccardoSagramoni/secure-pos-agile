@@ -15,11 +15,11 @@ class AttackRiskClassifier:
 
     def provide_attack_risk_level(self) -> int:
         print("get attack risk")
-        self.__session_risk = self.__classifier_model.predict(self.__prepared_session)
+        self.__session_risk = self.__classifier_model.predict(self.__prepared_session)[0]
         print(self.__session_risk)
         self.__monitoring_label = \
-            AttackRiskLabel.ATTACK if self.__session_risk[0] == '1' else AttackRiskLabel.NORMAL
-        return self.__session_risk[0]
+            AttackRiskLabel.ATTACK if self.__session_risk == '1' else AttackRiskLabel.NORMAL
+        return self.__session_risk
 
     def attack_risk_label_converter(self) -> dict:
         return {
