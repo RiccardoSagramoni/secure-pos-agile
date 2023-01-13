@@ -22,12 +22,21 @@ class DBHandler:
             try:
                 # If this is the first execution we have to create our table
                 self.db_connection.create_table(
-                    "CREATE TABLE IF NOT EXISTS ArrivedSessions"
-                    "(id VARCHAR(80) PRIMARY KEY, time_mean FLOAT, time_median FLOAT,"
-                    " time_std FLOAT, time_kurtosis FLOAT, time_skewness FLOAT, "
-                    "amount_mean FLOAT, amount_median FLOAT, amount_std FLOAT, "
-                    "amount_kurtosis FLOAT, amount_skewness FLOAT, type INT, label INT,"
-                    "counter INT NOT NULL AUTOINCREMENT)")
+                    "CREATE TABLE IF NOT EXISTS ArrivedSessions "
+                    "(counter INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    "id TEXT UNIQUE, "
+                    "time_mean FLOAT, "
+                    "time_median FLOAT, "
+                    "time_std FLOAT, "
+                    "time_kurtosis FLOAT, "
+                    "time_skewness FLOAT, "
+                    "amount_mean FLOAT, "
+                    "amount_median FLOAT, "
+                    "amount_std FLOAT, "
+                    "amount_kurtosis FLOAT, "
+                    "amount_skewness FLOAT, "
+                    "type INTEGER, "
+                    "label INTEGER)")
             except Exception as ex:
                 print(f"Exception during table creation execution: {ex}\n")
 
@@ -79,18 +88,5 @@ class DBHandler:
             except Exception as ex:
                 print(f"Exception during update execution: {ex}\n")
 
-    def drop_records_testing(self, test_phase, sessions_vector):
-        start_index = 0
-        for i in range(test_phase):
-            start_index += sessions_vector[i]
-        end_index = sessions_vector[test_phase]
-        with self.semaphore:
-            try:
-                self.db_connection.update("DELETE FROM ArrivedSessions "
-                                          f"WHERE counter {start_index} " +
-                                          f"AND {end_index};")
-
-            except Exception as ex:
-                print(f"Exception during db drop execution: {ex}\n")
 
 

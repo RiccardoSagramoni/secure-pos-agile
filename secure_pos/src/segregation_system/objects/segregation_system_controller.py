@@ -21,8 +21,6 @@ QUALITY_REPORT_PATH = "./graphs/radar_diagram.png"
 
 TESTING_PHASE = True
 SERVER_STARTED = False
-TEST_RUN_NR = 0
-TEST_SESSIONS_PER_RUN = [50, 100, 200, 300, 400, 500]
 
 
 class SegregationSystemController:
@@ -34,7 +32,6 @@ class SegregationSystemController:
         self.config_file = SegregationSystemConfiguration()
         self.db_handler = DBHandler(PATH_DB)
         self.lock = threading.RLock()
-        self.mode = 0
         self.sessions_nr = 0
         self.semaphore = threading.Semaphore(0)
 
@@ -50,26 +47,26 @@ class SegregationSystemController:
 
         plotter = PlotterHistogram(labels)
         plotter.plot_data_balancing()
-
+        
+        if not TESTING_PHASE:
+            sys.exit(0)
+        
         # The system now needs to stop, we need to wait the Data Analyst evaluation
-        if TESTING_PHASE:
-            random_number = random.randint(0, 9)
-            # Set as 20% failure, 80% success
-            if random_number >= 8:
-                with open('./responses/balancing_response.json', 'r', encoding='utf-8') as opened_file:
-                    data = json.load(opened_file)
-                    data['response'] = 'No'
-                with open('./responses/balancing_response.json', 'w', encoding='utf-8') as response:
-                    json.dump(data, response)
-            else:
-                with open('./responses/balancing_response.json', 'r', encoding='utf-8') as opened_file:
-                    data = json.load(opened_file)
-                    data['response'] = 'Yes'
-                with open('./responses/balancing_response.json', 'w', encoding='utf-8') as response:
-                    json.dump(data, response)
-            return
-        # Bypass if testing is set
-        sys.exit(0)
+        random_number = random.randint(0, 9)
+        # Set as 20% failure, 80% success
+        if random_number >= 8:
+            with open('./responses/balancing_response.json', 'r', encoding='utf-8') as opened_file:
+                data = json.load(opened_file)
+                data['response'] = 'No'
+            with open('./responses/balancing_response.json', 'w', encoding='utf-8') as response:
+                json.dump(data, response)
+        else:
+            with open('./responses/balancing_response.json', 'r', encoding='utf-8') as opened_file:
+                data = json.load(opened_file)
+                data['response'] = 'Yes'
+            with open('./responses/balancing_response.json', 'w', encoding='utf-8') as response:
+                json.dump(data, response)
+        return
 
     def check_quality(self):
         """
@@ -83,25 +80,26 @@ class SegregationSystemController:
         plotter = PlotterRadarDiagram(data)
         plotter.plot_data_quality()
 
+        if not TESTING_PHASE:
+            sys.exit(0)
+        
         # The system now needs to stop, we need to wait the Data Analyst evaluation
-        if TESTING_PHASE:
-            random_number = random.randint(0, 9)
-            # Set as 20% failure, 80% success
-            if random_number >= 2:
-                with open('./responses/quality_response.json', 'r', encoding='utf-8') as opened_file:
-                    data = json.load(opened_file)
-                    data['response'] = 'No'
-                with open('./responses/quality_response.json', 'w', encoding='utf-8') as response:
-                    json.dump(data, response)
-            else:
-                with open('./responses/quality_response.json', 'r', encoding='utf-8') as opened_file:
-                    data = json.load(opened_file)
-                    data['response'] = 'Yes'
-                with open('./responses/quality_response.json', 'w', encoding='utf-8') as response:
-                    json.dump(data, response)
-            return
-        # Bypass if testing is set
-        sys.exit(0)
+        random_number = random.randint(0, 9)
+        # Set as 20% failure, 80% success
+        if random_number >= 8:
+            with open('./responses/quality_response.json', 'r', encoding='utf-8') as opened_file:
+                data = json.load(opened_file)
+                data['response'] = 'No'
+            with open('./responses/quality_response.json', 'w', encoding='utf-8') as response:
+                json.dump(data, response)
+        else:
+            with open('./responses/quality_response.json', 'r', encoding='utf-8') as opened_file:
+                data = json.load(opened_file)
+                data['response'] = 'Yes'
+            with open('./responses/quality_response.json', 'w', encoding='utf-8') as response:
+                json.dump(data, response)
+        return
+        
 
     def generate_datasets(self):
         """
@@ -152,9 +150,6 @@ class SegregationSystemController:
             os.remove(QUALITY_REPORT_PATH)
         except FileNotFoundError as ex:
             print(f"Error during file removal: {ex}")
-        # reset the mode to accept more data from now on
-        with self.lock:
-            self.mode = 0
 
         # New testing phase
         if TESTING_PHASE:
@@ -190,6 +185,7 @@ class SegregationSystemController:
         flask_thread.start()
 
         while True:
+            # Check if data balance graph was analyzed by human expert
             result_balancing = extractor.extract_json_response_balancing()
             # If the value is different from None the Analyst has evaluated the balancing histogram
             if result_balancing not in ['None', 'none']:
@@ -206,8 +202,8 @@ class SegregationSystemController:
                 if not TESTING_PHASE:
                     sys.exit(0)
 
+            # Check if data quality graph was analyzed by human expert
             result_quality = extractor.extract_json_response_quality()
-
             # If the value is different from None the Analyst has evaluated the radar diagram
             if result_quality not in ['None', 'none']:
                 if result_quality in ['yes', 'Yes']:
@@ -220,7 +216,8 @@ class SegregationSystemController:
                         continue
                 else:
                     print('Unknown response: please write "yes" or "no" inside the file')
-
+            
+            # Wait for a enough sessions to generate ML sets
             self.semaphore.acquire()
             self.check_balancing()
 
@@ -230,13 +227,9 @@ class SegregationSystemController:
         :param file_json: arrived data
         :return: None
         """
-        global TEST_RUN_NR
-
         # If our system is involved with data balancing and quality I cannot
         # accept more prepared sessions so the system discards them
         with self.lock:
-            if self.mode == 1:
-                return
 
             self.db_handler.create_arrived_session_table()
 
@@ -252,16 +245,12 @@ class SegregationSystemController:
             # if we received 7 sessions the system can continue its execution,
             # otherwise it will terminate waiting for a new message
             if not ret:
+                print(f"Error during session insert #{self.sessions_nr + 1}")
                 return
             self.sessions_nr += 1
-            print(self.sessions_nr)
-            if not TESTING_PHASE:
-                if self.sessions_nr != self.config_file.session_nr_threshold:
-                    sys.exit(0)
-            else:
-                if self.sessions_nr != TEST_SESSIONS_PER_RUN[TEST_RUN_NR]:
-                    sys.exit(0)
+            print(f"Arrived session #{self.sessions_nr}") # todo remove
+            # Check if we have enough sessions
+            if self.sessions_nr != self.config_file.session_nr_threshold:
+                return
             self.sessions_nr = 0
-            self.mode = 1
-            TEST_RUN_NR += 1
         self.semaphore.release()
