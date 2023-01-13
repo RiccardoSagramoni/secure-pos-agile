@@ -40,7 +40,8 @@ class ExecutionSystemController:
             send_testing_timestamp(scenario_id=4)
 
     def handle_new_prepared_session_reception(self, json_session: dict) -> None:
-        if os.path.exists(os.path.join(data_folder, CLASSIFIER_MODEL_PATH)):
+        if os.path.exists(os.path.join(data_folder, CLASSIFIER_MODEL_PATH)) \
+                and self.__system_mode_tracker.development_mode:
             self.handle_classifier_model_deployment()
 
         if self.__system_mode_tracker.development_mode:
