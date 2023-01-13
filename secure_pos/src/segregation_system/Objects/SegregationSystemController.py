@@ -22,7 +22,7 @@ QUALITY_REPORT_PATH = "./graphs/radar_diagram.png"
 TESTING_PHASE = True
 SERVER_STARTED = False
 TEST_RUN_NR = 0
-TEST_SESSIONS_PER_RUN =  [50, 100, 200, 300, 400, 500]
+TEST_SESSIONS_PER_RUN = [50, 100, 200, 300, 400, 500]
 
 
 class SegregationSystemController:
@@ -67,8 +67,8 @@ class SegregationSystemController:
                     data['response'] = 'Yes'
                 with open('./responses/balancing_response.json', 'w', encoding='utf-8') as response:
                     json.dump(data, response)
-            self.check_response()
-
+            return
+        # Bypass if testing is set
         sys.exit(0)
 
     def check_quality(self):
@@ -99,8 +99,8 @@ class SegregationSystemController:
                     data['response'] = 'Yes'
                 with open('./responses/quality_response.json', 'w', encoding='utf-8') as response:
                     json.dump(data, response)
-            self.check_response()
-
+            return
+        # Bypass if testing is set
         sys.exit(0)
 
     def generate_datasets(self):
@@ -150,18 +150,15 @@ class SegregationSystemController:
         try:
             os.remove(BALANCING_REPORT_PATH)
             os.remove(QUALITY_REPORT_PATH)
-            self.db_handler.drop_db()
         except FileNotFoundError as ex:
             print(f"Error during file removal: {ex}")
         # reset the mode to accept more data from now on
         with self.lock:
             self.mode = 0
 
-        self.db_handler.db_connection.drop_database()
-
         # New testing phase
         if TESTING_PHASE:
-            self.check_response()
+            return
 
         sys.exit(0)
 
@@ -183,51 +180,49 @@ class SegregationSystemController:
 
         extractor = ResponseExtractor()
 
-        result_balancing = extractor.extract_json_response_balancing()
-        # If the value is different from None the Analyst has evaluated the balancing histogram
-        if result_balancing not in ['None', 'none']:
-            if result_balancing in ['yes', 'Yes']:
-                self.check_quality()
-            elif result_balancing in ['no', 'No']:
-                print('Negative response: send a configuration request to'
-                      ' System Administrator for balancing problems')
-                if TESTING_PHASE:
-                    send_to_testing_system(1)
-            else:
-                print('Unknown response: please write "yes" or "no" inside the file')
-            if not TESTING_PHASE:
-                sys.exit(0)
+        # Start the Flask server on a daemon thread
+        communication_controller = \
+            CommunicationController(self.db_handler,
+                                    self.config_file.development_system_url,
+                                    self)
+        flask_thread = threading.Thread(target=communication_controller.init_rest_server,
+                                        daemon=True)
+        flask_thread.start()
 
-        result_quality = extractor.extract_json_response_quality()
+        while True:
+            result_balancing = extractor.extract_json_response_balancing()
+            # If the value is different from None the Analyst has evaluated the balancing histogram
+            if result_balancing not in ['None', 'none']:
+                if result_balancing in ['yes', 'Yes']:
+                    self.check_quality()
+                elif result_balancing in ['no', 'No']:
+                    print('Negative response: send a configuration request to'
+                          ' System Administrator for balancing problems')
+                    if TESTING_PHASE:
+                        send_to_testing_system(1)
+                        continue
+                else:
+                    print('Unknown response: please write "yes" or "no" inside the file')
+                if not TESTING_PHASE:
+                    sys.exit(0)
 
-        # If the value is different from None the Analyst has evaluated the radar diagram
-        if result_quality not in ['None', 'none']:
-            if result_quality in ['yes', 'Yes']:
-                self.generate_datasets()
-            elif result_quality in ['no', 'No']:
-                print('Negative response: send a configuration request to'
-                      ' System Administrator for quality problems')
-                if TESTING_PHASE:
-                    send_to_testing_system(2)
-            else:
-                print('Unknown response: please write "yes" or "no" inside the file')
+            result_quality = extractor.extract_json_response_quality()
 
-        # If nothing has been set means that the rest server has to be started
+            # If the value is different from None the Analyst has evaluated the radar diagram
+            if result_quality not in ['None', 'none']:
+                if result_quality in ['yes', 'Yes']:
+                    self.generate_datasets()
+                elif result_quality in ['no', 'No']:
+                    print('Negative response: send a configuration request to'
+                          ' System Administrator for quality problems')
+                    if TESTING_PHASE:
+                        send_to_testing_system(2)
+                        continue
+                else:
+                    print('Unknown response: please write "yes" or "no" inside the file')
 
-        # First drop the DB
-        if not SERVER_STARTED:
-            self.db_handler.db_connection.drop_database()
-            SERVER_STARTED = True
-            communication_controller = \
-                CommunicationController(self.db_handler,
-                                        self.config_file.development_system_url,
-                                        self)
-            flask_thread = threading.Thread(target=communication_controller.init_rest_server,
-                                            daemon=True)
-            flask_thread.start()
-
-        self.semaphore.acquire()
-        self.check_balancing()
+            self.semaphore.acquire()
+            self.check_balancing()
 
     def manage_message(self, file_json):
         """
