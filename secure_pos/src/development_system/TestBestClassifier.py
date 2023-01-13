@@ -34,10 +34,3 @@ class TestBestClassifier:
         TestBestCLassifierReportGenerator().generate_report(self.test_tolerance, self.id_best_classifier, self.training_error, self.test_error)
 
 
-    def print(self):
-        print("*********************************")
-        print(f"id_best_classifier:{self.id_best_classifier}")
-        print(f"test_tolerance:{self.test_tolerance}")
-        print(f"test_error:{self.test_error}")
-        print("*********************************")
-

@@ -42,5 +42,7 @@ class DevelopmentSystemCommunicationController:
                 response = requests.post(self.execution_system_url, files={'file': file_to_send})
             if not response.ok:
                 logging.error("Failed to send the classifier to the execution system")
+            else:
+                print("Best Classifier sent to the execution sysyem")
         except requests.exceptions.RequestException as ex:
             logging.error("Error during the send of the classifier: %s", ex)

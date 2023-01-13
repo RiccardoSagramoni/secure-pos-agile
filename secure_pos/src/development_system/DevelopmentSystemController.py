@@ -42,6 +42,7 @@ class DevelopmentSystemController:
 
         initial_phase_classifier = MLPTraining(self.training_configuration.is_initial_phase_over, self.ml_sets_archive_handler)
         initial_phase_classifier.train_neural_network(self.training_configuration.average_parameters)
+        print("Initial Phase Training is finished")
 
 
     def execution_of_the_grid_search_algorithm(self):
@@ -51,8 +52,7 @@ class DevelopmentSystemController:
         classifier_for_grid_search.set_mlp(loaded_classifier)
         grid_search_controller = GridSearchController(classifier_for_grid_search, self.training_configuration)
         grid_search_controller.generate_grid_search_hyperparameters(self.training_configuration.hyper_parameters)
-        for elem in grid_search_controller.top_classifiers_object_list:
-            elem.print()
+        print("Grid Search Algorithm is finished")
 
         with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'r') as read_file:
             json_data = json.load(read_file)
@@ -77,6 +77,7 @@ class DevelopmentSystemController:
         classifier_archive_manager = DevelopmentSystemArchiver(self.training_configuration.best_classifier_number)
         classifier_archive_manager.delete_all_file_in_the_directory(os.path.join(utility.data_folder,'development_system'))
 
+        print("the system has been reset")
 
     def run(self):
 
@@ -110,7 +111,7 @@ class DevelopmentSystemController:
 
         test = TestBestClassifier(self.training_configuration, training_error_best_classifier, self.ml_sets_archive_handler)
         test.test_best_classifier(classifier_archive_manager.return_path_best_classifier())
-        test.print()
+        print("the best classifier has been analyzed")
 
 
     def execution_of_the_development_system(self):
@@ -190,3 +191,5 @@ class DevelopmentSystemController:
         if not ret:
             logging.error("Failed to insert the data received in the archive")
             sys.exit(0)
+        else:
+            print("the ml sets received by the segregation system were saved")
