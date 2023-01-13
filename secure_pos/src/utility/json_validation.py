@@ -48,3 +48,4 @@ def validate_json_file_file(json_filename: str, schema_filename: str) -> bool:
     with open(json_path, "r", encoding="UTF-8") as file:
         json_data = json.load(file)
     return validate_json_data_file(json_data, schema_filename)
+

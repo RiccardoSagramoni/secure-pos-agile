@@ -1,0 +1,262 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://example.com/object1673397498.json",
+	"title": "Root",
+	"type": "object",
+	"required": [
+		"hyper_parameters",
+		"average_params",
+		"number_of_top_classifiers",
+		"test_tolerance",
+		"validation_tolerance",
+		"is_initial_phase_over",
+		"is_grid_search_over",
+		"best_classifier_number",
+		"test_best_classifier_passed"
+	],
+	"properties": {
+		"hyper_parameters": {
+			"$id": "#root/hyper_parameters",
+			"title": "Hyper_parameters",
+			"type": "object",
+			"required": [
+				"hidden_layer_sizes",
+				"activation",
+				"solver",
+				"learning_rate",
+				"learning_rate_init"
+			],
+			"properties": {
+				"hidden_layer_sizes": {
+					"$id": "#root/hyper_parameters/hidden_layer_sizes",
+					"title": "Hidden_layer_sizes",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/hidden_layer_sizes/items",
+						"title": "Items",
+						"type": "integer",
+						"examples": [
+							80
+						],
+						"default": 0
+					}
+				},
+				"activation": {
+					"$id": "#root/hyper_parameters/activation",
+					"title": "Activation",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/activation/items",
+						"title": "Items",
+						"type": "string",
+						"default": "",
+						"examples": [
+							"relu"
+						],
+						"pattern": "^.*$"
+					}
+				},
+				"solver": {
+					"$id": "#root/hyper_parameters/solver",
+					"title": "Solver",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/solver/items",
+						"title": "Items",
+						"type": "string",
+						"default": "",
+						"examples": [
+							"adam"
+						],
+						"pattern": "^.*$"
+					}
+				},
+				"learning_rate": {
+					"$id": "#root/hyper_parameters/learning_rate",
+					"title": "Learning_rate",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/learning_rate/items",
+						"title": "Items",
+						"type": "string",
+						"default": "",
+						"examples": [
+							"constant"
+						],
+						"pattern": "^.*$"
+					}
+				},
+				"learning_rate_init": {
+					"$id": "#root/hyper_parameters/learning_rate_init",
+					"title": "Learning_rate_init",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/learning_rate_init/items",
+						"title": "Items",
+						"type": "number",
+						"examples": [
+							0.001
+						],
+						"default": 0.0
+					}
+				}
+			}
+		}
+,
+		"average_params": {
+			"$id": "#root/average_params",
+			"title": "Average_params",
+			"type": "object",
+			"required": [
+				"hidden_layer_sizes",
+				"max_iter",
+				"activation",
+				"solver",
+				"learning_rate",
+				"learning_rate_init",
+				"random_state"
+			],
+			"properties": {
+				"hidden_layer_sizes": {
+					"$id": "#root/average_params/hidden_layer_sizes",
+					"title": "Hidden_layer_sizes",
+					"type": "integer",
+					"examples": [
+						80
+					],
+					"default": 0
+				},
+				"max_iter": {
+					"$id": "#root/average_params/max_iter",
+					"title": "Max_iter",
+					"type": "integer",
+					"examples": [
+						1000
+					],
+					"default": 0
+				},
+				"activation": {
+					"$id": "#root/average_params/activation",
+					"title": "Activation",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"relu"
+					],
+					"pattern": "^.*$"
+				},
+				"solver": {
+					"$id": "#root/average_params/solver",
+					"title": "Solver",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"adam"
+					],
+					"pattern": "^.*$"
+				},
+				"learning_rate": {
+					"$id": "#root/average_params/learning_rate",
+					"title": "Learning_rate",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"constant"
+					],
+					"pattern": "^.*$"
+				},
+				"learning_rate_init": {
+					"$id": "#root/average_params/learning_rate_init",
+					"title": "Learning_rate_init",
+					"type": "number",
+					"examples": [
+						0.001
+					],
+					"default": 0.0
+				},
+				"random_state": {
+					"$id": "#root/average_params/random_state",
+					"title": "Random_state",
+					"type": "integer",
+					"examples": [
+						0
+					],
+					"default": 0
+				}
+			}
+		}
+,
+		"number_of_top_classifiers": {
+			"$id": "#root/number_of_top_classifiers",
+			"title": "Number_of_top_classifiers",
+			"type": "integer",
+			"examples": [
+				5
+			],
+			"default": 0
+		},
+		"test_tolerance": {
+			"$id": "#root/test_tolerance",
+			"title": "Test_tolerance",
+			"type": "number",
+			"examples": [
+				0.03
+			],
+			"default": 0.0
+		},
+		"validation_tolerance": {
+			"$id": "#root/validation_tolerance",
+			"title": "Validation_tolerance",
+			"type": "number",
+			"examples": [
+				0.03
+			],
+			"default": 0.0
+		},
+		"is_initial_phase_over": {
+			"$id": "#root/is_initial_phase_over",
+			"title": "Is_initial_phase_over",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"No"
+			],
+			"pattern": "^.*$"
+		},
+		"is_grid_search_over": {
+			"$id": "#root/is_grid_search_over",
+			"title": "Is_grid_search_over",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"No"
+			],
+			"pattern": "^.*$"
+		},
+		"best_classifier_number": {
+			"$id": "#root/best_classifier_number",
+			"title": "Best_classifier_number",
+			"type": "integer",
+			"examples": [
+				2
+			],
+			"default": 0
+		},
+		"test_best_classifier_passed": {
+			"$id": "#root/test_best_classifier_passed",
+			"title": "Test_best_classifier_passed",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"No"
+			],
+			"pattern": "^.*$"
+		}
+	}
+}
