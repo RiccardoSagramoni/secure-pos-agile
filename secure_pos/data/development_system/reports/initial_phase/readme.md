@@ -1,0 +1,1 @@
+Directory containing the report for the initial phase of the training

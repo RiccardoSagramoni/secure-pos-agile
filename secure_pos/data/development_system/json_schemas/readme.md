@@ -1,0 +1,1 @@
+Directory containing the configuration files schemas
