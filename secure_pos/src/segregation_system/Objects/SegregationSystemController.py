@@ -264,8 +264,9 @@ class SegregationSystemController:
                 if self.sessions_nr != self.config_file.session_nr_threshold:
                     sys.exit(0)
             else:
-                if self.sessions_nr != TEST_SESSIONS_PER_RUN[TESTING_PHASE]:
+                if self.sessions_nr != TEST_SESSIONS_PER_RUN[TEST_RUN_NR]:
                     sys.exit(0)
             self.sessions_nr = 0
             self.mode = 1
+            TEST_RUN_NR += 1
         self.semaphore.release()
