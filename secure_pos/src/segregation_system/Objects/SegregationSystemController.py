@@ -107,12 +107,14 @@ class SegregationSystemController:
         try:
             os.remove(BALANCING_REPORT_PATH)
             os.remove(QUALITY_REPORT_PATH)
+            self.db_handler.drop_db()
         except FileNotFoundError as ex:
             print(f"Error during file removal: {ex}")
         # reset the mode to accept more data from now on
         with self.lock:
             self.mode = 0
 
+        self.db_handler.db_connection.drop_database()
         sys.exit(0)
 
     def check_response(self):
@@ -156,6 +158,9 @@ class SegregationSystemController:
                 print('Unknown response: please write "yes" or "no" inside the file')
 
         # If nothing has been set means that the rest server has to be started
+
+        # First drop the DB
+        self.db_handler.db_connection.drop_database()
 
         communication_controller = CommunicationController(self.db_handler,
                                                            self.config_file.development_system_url,

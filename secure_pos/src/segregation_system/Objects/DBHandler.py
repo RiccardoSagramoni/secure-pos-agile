@@ -19,13 +19,16 @@ class DBHandler:
         """
         # To avoid concurrency
         with self.semaphore:
-            # If this is the first execution we have to create our table
-            self.db_connection.create_table(
-                "CREATE TABLE IF NOT EXISTS ArrivedSessions"
-                "(id VARCHAR(80) PRIMARY KEY, time_mean FLOAT, time_median FLOAT, time_std FLOAT,"
-                "time_kurtosis FLOAT, time_skewness FLOAT, amount_mean FLOAT, amount_median FLOAT,"
-                " amount_std FLOAT, amount_kurtosis FLOAT, amount_skewness FLOAT, "
-                "type INT, label INT)")
+            try:
+                # If this is the first execution we have to create our table
+                self.db_connection.create_table(
+                    "CREATE TABLE IF NOT EXISTS ArrivedSessions"
+                    "(id VARCHAR(80) PRIMARY KEY, time_mean FLOAT, time_median FLOAT,"
+                    " time_std FLOAT, time_kurtosis FLOAT, time_skewness FLOAT, "
+                    "amount_mean FLOAT, amount_median FLOAT, amount_std FLOAT, "
+                    "amount_kurtosis FLOAT, amount_skewness FLOAT, type INT, label INT)")
+            except Exception as ex:
+                print(f"Exception during table creation execution: {ex}\n")
 
     def insert_session(self, data_frame) -> bool:
         """
@@ -37,7 +40,7 @@ class DBHandler:
             try:
                 ret = self.db_connection.insert(data_frame, 'ArrivedSessions')
             except Exception as ex:
-                print("Exception during query execution: %s\n",ex)
+                print(f"Exception during insert execution: {ex}\n")
             return ret
 
     def extract_all_unallocated_data(self):
@@ -59,7 +62,7 @@ class DBHandler:
                                                      'FROM ArrivedSessions '
                                                      'WHERE type = -1')
             except Exception as ex:
-                print("Exception during query execution: %s\n",ex)
+                print(f"Exception during extraction execution: {ex}\n")
 
         return [features, labels]
 
@@ -73,4 +76,15 @@ class DBHandler:
                                           "SET type = 0 "
                                           "WHERE type = -1")
             except Exception as ex:
-                print("Exception during query execution: %s\n", ex)
+                print(f"Exception during update execution: {ex}\n")
+
+    def drop_db(self):
+        """
+        Method that drop the database
+        """
+        with self.semaphore:
+            try:
+                self.db_connection.drop_database()
+
+            except Exception as ex:
+                print(f"Exception during db drop execution: {ex}\n")

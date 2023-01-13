@@ -25,9 +25,6 @@ class PlotterHistogram:
         # Save the figure
         plt.savefig("./graphs/Balancing_plot.png")
 
-        # Suspension 'til evaluation completed
-        os._exit(0)
-
 
 class PlotterRadarDiagram:
     """
@@ -58,6 +55,3 @@ class PlotterRadarDiagram:
         fig.update_traces(fill='none')
 
         fig.write_image("graphs/radar_diagram.png", format='png', engine='kaleido')
-
-        # Suspension 'til evaluation completed
-        sys.exit(0)
