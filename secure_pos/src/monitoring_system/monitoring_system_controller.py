@@ -7,6 +7,7 @@ from communication.api.json_transfer import ReceiveJsonApi
 from monitoring_system.label_manager import LabelManager
 from utility.json_validation import validate_json
 
+TESTING = False
 
 class MonitoringSystemController:
 
@@ -15,10 +16,9 @@ class MonitoringSystemController:
         self.config_path = "../../data/monitoring_system/conf/config.json"
         self.config_schema_path = "../../data/monitoring_system/conf/config_schema.json"
         self.config = None
-        self.testing = False
 
     def handle_message(self, label_json):
-        if not self.testing:
+        if not TESTING:
             # When the system receives a message, generate a new thread
             logging.info("Received label")
             thread = threading.Thread(target=self.label_manager.store_label,
