@@ -68,7 +68,8 @@ class ElasticityTester:
     ###             COMMUNICATION
     #################################################
     def __handle_message(self, message: dict):
-        self.received_response = message
+        with self.received_response_lock:
+            self.received_response_list.append(message)
         self.semaphore.release()
     
     def __start_rest_server(self):
@@ -135,7 +136,7 @@ class ElasticityTester:
             time.sleep(2)
     
     #
-    def __run_development_testing(self, how_many_classifiers):
+    def __run_development_testing(self, iteration_num, how_many_classifiers):
         # Get timestamp
         start_timestamp = datetime.now()
         
@@ -166,7 +167,7 @@ class ElasticityTester:
     def start_development_testing(self, how_many_classifiers_list: list) -> None:
         # Create development.csv file
         with open("development.csv", "w") as file:
-            file.write("scenario_id,diff\n")
+            file.write("iteration,scenario_id,diff\n")
         
         # Start REST server
         flask_thread = threading.Thread(target=self.__start_rest_server, daemon=True)
