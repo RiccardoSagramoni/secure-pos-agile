@@ -12,6 +12,9 @@ import utility
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
 
+"""
+TODO: ottenere uno timestamp per ogni classificatore
+"""
 
 #################################################
 ###                 UTILITY
@@ -27,7 +30,7 @@ def replace_broken_label(label):
 #################################################
 class ElasticityTester:
     WINDOW_SIZE = 10
-    NUM_SESSIONS_TO_SEND = 100
+    NUM_SESSIONS_PER_CLASSIFIER = 100
     
     # [COMMUNICATION] Testing -> toolchain
     ingestion_system_url = "http://127.0.0.1:8000"
@@ -78,7 +81,7 @@ class ElasticityTester:
     ###             DEVELOPMENT
     #################################################
     def __development_send_raw_sessions(self, how_many_classifiers):
-        for i in range(how_many_classifiers * self.NUM_SESSIONS_TO_SEND):
+        for i in range(how_many_classifiers * self.NUM_SESSIONS_PER_CLASSIFIER):
             session_index = i % self.TOTAL_NUM_SESSIONS
             
             # Get data from dataset
@@ -168,5 +171,7 @@ class ElasticityTester:
         
         # todo do stuff here?
         return
-
-
+ # 5, 10, 15, 20, ...
+ # t,  t,  t,  t, ...
+ """
+ """
