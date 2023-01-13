@@ -3,15 +3,16 @@ import os.path
 import pandas as pd
 
 from execution_system.execution_system_configuration import ExecutionSystemConfiguration
-from execution_system.communication_controller import CommunicationController
+from execution_system.communication_controller import CommunicationController, CLASSIFIER_MODEL_PATH
+from execution_system.communication_controller import send_testing_timestamp
 from execution_system.system_mode_tracker import SystemModeTracker
 from execution_system.classifier_model_deployment import ClassifierModelDeployment
 from execution_system.attack_risk_classifier import AttackRiskClassifier
-from execution_system.communication_controller import CLASSIFIER_MODEL_PATH
 from utility import data_folder
 
 CONFIGURATION_FILE = 'execution_system/execution_config.json'
 CONFIGURATION_SCHEMA = 'execution_system/execution_config_schema.json'
+TESTING_MODE = 'No'
 
 
 class ExecutionSystemController:
@@ -25,7 +26,7 @@ class ExecutionSystemController:
         self.__system_mode_tracker = SystemModeTracker(self.__configuration)
         self.__deployed_classifier_model = ClassifierModelDeployment()
 
-    def run(self):
+    def run(self) -> None:
         # Start REST server
         self.__communication_controller.start_execution_rest_server()
 
@@ -33,6 +34,10 @@ class ExecutionSystemController:
         # Start classifier
         self.__deployed_classifier_model.load_classifier_model()
         self.__system_mode_tracker.development_mode = False
+
+        # send timestamp for testing
+        if TESTING_MODE == 'Yes':
+            send_testing_timestamp(scenario_id=4)
 
     def handle_new_prepared_session_reception(self, json_session: dict) -> None:
         if os.path.exists(os.path.join(data_folder, CLASSIFIER_MODEL_PATH)):
@@ -61,3 +66,6 @@ class ExecutionSystemController:
 
         if session_risk_level == '1':
             print("Attack detected")
+
+        if TESTING_MODE == 'Yes':
+            send_testing_timestamp(scenario_id=5, session_id=session_id)
