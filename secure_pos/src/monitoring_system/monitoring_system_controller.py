@@ -35,7 +35,7 @@ class MonitoringSystemController:
                                     # l'handler gestisce l'archiviazione delle label
                                     'handler': self.handle_message
                                 })
-        server.run(debug=True, port=8001)
+        server.run(debug=False, port=8001)
 
     def create_tables(self):
         logging.info("Create tables (if not exists) for label storage")

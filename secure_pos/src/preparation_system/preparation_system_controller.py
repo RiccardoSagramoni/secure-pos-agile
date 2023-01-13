@@ -70,7 +70,7 @@ class PreparationSystemController:
                                     # l'handler gestisce l'archiviazione delle label
                                     'handler': self.handle_message
                                 })
-        server.run(debug=True)
+        server.run(debug=False)
 
     def load_config(self):
         with open(self.config_path, "r", encoding="UTF-8") as file:
