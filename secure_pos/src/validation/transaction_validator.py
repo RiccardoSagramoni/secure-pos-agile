@@ -1,6 +1,7 @@
 from data_objects.transaction import Transaction
 from ingestion_system.configuration import Configuration
-from validation.record_data_validator import CommercialDataValidator, GeoDataValidator, NetworkDataValidator
+from validation.record_data_validator \
+    import CommercialDataValidator, GeoDataValidator, NetworkDataValidator
 
 
 class TransactionValidator:

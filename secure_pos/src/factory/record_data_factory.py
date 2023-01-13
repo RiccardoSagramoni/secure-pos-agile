@@ -4,8 +4,12 @@ from data_objects.record_data import CommercialData, NetworkData, GeoData
 
 
 class CommercialDataFactory:
+    """
+    Factory responsible for generating CommercialData objects.
+    """
+    
     @staticmethod
-    def generate_from_dict(data: dict) -> CommercialData:
+    def generate_from_json_dict(data: dict) -> CommercialData:
         return CommercialData(
             data['event_id'],
             data['cardid'],
@@ -36,8 +40,12 @@ class CommercialDataFactory:
 
 
 class NetworkDataFactory:
+    """
+    Factory responsible for generating NetworkData objects.
+    """
+    
     @staticmethod
-    def generate_from_dict(data: dict) -> NetworkData:
+    def generate_from_json_dict(data: dict) -> NetworkData:
         return NetworkData(
             data['event_id'],
             data['ip']
@@ -52,8 +60,12 @@ class NetworkDataFactory:
 
 
 class GeoDataFactory:
+    """
+    Factory responsible for generating GeoData objects.
+    """
+    
     @staticmethod
-    def generate_from_dict(data: dict) -> GeoData:
+    def generate_from_json_dict(data: dict) -> GeoData:
         return GeoData(
             data['event_id'],
             data['loc_name'],

@@ -19,7 +19,8 @@
             "type": "string"
         },
         "port": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "database_path": {
             "type": "string"
@@ -31,16 +32,20 @@
             "type": "string"
         },
         "min_transactions_per_session": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "max_invalid_attributes_allowed": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "execution_window_length": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "monitoring_window_length": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "is_development_mode": {
             "type": "boolean"

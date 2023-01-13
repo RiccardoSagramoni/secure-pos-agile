@@ -7,9 +7,20 @@ from utility.json_validation import validate_json_data_file
 
 
 class Configuration:
+    """
+    Class responsible for retrieving and validating the configuration parameters
+    set by the system administrator. It offers the parameters as public attributes.
+    """
+    
     def __init__(self, json_configuration_path: str, json_schema_path: str):
-        # Open configuration file
-        with open(os.path.join(utility.data_folder, json_configuration_path), "r", encoding="UTF-8") as file:
+        """
+        ``Configuration`` constructor
+        :param json_configuration_path: path to the configuration file
+        :param json_schema_path:  path to the json schema of the configuration file
+        """
+        # Open the configuration file
+        with open(os.path.join(utility.data_folder, json_configuration_path),
+                  "r", encoding="UTF-8") as file:
             # Load JSON configuration
             json_conf = json.load(file)
             # Validate configuration

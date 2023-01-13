@@ -6,18 +6,25 @@ from factory.transaction_factory import TransactionFactory
 
 
 class RawSessionFactory:
+    """
+    Factory responsible for generating RawSession objects.
+    """
+    
     @staticmethod
-    def generate_from_dict(session_dict: dict) -> RawSession:
+    def generate_from_json_dict(session_dict: dict) -> RawSession:
         # Generate list of transaction objects
         transactions = []
         for doc in session_dict['transactions']:
             transactions.append(
-                TransactionFactory.generate_from_dict(doc)
+                TransactionFactory.generate_from_json_dict(doc)
             )
+        label = session_dict.get('attack_risk_label') # returns None if label does not exist
+        if label is not None:
+            label = AttackRiskLabel(label)
         # Generate raw session object
         return RawSession(
             session_dict['session_id'],
-            session_dict.get('attack_risk_label'),  # returns None if label does not exist
+            label,
             transactions
         )
     

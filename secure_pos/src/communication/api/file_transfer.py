@@ -22,7 +22,7 @@ class ReceiveFileApi(Resource):
                  handler: Callable[[], None] = None):
         """
         Initialize the API.
-        :param filename: path where to save the received file (relative to the received data folder)
+        :param filename: path where to save the received file (relative to the data folder)
         :param handler: optional function to call after the file has been saved in the filesystem.
                         The handler function should not take too much time to return
                         (start a new thread, if necessary).

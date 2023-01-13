@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from data_objects.record_data import CommercialData, GeoData, NetworkData
 
@@ -17,6 +18,9 @@ def validate_string_with_regex(string: str, regex: str) -> bool:
 
 
 class CommercialDataValidator:
+    """
+    Class responsible for validating a CommercialData object.
+    """
     
     def __init__(self, data: CommercialData):
         self.__commercial_data = data
@@ -40,16 +44,18 @@ class CommercialDataValidator:
         )
     
     def validate_date(self) -> bool:
-        return validate_string_with_regex(
-            self.__commercial_data.date,
-            "^[0-9]{4}\\-[0-9]{1,2}\\-[0-9]{1,2}$"
-        )
+        try:
+            datetime.strptime(self.__commercial_data.date, '%Y-%m-%d')
+            return True
+        except ValueError:
+            return False
     
     def validate_time(self) -> bool:
-        return validate_string_with_regex(
-            self.__commercial_data.time,
-            "^[0-9]{2}:[0-9]{2}:[0-9]{2}$"
-        )
+        try:
+            datetime.strptime(self.__commercial_data.time, '%H:%M:%S')
+            return True
+        except ValueError:
+            return False
     
     def validate_payment_type(self) -> bool:
         return validate_string_with_regex(
@@ -64,10 +70,11 @@ class CommercialDataValidator:
         )
     
     def validate_amount(self) -> bool:
-        return validate_string_with_regex(
-            self.__commercial_data.payment_circuit,
-            "^[0-9]+\\.[0-9]{2}$"
-        )
+        try:
+            amount = float(self.__commercial_data.amount)
+            return amount >= 0
+        except ValueError:
+            return False
     
     def validate_currency(self) -> bool:
         return validate_string_with_regex(
@@ -90,6 +97,9 @@ class CommercialDataValidator:
 
 
 class GeoDataValidator:
+    """
+    Class responsible for validating a GeoData object.
+    """
     
     def __init__(self, data: GeoData):
         self.__geo_data = data
@@ -128,6 +138,9 @@ class GeoDataValidator:
 
 
 class NetworkDataValidator:
+    """
+    Class responsible for validating a NetworkData object.
+    """
     
     def __init__(self, data: NetworkData):
         self.__network_data = data
