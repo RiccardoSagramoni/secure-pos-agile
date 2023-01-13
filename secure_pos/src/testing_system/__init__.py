@@ -1,11 +1,13 @@
+import sys
+
 from testing_system.tester_development import DevelopmentTester
 from testing_system.tester_execution import ExecutionTester
 
 
 def development_testing():
     test_system = DevelopmentTester()
-    # num_sessions = [1, 1, 1]
-    num_sessions = [50, 100, 200, 300, 400, 500]
+    num_sessions = [20]
+    # num_sessions = [50, 100, 200, 300, 400, 500]
     test_system.start_development_testing(num_sessions)
 
 
@@ -24,3 +26,4 @@ if __name__ == "__main__":
     development_testing()
     # execution_testing()
     print("FINE TESTING")
+    sys.exit(0)

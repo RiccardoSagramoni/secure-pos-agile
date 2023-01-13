@@ -91,6 +91,8 @@ class DevelopmentTester:
             # Get session id
             session_id = label_data['event_id']
             label_data = replace_broken_label(label_data)
+            print(f"{session_index + 1}) {label_data}")
+            
             # Prepare data to send
             data = [
                 {
@@ -114,7 +116,7 @@ class DevelopmentTester:
                     'data': label_data
                 }
             ]
-            print(f"{session_index}) {label_data}")
+            
             # Send data to ingestion system
             for record in data:
                 try:

@@ -115,7 +115,7 @@ class ExecutionTester:
             # Get session id
             session_id = label_data['event_id']
             label_data = replace_broken_label(label_data)
-            print(f"{session_index}) {label_data}")
+            print(f"{session_index + 1}) {label_data}")
             
             # Register start timestamp
             with self.start_timestamp_lock:
