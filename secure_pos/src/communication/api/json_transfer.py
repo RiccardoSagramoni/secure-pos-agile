@@ -16,15 +16,17 @@ class ReceiveJsonApi(Resource):
     """
     
     def __init__(self,
-                 json_schema: str = None,
+                 json_schema_path: str = None,
                  handler: Callable[[dict], None] = None):
         """
         Initialize the API.
+        :param json_schema_path
         :param handler: optional function to call after the json has been saved in the filesystem.
                         The handler function should not take too much time to return
                         (start a new thread, if necessary).
         """
-        self.json_schema = json_schema
+
+        self.json_schema_path = json_schema_path
         self.handle_request = handler
     
     def post(self):
@@ -37,8 +39,8 @@ class ReceiveJsonApi(Resource):
         received_json = request.get_json()
         
         # Validate received json
-        if self.json_schema is not None \
-                and not validate_json_data_file(received_json, self.json_schema):
+        if self.json_schema_path is not None \
+                and not validate_json_data_file(received_json, self.json_schema_path):
             return 'JSON validation failed', 400
         
         # Execute the handler function if it was specified
