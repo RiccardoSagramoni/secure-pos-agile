@@ -1,3 +1,4 @@
+# todo refactor!
 import os
 
 project_folder = os.path.realpath(__file__ + "/../../../")

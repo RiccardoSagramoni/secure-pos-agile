@@ -25,6 +25,7 @@ class ReceiveJsonApi(Resource):
                         The handler function should not take too much time to return
                         (start a new thread, if necessary).
         """
+
         self.json_schema_path = json_schema_path
         self.handle_request = handler
     

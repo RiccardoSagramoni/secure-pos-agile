@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 
 
+
 class DBManager:  # todo change name to database_connector.DatabaseConnector
     """
     Class responsible to handle the "low level" accesses to the database.
