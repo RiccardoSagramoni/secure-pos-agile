@@ -5,7 +5,7 @@ from segregation_system.objects.segregation_system_controller import Segregation
 
 def main():
     controller = SegregationSystemController()
-    controller.check_response()
+    controller.run()
     sys.exit(0)
 
 

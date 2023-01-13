@@ -157,7 +157,7 @@ class SegregationSystemController:
 
         sys.exit(0)
 
-    def check_response(self):
+    def run(self):  # todo cambia nome in design class diagram
         """
         Function that checks which phase we need to execute, three options are available:
         - First start:  The REST server is not started yet, so we need to start it waiting for
@@ -217,7 +217,7 @@ class SegregationSystemController:
                 else:
                     print('Unknown response: please write "yes" or "no" inside the file')
             
-            # Wait for a enough sessions to generate ML sets
+            # Wait for enough sessions to generate ML sets
             self.semaphore.acquire()
             self.check_balancing()
 
