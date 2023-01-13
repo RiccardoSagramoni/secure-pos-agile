@@ -38,7 +38,7 @@ def main():
     commercial, geo, network, label = parse_dataset()
     window_size = 10
     
-    for i in range(100):
+    for i in range(40):
         # Get data from dataset
         commercial_data, geo_data, network_data, label_data = get_data_for_testing(
             commercial, geo, network, label,
@@ -47,7 +47,7 @@ def main():
         )
         # Get session id
         session_id = label_data['event_id']
-        label_data = replace_broken_label(label_data)  # todo
+        label_data = replace_broken_label(label_data)
         # Prepare data to send
         data = [
             {
