@@ -1,13 +1,14 @@
 from threading import Semaphore
 
-from database.DBManager import DBManager
+from database import DatabaseConnector
+
 
 class MachineLearningSetsArchiver:
 
     def __init__(self, database_path):
 
         self.database_path = database_path
-        self.db_connection = DBManager(self.database_path)
+        self.db_connection = DatabaseConnector(self.database_path)
         self.semaphore = Semaphore(1)
 
 

@@ -1,12 +1,12 @@
 import logging
 
-from database.DBManager import DBManager
+from database import DatabaseConnector
 
 
 class LabelStorer:
 
     def __init__(self):
-        self.db = DBManager('monitoringDB.db')
+        self.db = DatabaseConnector('monitoringDB.db')
 
     def store_label(self, label, table):
         if not self.db.insert(label, table):

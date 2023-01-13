@@ -3,7 +3,7 @@ import threading
 import pandas
 
 from data_objects.raw_session import RawSession
-from database.DBManager import DBManager
+from database import DatabaseConnector
 from factory.raw_session_factory import RawSessionFactory
 from ingestion_system.configuration import Configuration
 from ingestion_system.system_mode_tracker import SystemModeTracker
@@ -18,7 +18,7 @@ class DatabaseController:
     
     def __init__(self, conf: Configuration, tracker: SystemModeTracker):
         self.__system_mode_tracker = tracker
-        self.__database_connector = DBManager(conf.database_path)
+        self.__database_connector = DatabaseConnector(conf.database_path)
         self.__database_connector.drop_database()
         self.__create_tables()
     
