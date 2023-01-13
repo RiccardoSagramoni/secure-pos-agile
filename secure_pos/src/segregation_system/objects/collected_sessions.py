@@ -1,5 +1,5 @@
 import pandas as pd
-from segregation_system.Objects.PreparedSession import PreparedSession
+from segregation_system.objects.prepared_session import PreparedSession
 
 
 class CollectedSessions:

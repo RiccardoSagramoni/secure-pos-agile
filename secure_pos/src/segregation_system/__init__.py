@@ -1,6 +1,6 @@
 import sys
 
-from segregation_system.Objects.SegregationSystemController import SegregationSystemController
+from segregation_system.objects.segregation_system_controller import SegregationSystemController
 
 
 def main():
