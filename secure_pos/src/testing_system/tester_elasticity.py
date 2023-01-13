@@ -16,6 +16,7 @@ from communication.api.json_transfer import ReceiveJsonApi
 TODO: ottenere uno timestamp per ogni classificatore
 """
 
+
 #################################################
 ###                 UTILITY
 #################################################
@@ -37,7 +38,12 @@ class ElasticityTester:
     
     # [COMMUNICATION] toolchain -> Testing
     semaphore = threading.Semaphore(0)
-    received_response = None
+
+    received_response_list = []
+    received_response_lock = threading.Lock()
+
+    diff_timestamp_list = []
+    diff_timestamp_lock = threading.RLock()  # lock for diff_timestamp_list
     
     # Constructor
     def __init__(self):
@@ -135,27 +141,28 @@ class ElasticityTester:
         
         # Send raw sessions
         self.__development_send_raw_sessions(how_many_classifiers)
-        
-        # Wait for HTTP message
-        self.semaphore.acquire()
-        
-        # Get difference between start and end timestamp
-        end_timestamp_str = self.received_response["timestamp"]
-        end_timestamp = datetime.strptime(end_timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
-        diff_timestamp = end_timestamp - start_timestamp
-        diff = diff_timestamp.total_seconds()
-        
-        # Write performance on csv
-        # id dello scenario | diff
-        scenario_id = self.received_response["scenario_id"]
-        result_dict = {
-            "scenario_id": scenario_id,
-            "diff": diff
-        }
-        result_df = pd.DataFrame(result_dict, index=[0])
-        result_df.to_csv("development.csv", sep=',', encoding="UTF-8", mode='a', header=False, index=False)
-    
-    #
+
+        for i in range(how_many_classifiers):
+            # Wait for HTTP message
+            self.semaphore.acquire()
+
+            # Get difference between start and end timestamp
+            end_timestamp_str = self.received_response_list[i]["timestamp"]
+            end_timestamp = datetime.strptime(end_timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
+            diff_timestamp = end_timestamp - start_timestamp
+            diff = diff_timestamp.total_seconds()
+
+            # Write performance on csv
+            # id dello scenario | diff
+            scenario_id = self.received_response_list[i]["scenario_id"]
+            result_dict = {
+                "iteration": iteration_num,
+                "scenario_id": scenario_id,
+                "diff": diff
+            }
+            result_df = pd.DataFrame(result_dict, index=[0])
+            result_df.to_csv("development.csv", sep=',', encoding="UTF-8", mode='a', header=False, index=False)
+
     def start_development_testing(self, how_many_classifiers_list: list) -> None:
         # Create development.csv file
         with open("development.csv", "w") as file:
@@ -166,12 +173,8 @@ class ElasticityTester:
         flask_thread.start()
         time.sleep(5)
         
-        for num in how_many_classifiers_list:
-            self.__run_development_testing(num)
+        for i, num in enumerate(how_many_classifiers_list):
+            self.__run_development_testing(i, num)
         
         # todo do stuff here?
         return
- # 5, 10, 15, 20, ...
- # t,  t,  t,  t, ...
- """
- """

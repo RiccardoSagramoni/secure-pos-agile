@@ -32,7 +32,7 @@ class ExecutionTester:
     start_timestamp_lock = threading.RLock()
     
     diff_timestamp_list = []
-    diff_timestamp_lock = threading.RLock()  # lock for diff_timestamp_dict
+    diff_timestamp_lock = threading.RLock()  # lock for diff_timestamp_list
     
     NUM_SESSIONS = 0
     
@@ -165,7 +165,7 @@ class ExecutionTester:
                     break
             time.sleep(2)
     
-    def __run_execution_testing(self, num_sessions, execution_len, monitoring_len):
+    def __run_execution_testing(self, iteration_num, num_sessions, execution_len, monitoring_len):
         # Send raw sessions
         self.__execution_send_raw_sessions(num_sessions, execution_len, monitoring_len)
         
@@ -177,14 +177,14 @@ class ExecutionTester:
         for diff in self.diff_timestamp_list:
             results.append(
                 {
+                    "iteration": iteration_num,
                     "scenario_id": 5,
                     "diff": diff
                 }
             )
         result_df = pd.DataFrame(results)
         result_df.to_csv("execution.csv", sep=',', encoding="UTF-8", mode='a', header=False, index=False)
-    
-    #
+
     def start_execution_testing(self, num_session_list: list, execution_len, monitoring_len) -> None:
         # Create development.csv file
         with open("execution.csv", "w") as file:
@@ -194,9 +194,9 @@ class ExecutionTester:
         flask_thread = threading.Thread(target=self.__start_rest_server, daemon=True)
         flask_thread.start()
         
-        for num in num_session_list:
+        for i, num in enumerate(num_session_list):
             self.NUM_SESSIONS = num
-            self.__run_execution_testing(num, execution_len, monitoring_len)
+            self.__run_execution_testing(i, num, execution_len, monitoring_len)
         
         # todo do stuff here?
         return
