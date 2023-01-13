@@ -16,7 +16,7 @@ TESTING_URL = 'http://25.34.31.202:1234'
 
 def send_testing_timestamp(scenario_id: int, session_id: str = None) -> None:
     """
-    send timenstamp to tester system during testing phase
+    send timestamp to tester system during testing phase
     :param scenario_id: id of the scenario to evaluate
     :param session_id: id of the current session, only in execution mode
     """
