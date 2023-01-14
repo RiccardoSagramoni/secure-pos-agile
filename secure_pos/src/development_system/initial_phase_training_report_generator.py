@@ -6,6 +6,7 @@ REPORT_INITIAL_PHASE_TRAINING_PATH = 'development_system/reports/initial_phase/r
 
 class InitialPhaseTrainingReportGenerator:
 
+    @staticmethod
     def generate_report(self, training_error, validation_error, hyper_parameters):
         report = {
             'report_title:': 'Report of the Initial Phase Training',

@@ -4,10 +4,10 @@ import joblib
 from sklearn.model_selection import ParameterGrid
 
 import utility
-from development_system.TrainingConfiguration import TrainingConfiguration
-from development_system.TopClassifier import TopClassifier
-from development_system.TopClassifiersReportGenerator import TopClassifierReportGenerator
-from development_system.MLPTraining import MLPTraining
+from development_system.training_configuration import TrainingConfiguration
+from development_system.top_classifier import TopClassifier
+from development_system.top_classifiers_report_generator import TopClassifierReportGenerator
+from development_system.mlp_training import MLPTraining
 
 
 class GridSearchController:
@@ -60,6 +60,6 @@ class GridSearchController:
             self.check_validation_error_classifier(index, possible_hyperparameters_combination)
             index = index + 1
 
-        TopClassifierReportGenerator().generate_report( self.validation_tolerance, self.number_of_top_classifiers, self.top_classifiers_object_list)
+        TopClassifierReportGenerator.generate_report( self.validation_tolerance, self.number_of_top_classifiers, self.top_classifiers_object_list)
 
 

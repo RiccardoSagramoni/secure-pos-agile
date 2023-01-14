@@ -1,3 +1,5 @@
+import json
+import pandas as pd
 from threading import Semaphore
 
 from database import DatabaseConnector
@@ -23,19 +25,54 @@ class MachineLearningSetsArchiver:
                 "type INT, label VARCHAR(20))"
             )
 
-    def drop_ml_sets_db(self):
+    def create_json_received_table(self):
+        with self.semaphore:
+            self.db_connection.create_table(
+                "CREATE TABLE IF NOT EXISTS JsonDataReceived "
+                "(id_classifier INTEGER PRIMARY KEY AUTOINCREMENT, sets TEXT NOT NULL)"
+            )
+
+    def drop_ml_sets_table(self):
         with self.semaphore:
             self.db_connection.delete_table("MachineLearningSets")
-            self.db_connection.drop_database()
+            # self.db_connection.drop_database()
 
+    def insert_ml_sets(self):
 
-    def insert_ml_sets(self, data_frame):
+        self.create_ml_sets_table()
 
         with self.semaphore:
+
+            ml_sets = self.db_connection.read_sql("SELECT sets "
+                                                    "FROM JsonDataReceived "
+                                                    "LIMIT 1")
+
+            self.db_connection.update("DELETE FROM JsonDataReceived WHERE id_classifier = ("
+                                        "SELECT Min(id_classifier) FROM JsonDataReceived)")
+
+
+
+            json_data_ml_sets = json.loads(ml_sets.at[0, 'sets'])
+
+            data_frame = pd.DataFrame(json_data_ml_sets,
+                                      columns= ['id','time_mean', 'time_median', 'time_std',
+                                               'time_kurtosis', 'time_skewness', 'amount_mean',
+                                               'amount_median', 'amount_std', 'amount_kurtosis',
+                                               'amount_skewness', 'type', 'label'])
+
             try:
                 ret = self.db_connection.insert(data_frame, 'MachineLearningSets')
             except Exception as ex:
-                print("Error during the insert execution: %s", ex)
+                print("Error during the insert execution in MachineLearningSets: %s", ex)
+            return ret
+
+    def insert_json_received(self, data_frame):
+
+        with self.semaphore:
+            try:
+                ret = self.db_connection.insert(data_frame, 'JsonDataReceived')
+            except Exception as ex:
+                print("Error during the insert execution in JsonDataReceived: %s", ex)
             return ret
 
     def get_ml_sets(self, type_of_set):

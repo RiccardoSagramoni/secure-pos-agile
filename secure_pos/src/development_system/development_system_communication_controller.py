@@ -6,7 +6,7 @@ import requests
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
 
-from development_system.DevelopmentSystemConfiguration import DevelopmentSystemConfiguration
+from development_system.development_system_configuration import DevelopmentSystemConfiguration
 
 class DevelopmentSystemCommunicationController:
 

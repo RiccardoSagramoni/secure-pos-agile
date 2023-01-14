@@ -1,7 +1,7 @@
 {
 	"definitions": {},
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://example.com/object1673397498.json",
+	"$id": "https://example.com/object1673629318.json",
 	"title": "Root",
 	"type": "object",
 	"required": [
@@ -10,8 +10,8 @@
 		"number_of_top_classifiers",
 		"test_tolerance",
 		"validation_tolerance",
-		"is_initial_phase_over",
 		"is_grid_search_over",
+		"is_initial_phase_over",
 		"best_classifier_number",
 		"test_best_classifier_passed"
 	],
@@ -137,7 +137,7 @@
 					"title": "Max_iter",
 					"type": "integer",
 					"examples": [
-						1000
+						3000
 					],
 					"default": 0
 				},
@@ -219,9 +219,9 @@
 			],
 			"default": 0.0
 		},
-		"is_initial_phase_over": {
-			"$id": "#root/is_initial_phase_over",
-			"title": "Is_initial_phase_over",
+		"is_grid_search_over": {
+			"$id": "#root/is_grid_search_over",
+			"title": "Is_grid_search_over",
 			"type": "string",
 			"default": "",
 			"examples": [
@@ -229,9 +229,9 @@
 			],
 			"pattern": "^.*$"
 		},
-		"is_grid_search_over": {
-			"$id": "#root/is_grid_search_over",
-			"title": "Is_grid_search_over",
+		"is_initial_phase_over": {
+			"$id": "#root/is_initial_phase_over",
+			"title": "Is_initial_phase_over",
 			"type": "string",
 			"default": "",
 			"examples": [
@@ -244,7 +244,7 @@
 			"title": "Best_classifier_number",
 			"type": "integer",
 			"examples": [
-				2
+				0
 			],
 			"default": 0
 		},
@@ -254,7 +254,7 @@
 			"type": "string",
 			"default": "",
 			"examples": [
-				"No"
+				"None"
 			],
 			"pattern": "^.*$"
 		}

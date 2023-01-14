@@ -3,11 +3,12 @@ import jsons
 import os
 import utility
 
-
 REPORT_BEST_CLASSIFIER_PATH = 'development_system/reports/best_classifier/report_best_classifier.json'
+
 
 class TestBestCLassifierReportGenerator:
 
+    @staticmethod
     def generate_report(self, test_tolerance, id_best_classifier, training_error, test_error):
 
         report = {

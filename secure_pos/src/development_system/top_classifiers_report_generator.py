@@ -8,6 +8,7 @@ REPORT_TOP_CLASSIFIERS_PATH = 'development_system/reports/top_classifiers/report
 
 class TopClassifierReportGenerator:
 
+    @staticmethod
     def generate_report(self, validation_tolerance, number_of_top_classifiers, top_classifiers_object_list):
 
         report = {

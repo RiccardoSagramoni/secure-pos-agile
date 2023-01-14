@@ -2,9 +2,9 @@ import joblib
 from sklearn.metrics import accuracy_score
 from numpy import ravel
 
-from development_system.TrainingConfiguration import TrainingConfiguration
-from development_system.MachineLearningSetsArchiver import MachineLearningSetsArchiver
-from development_system.TestBestClassifierReportGenerator import TestBestCLassifierReportGenerator
+from development_system.training_configuration import TrainingConfiguration
+from development_system.machine_learning_sets_archiver import MachineLearningSetsArchiver
+from development_system.test_best_classifier_report_generator import TestBestCLassifierReportGenerator
 
 TEST_SETS = 2
 
@@ -31,6 +31,6 @@ class TestBestClassifier:
         # measure the accurancy using the validation set
         self.test_error = 1 - (accuracy_score(ravel(self.test_labels), attack_risk_label_prediction))
 
-        TestBestCLassifierReportGenerator().generate_report(self.test_tolerance, self.id_best_classifier, self.training_error, self.test_error)
+        TestBestCLassifierReportGenerator.generate_report(self.test_tolerance, self.id_best_classifier, self.training_error, self.test_error)
 
 
