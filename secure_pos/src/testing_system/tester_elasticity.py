@@ -34,7 +34,7 @@ class ElasticityTester:
     NUM_SESSIONS_PER_CLASSIFIER = 100
     
     # [COMMUNICATION] Testing -> toolchain
-    ingestion_system_url = "http://127.0.0.1:8000"
+    ingestion_system_url = "http://25.20.54.175:8000"
     
     # [COMMUNICATION] toolchain -> Testing
     semaphore = threading.Semaphore(0)
@@ -54,8 +54,7 @@ class ElasticityTester:
         self.label = read_csv(os.path.join(utility.data_folder, 'label.csv'))
         # Compute total number of available unique sessions
         self.TOTAL_NUM_SESSIONS = int(len(self.commercial) / self.WINDOW_SIZE)
-    
-    #
+
     def __get_raw_session(self, start_index=0, window_size=10) -> typing.Tuple[list, list, list, dict]:
         return (
             self.commercial.iloc[start_index: start_index + window_size].to_dict(orient='records'),
@@ -71,6 +70,7 @@ class ElasticityTester:
         with self.received_response_lock:
             self.received_response_list.append(message)
         self.semaphore.release()
+        print("Received result")
     
     def __start_rest_server(self):
         server = RestServer()
@@ -87,9 +87,13 @@ class ElasticityTester:
     #################################################
     ###             DEVELOPMENT
     #################################################
-    def __development_send_raw_sessions(self, how_many_classifiers):
-        for i in range(how_many_classifiers * self.NUM_SESSIONS_PER_CLASSIFIER):
+    def __development_send_raw_sessions(self, how_many_classifiers, iteration):
+        # for i in range(how_many_classifiers * self.NUM_SESSIONS_PER_CLASSIFIER):
+        i = 0
+        while True:
             session_index = i % self.TOTAL_NUM_SESSIONS
+
+            i += 1
             
             # Get data from dataset
             commercial_data, geo_data, network_data, label_data = self.__get_raw_session(
@@ -99,7 +103,7 @@ class ElasticityTester:
             # Get session id
             session_id = label_data['event_id']
             label_data = replace_broken_label(label_data)
-            print(f"{session_index + 1}) {label_data}")
+            print(f"iteration: {iteration}, {session_index + 1}) {label_data}")
             
             # Prepare data to send
             data = [
@@ -133,15 +137,17 @@ class ElasticityTester:
                     print(ex)
                     print(f"FAIL session_id: {session_id}")
                     break
-            time.sleep(2)
-    
-    #
+            time.sleep(0.05)
+
+            if len(self.received_response_list) == how_many_classifiers:
+                break
+
     def __run_development_testing(self, iteration_num, how_many_classifiers):
         # Get timestamp
         start_timestamp = datetime.now()
         
         # Send raw sessions
-        self.__development_send_raw_sessions(how_many_classifiers)
+        self.__development_send_raw_sessions(how_many_classifiers, iteration_num)
 
         for i in range(how_many_classifiers):
             # Wait for HTTP message
@@ -161,12 +167,13 @@ class ElasticityTester:
                 "scenario_id": scenario_id,
                 "diff": diff
             }
+            print(f"iteration: {iteration_num}, Insert result" + str(diff) + " into csv")
             result_df = pd.DataFrame(result_dict, index=[0])
             result_df.to_csv("development.csv", sep=',', encoding="UTF-8", mode='a', header=False, index=False)
 
     def start_development_testing(self, how_many_classifiers_list: list) -> None:
         # Create development.csv file
-        with open("development.csv", "w") as file:
+        with open("development.csv", "w", encoding="UTF-8") as file:
             file.write("iteration,scenario_id,diff\n")
         
         # Start REST server
@@ -176,6 +183,10 @@ class ElasticityTester:
         
         for i, num in enumerate(how_many_classifiers_list):
             self.__run_development_testing(i, num)
+            while True:
+                if len(self.received_response_list) == num:
+                    break
+            self.received_response_list = []
         
         # todo do stuff here?
         return

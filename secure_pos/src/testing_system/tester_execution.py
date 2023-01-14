@@ -37,7 +37,7 @@ class ExecutionTester:
     NUM_SESSIONS = 0
     
     # [COMMUNICATION] Testing -> toolchain
-    ingestion_system_url = "http://127.0.0.1:8000"
+    ingestion_system_url = "http://25.20.54.175:8000"
     
     # [COMMUNICATION] toolchain -> Testing
     semaphore = threading.Semaphore(0)
@@ -52,8 +52,7 @@ class ExecutionTester:
         self.label = read_csv(os.path.join(utility.data_folder, 'label.csv'))
         
         self.TOTAL_NUM_SESSIONS = int(len(self.commercial) / self.WINDOW_SIZE)
-    
-    #
+
     def __get_raw_session(self, start_index=0, window_size=10) -> typing.Tuple[list, list, list, dict]:
         return (
             self.commercial.iloc[start_index: start_index + window_size].to_dict(orient='records'),
@@ -163,7 +162,7 @@ class ExecutionTester:
                     print(ex)
                     print(f"FAIL label session_id: {session_id}")
                     break
-            time.sleep(2)
+            time.sleep(0.05)
     
     def __run_execution_testing(self, iteration_num, num_sessions, execution_len, monitoring_len):
         # Send raw sessions
@@ -187,7 +186,7 @@ class ExecutionTester:
 
     def start_execution_testing(self, num_session_list: list, execution_len, monitoring_len) -> None:
         # Create development.csv file
-        with open("execution.csv", "w") as file:
+        with open("execution.csv", "w", encoding="UTF-8") as file:
             file.write("scenario_id,diff\n")
         
         # Start REST server
