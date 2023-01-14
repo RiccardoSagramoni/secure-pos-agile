@@ -3,13 +3,13 @@ import jsons
 import os
 import utility
 
-
 REPORT_TOP_CLASSIFIERS_PATH = 'development_system/reports/top_classifiers/report_top_classifiers.json'
+
 
 class TopClassifierReportGenerator:
 
     @staticmethod
-    def generate_report(self, validation_tolerance, number_of_top_classifiers, top_classifiers_object_list):
+    def generate_report(validation_tolerance, number_of_top_classifiers, top_classifiers_object_list):
 
         report = {
             'report_title:': 'Report of the Top Classifiers',

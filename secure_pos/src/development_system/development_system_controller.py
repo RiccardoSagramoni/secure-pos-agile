@@ -7,7 +7,6 @@ import pandas as pd
 import joblib
 import json
 import random
-from os import path
 
 from development_system.training_configuration import TrainingConfiguration
 from development_system.mlp_training import MLPTraining
@@ -17,7 +16,6 @@ from development_system.development_system_archiver import DevelopmentSystemArch
 from development_system.test_best_classifier import TestBestClassifier
 from development_system.development_system_communication_controller import DevelopmentSystemCommunicationController
 from development_system.machine_learning_sets_archiver import MachineLearningSetsArchiver
-
 import utility
 
 SYSTEM_CONFIGURATION_PATH = 'development_system/configuration_files/development_system_configuration.json'
@@ -34,21 +32,28 @@ TEST_BEST_CLASSIFIER_PASSED_PHASE = 3
 
 TESTING_MODE = False
 
-class DevelopmentSystemController:
 
+class DevelopmentSystemController:
     semaphore = threading.Semaphore(0)
     status = None
     final_phase_over = False
 
     def __init__(self):
-        self.training_configuration = TrainingConfiguration(TRAINING_CONFIGURATION_PATH, TRAINING_CONFIGURATION_SCHEMA_PATH)
-        self.developing_system_configuration = DevelopmentSystemConfiguration(SYSTEM_CONFIGURATION_PATH, SYSTEM_CONFIGURATION_SCHEMA_PATH)
-        self.communication_controller = DevelopmentSystemCommunicationController(self.developing_system_configuration, self.save_ml_sets_in_the_archive, self.semaphore.release)
-        self.ml_sets_archive_handler = MachineLearningSetsArchiver(os.path.join(utility.data_folder, ML_SETS_ARCHIVE_PATH))
+
+        self.training_configuration = TrainingConfiguration(TRAINING_CONFIGURATION_PATH,
+                                                            TRAINING_CONFIGURATION_SCHEMA_PATH)
+        self.developing_system_configuration = DevelopmentSystemConfiguration(SYSTEM_CONFIGURATION_PATH,
+                                                                              SYSTEM_CONFIGURATION_SCHEMA_PATH)
+        self.communication_controller = DevelopmentSystemCommunicationController(self.developing_system_configuration,
+                                                                                 self.save_ml_sets_in_the_archive,
+                                                                                 self.semaphore.release)
+        self.ml_sets_archive_handler = MachineLearningSetsArchiver(os.path.join(utility.data_folder,
+                                                                                ML_SETS_ARCHIVE_PATH))
 
     def execution_of_the_initial_phase_training(self):
 
-        initial_phase_classifier = MLPTraining(self.training_configuration.is_initial_phase_over, self.ml_sets_archive_handler)
+        initial_phase_classifier = MLPTraining(self.training_configuration.is_initial_phase_over,
+                                               self.ml_sets_archive_handler)
         initial_phase_classifier.train_neural_network(self.training_configuration.average_parameters)
         print("Initial Phase Training is finished")
         if TESTING_MODE:
@@ -56,18 +61,20 @@ class DevelopmentSystemController:
 
     def execution_of_the_grid_search_algorithm(self):
 
-        loaded_classifier = joblib.load(os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav'))
-        classifier_for_grid_search = MLPTraining(self.training_configuration.is_initial_phase_over, self.ml_sets_archive_handler)
+        loaded_classifier = joblib.load(
+            os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav'))
+        classifier_for_grid_search = MLPTraining(self.training_configuration.is_initial_phase_over,
+                                                 self.ml_sets_archive_handler)
         classifier_for_grid_search.set_mlp(loaded_classifier)
         grid_search_controller = GridSearchController(classifier_for_grid_search, self.training_configuration)
         grid_search_controller.generate_grid_search_hyperparameters(self.training_configuration.hyper_parameters)
         print("Grid Search Algorithm is finished")
 
-        with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'r') as read_file:
+        with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'r') as read_file:
             json_data = json.load(read_file)
             json_data['is_grid_search_over'] = "Yes"
 
-        with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'w') as write_file:
+        with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'w') as write_file:
             json.dump(json_data, write_file, indent=2)
 
         if TESTING_MODE:
@@ -78,31 +85,37 @@ class DevelopmentSystemController:
         DevelopmentSystemArchiver.delete_remaining_classifiers(self.training_configuration.best_classifier_number)
         training_error_best_classifier = None
 
-        with open(os.path.join(utility.data_folder, 'development_system/reports/top_classifiers/report_top_classifiers.json'), 'r') as report:
+        with open(os.path.join(utility.data_folder,
+                               'development_system/reports/top_classifiers/report_top_classifiers.json'),
+                  'r') as report:
             json_data = json.load(report)
             for i in json_data['top_classifiers']:
                 if i['classifier_id'] == self.training_configuration.best_classifier_number:
                     training_error_best_classifier = i['training_error']
 
-        test = TestBestClassifier(self.training_configuration, training_error_best_classifier, self.ml_sets_archive_handler)
-        test.test_best_classifier(DevelopmentSystemArchiver.return_path_best_classifier(self.training_configuration.best_classifier_number))
+        test = TestBestClassifier(self.training_configuration, training_error_best_classifier,
+                                  self.ml_sets_archive_handler)
+        test.test_best_classifier(DevelopmentSystemArchiver.return_path_best_classifier(
+            self.training_configuration.best_classifier_number))
         print("the best classifier has been analyzed")
         if TESTING_MODE:
             get_random_response_for_execution_control(3)
 
-    def reset_of_the_system(self):
+    @staticmethod
+    def reset_of_the_system():
 
-        with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'r') as read_file:
+        with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'r') as read_file:
             json_data = json.load(read_file)
             json_data['is_initial_phase_over'] = "No"
             json_data['is_grid_search_over'] = "No"
             json_data['test_best_classifier_passed'] = "None"
             json_data['best_classifier_number'] = 0
 
-        with open(os.path.join(utility.data_folder,TRAINING_CONFIGURATION_PATH), 'w') as write_file:
+        with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'w') as write_file:
             json.dump(json_data, write_file, indent=2)
 
-        DevelopmentSystemArchiver.delete_all_file_in_the_directory(os.path.join(utility.data_folder,'development_system'))
+        DevelopmentSystemArchiver.delete_all_file_in_the_directory(os.path.join(utility.data_folder,
+                                                                                'development_system'))
 
         print("the system has been reset")
 
@@ -153,7 +166,8 @@ class DevelopmentSystemController:
                     "status": "Waiting"
                 }
 
-            with open(os.path.join(utility.data_folder, 'development_system/development_status.json'), 'w') as write_status:
+            with open(os.path.join(utility.data_folder, 'development_system/development_status.json'), 'w') \
+                    as write_status:
                 write_status.write(json.dumps(json_data, indent=2))
 
             sys.exit(0)
@@ -162,19 +176,24 @@ class DevelopmentSystemController:
 
         if TESTING_MODE:
             self.training_configuration = TrainingConfiguration(TRAINING_CONFIGURATION_PATH,
-                                                            TRAINING_CONFIGURATION_SCHEMA_PATH)
+                                                                TRAINING_CONFIGURATION_SCHEMA_PATH)
 
         yes_response = ["Yes", "YES", "yes", "yES"]
         no_response = ["No", "NO", "no", "nO"]
 
         if self.training_configuration.test_best_classifier_passed != "None":
             # the test of the best classifier is executed
-            if self.training_configuration.test_best_classifier_passed in no_response or self.training_configuration.test_best_classifier_passed in yes_response:
+            if self.training_configuration.test_best_classifier_passed in no_response or \
+                    self.training_configuration.test_best_classifier_passed in yes_response:
                 # the ML Engineer has correctly inserted the response of the test
                 self.ml_sets_archive_handler.drop_ml_sets_table()
                 if self.training_configuration.test_best_classifier_passed in yes_response:
                     # the test is passed and the classifier will be sent to the execution system
-                    self.communication_controller.send_classifier_to_execution_system(DevelopmentSystemArchiver.return_path_best_classifier(self.training_configuration.best_classifier_number))
+                    self.communication_controller.send_classifier_to_execution_system(
+                        DevelopmentSystemArchiver.return_path_best_classifier(
+                            self.training_configuration.best_classifier_number
+                        )
+                    )
                 self.reset_of_the_system()
                 if TESTING_MODE:
                     return
@@ -190,7 +209,8 @@ class DevelopmentSystemController:
             if self.training_configuration.best_classifier_number != 0:
                 # the grid search was executed and the top classifier were found
                 # and the ML Engineer has chosen the best classifier
-                if 1 <= self.training_configuration.best_classifier_number <= self.training_configuration.number_of_top_classifiers:
+                if 1 <= self.training_configuration.best_classifier_number <= self.training_configuration.\
+                                                                                    number_of_top_classifiers:
                     # the ML Engineer has correctly inserted the best classifier
                     self.analysis_of_the_best_classifier()
                     self.execution_control_exit()
@@ -219,7 +239,8 @@ class DevelopmentSystemController:
                                 please insert 'yes' or 'no'")
                         self.execution_control_exit()
                 else:
-                    print("Unknown value for 'is_grid_search_over' param, in the training configuration file: please insert 'yes' or 'no'")
+                    print("Unknown value for 'is_grid_search_over' param, in the training configuration file: "
+                          "please insert 'yes' or 'no'")
                     self.execution_control_exit()
 
     def save_ml_sets_in_the_archive(self, json_data):
@@ -231,11 +252,8 @@ class DevelopmentSystemController:
 
         self.ml_sets_archive_handler.create_json_received_table()
 
-        y = json.dumps(json_data)
-        # data = {'sets': [json_data]}
-        received_json_data_frame = pd.DataFrame([y], columns=['sets'])
-        #
-        print(received_json_data_frame)
+        serialized_json_data = json.dumps(json_data)
+        received_json_data_frame = pd.DataFrame([serialized_json_data], columns=['sets'])
 
         ret = self.ml_sets_archive_handler.insert_json_received(received_json_data_frame)
         if not ret:
@@ -244,8 +262,8 @@ class DevelopmentSystemController:
         else:
             print("the ml sets received by the segregation system were saved")
 
-def get_random_response_for_execution_control(step):
 
+def get_random_response_for_execution_control(step):
     with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'r') as read_file:
 
         json_data = json.load(read_file)

@@ -13,7 +13,6 @@ class MachineLearningSetsArchiver:
         self.db_connection = DatabaseConnector(self.database_path)
         self.semaphore = Semaphore(1)
 
-
     def create_ml_sets_table(self):
 
         with self.semaphore:
@@ -35,27 +34,22 @@ class MachineLearningSetsArchiver:
     def drop_ml_sets_table(self):
         with self.semaphore:
             self.db_connection.delete_table("MachineLearningSets")
-            # self.db_connection.drop_database()
 
     def insert_ml_sets(self):
 
         self.create_ml_sets_table()
-
         with self.semaphore:
 
             ml_sets = self.db_connection.read_sql("SELECT sets "
-                                                    "FROM JsonDataReceived "
-                                                    "LIMIT 1")
+                                                  "FROM JsonDataReceived "
+                                                  "LIMIT 1")
 
             self.db_connection.update("DELETE FROM JsonDataReceived WHERE id_classifier = ("
-                                        "SELECT Min(id_classifier) FROM JsonDataReceived)")
-
-
+                                      "SELECT Min(id_classifier) FROM JsonDataReceived)")
 
             json_data_ml_sets = json.loads(ml_sets.at[0, 'sets'])
-
             data_frame = pd.DataFrame(json_data_ml_sets,
-                                      columns= ['id','time_mean', 'time_median', 'time_std',
+                                      columns=['id', 'time_mean', 'time_median', 'time_std',
                                                'time_kurtosis', 'time_skewness', 'amount_mean',
                                                'amount_median', 'amount_std', 'amount_kurtosis',
                                                'amount_skewness', 'type', 'label'])
@@ -84,11 +78,10 @@ class MachineLearningSetsArchiver:
                                                         f"WHERE type = '{type_of_set}'")
 
                 data_set = self.db_connection.read_sql("SELECT time_mean, time_median, time_std,"
-                                                        "time_kurtosis, time_skewness, amount_mean,"
-                                                        "amount_median, amount_std, amount_kurtosis,"
-                                                        "amount_skewness FROM MachineLearningSets "
-                                                        f"WHERE type = '{type_of_set}'")
+                                                       "time_kurtosis, time_skewness, amount_mean,"
+                                                       "amount_median, amount_std, amount_kurtosis,"
+                                                       "amount_skewness FROM MachineLearningSets "
+                                                       f"WHERE type = '{type_of_set}'")
             except Exception as ex:
                 print("Error during the query execution of the ml_sets: %s", ex)
             return [data_set, label_set]
-

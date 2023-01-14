@@ -1,7 +1,7 @@
 import os
 
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import  accuracy_score
+from sklearn.metrics import accuracy_score
 from numpy import ravel
 import matplotlib.pyplot as plt
 import joblib
@@ -12,6 +12,7 @@ import utility
 
 TRAINING_SETS = 0
 VALIDATION_SETS = 1
+
 
 class MLPTraining:
 
@@ -58,10 +59,13 @@ class MLPTraining:
             plt.xlabel("Number of Generations")
             plt.ylabel("Loss Function")
             plt.title("LOSS FUNCTION PLOT")
-            plt.savefig(os.path.join(utility.data_folder, 'development_system/reports/initial_phase/loss_function_plot.png'))
+            plt.savefig(os.path.join(utility.data_folder,
+                                     'development_system/reports/initial_phase/loss_function_plot.png'))
             plt.show()
 
-            InitialPhaseTrainingReportGenerator.generate_report(self.training_error, self.validation_error, setted_hyper_parameters)
+            InitialPhaseTrainingReportGenerator.generate_report(self.training_error,
+                                                                self.validation_error,
+                                                                setted_hyper_parameters)
 
             save_path = os.path.join(utility.data_folder, 'development_system/classifiers/initial_phase_classifier.sav')
             joblib.dump(self.mlp, save_path)

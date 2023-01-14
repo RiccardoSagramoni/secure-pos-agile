@@ -8,10 +8,12 @@ from development_system.test_best_classifier_report_generator import TestBestCLa
 
 TEST_SETS = 2
 
+
 class TestBestClassifier:
 
-
-    def __init__(self, training_conf: TrainingConfiguration, training_error_best_classifier, ml_sets_archive_handler: MachineLearningSetsArchiver):
+    def __init__(self, training_conf: TrainingConfiguration,
+                 training_error_best_classifier,
+                 ml_sets_archive_handler: MachineLearningSetsArchiver):
 
         [test_data, test_labels] = ml_sets_archive_handler.get_ml_sets(TEST_SETS)
 
@@ -22,7 +24,6 @@ class TestBestClassifier:
         self.training_error = training_error_best_classifier
         self.test_error = None
 
-
     def test_best_classifier(self, path_mlp_to_test):
 
         loaded_classifier = joblib.load(path_mlp_to_test)
@@ -31,6 +32,7 @@ class TestBestClassifier:
         # measure the accurancy using the validation set
         self.test_error = 1 - (accuracy_score(ravel(self.test_labels), attack_risk_label_prediction))
 
-        TestBestCLassifierReportGenerator.generate_report(self.test_tolerance, self.id_best_classifier, self.training_error, self.test_error)
-
-
+        TestBestCLassifierReportGenerator.generate_report(self.test_tolerance,
+                                                          self.id_best_classifier,
+                                                          self.training_error,
+                                                          self.test_error)

@@ -5,6 +5,7 @@ import os
 import utility
 from utility.json_validation import validate_json_data_file
 
+
 class TrainingConfiguration:
 
     def __init__(self, json_training_configuration_path: str, json_schema_path: str):
