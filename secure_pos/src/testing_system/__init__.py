@@ -10,7 +10,7 @@ def execution_testing():
     monitoring_len = 10
 
     # num_sessions = [5]
-    num_sessions = [i * (execution_len + monitoring_len) for i in range(1, 5)]
+    num_sessions = [i * (execution_len + monitoring_len) for i in range(1, 6)]
     
     test_system.start_execution_testing(num_sessions, execution_len, monitoring_len)
 
