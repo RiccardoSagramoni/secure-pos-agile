@@ -61,7 +61,8 @@ class MLPTraining:
             plt.title("LOSS FUNCTION PLOT")
             plt.savefig(os.path.join(utility.data_folder,
                                      'development_system/reports/initial_phase/loss_function_plot.png'))
-            plt.show()
+            # plt.show()
+            plt.clf()
 
             InitialPhaseTrainingReportGenerator.generate_report(self.training_error,
                                                                 self.validation_error,

@@ -14,7 +14,8 @@ from development_system.grid_search_controller import GridSearchController
 from development_system.development_system_configuration import DevelopmentSystemConfiguration
 from development_system.development_system_archiver import DevelopmentSystemArchiver
 from development_system.test_best_classifier import TestBestClassifier
-from development_system.development_system_communication_controller import DevelopmentSystemCommunicationController
+from development_system.development_system_communication_controller import DevelopmentSystemCommunicationController, \
+    send_to_testing_system
 from development_system.machine_learning_sets_archiver import MachineLearningSetsArchiver
 import utility
 
@@ -30,7 +31,8 @@ INITIAL_PHASE = 1
 SELECT_BEST_CLASSIFIER_PHASE = 2
 TEST_BEST_CLASSIFIER_PASSED_PHASE = 3
 
-TESTING_MODE = False
+TESTING_MODE = True
+TESTING_SCENARIO_INVALID_BEST_CLASSIFIER = 3
 
 
 class DevelopmentSystemController:
@@ -55,6 +57,14 @@ class DevelopmentSystemController:
         initial_phase_classifier = MLPTraining(self.training_configuration.is_initial_phase_over,
                                                self.ml_sets_archive_handler)
         initial_phase_classifier.train_neural_network(self.training_configuration.average_parameters)
+
+        with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'r') as read_file:
+            json_data = json.load(read_file)
+            json_data['hyper_parameters']['max_iter'] = [self.training_configuration.average_parameters['max_iter']]
+
+        with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'w') as write_file:
+            json.dump(json_data, write_file, indent=2)
+
         print("Initial Phase Training is finished")
         if TESTING_MODE:
             get_random_response_for_execution_control(1)
@@ -194,12 +204,17 @@ class DevelopmentSystemController:
                             self.training_configuration.best_classifier_number
                         )
                     )
+                else:
+                    if TESTING_MODE:
+                        send_to_testing_system(TESTING_SCENARIO_INVALID_BEST_CLASSIFIER)
+
                 self.reset_of_the_system()
                 if TESTING_MODE:
                     return
                 else:
                     self.final_phase_over = True
                     self.execution_control_exit()
+
             else:
                 print("Unknown value for 'test_best_classifier_passed' param, in the training configuration file: \
                         please insert 'yes' or 'no'")
@@ -268,22 +283,29 @@ def get_random_response_for_execution_control(step):
 
         json_data = json.load(read_file)
 
-        random_number = random.randint(0, 10)
+        random_number = random.randint(0, 9)
         if step == 1:
-            if random_number <= 7:
+            if random_number < 5:
                 json_data['is_initial_phase_over'] = "Yes"
+                print("[TEST]: Simulated Response Initial: Yes")
             else:
                 json_data['is_initial_phase_over'] = "No"
+                print("[TEST]: Simulated Response Initial: No")
         elif step == 2:
-            if random_number <= 8:
-                json_data['best_classifier_number'] = 0
+            if random_number < 9:
+                random_classifier_to_send = random.randint(1, 5)
+                json_data['best_classifier_number'] = random_classifier_to_send
+                print(f"[TEST]: Simulated Response Best: != {random_classifier_to_send}")
             else:
-                json_data['best_classifier_number'] = random.randint(1, 5)
+                json_data['best_classifier_number'] = 0
+                print("[TEST]: Simulated Response Best: 0")
         else:
-            if random_number <= 9:
+            if random_number < 7:
                 json_data['test_best_classifier_passed'] = "Yes"
+                print("[TEST]: Simulated Response Test Passed: Yes")
             else:
                 json_data['test_best_classifier_passed'] = "No"
+                print("[TEST]: Simulated Response Test Passed: No")
 
     with open(os.path.join(utility.data_folder, TRAINING_CONFIGURATION_PATH), 'w') as write_file:
         json.dump(json_data, write_file, indent=2)

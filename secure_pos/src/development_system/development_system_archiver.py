@@ -20,7 +20,7 @@ class DevelopmentSystemArchiver:
         # scan the directory
         for classifier_filename in os.listdir(PATH_DIRECTORY_CLASSIFIER):
             # scan all the classifier and delete the one who are not the best
-            if str(best_classifier_id) not in classifier_filename:
+            if str(best_classifier_id) not in classifier_filename and 'readme' not in classifier_filename:
                 if os.path.isfile(os.path.join(PATH_DIRECTORY_CLASSIFIER, classifier_filename)):
                     os.remove(os.path.join(PATH_DIRECTORY_CLASSIFIER, classifier_filename))
 

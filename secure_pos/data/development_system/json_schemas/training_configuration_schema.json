@@ -1,7 +1,7 @@
 {
 	"definitions": {},
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://example.com/object1673629318.json",
+	"$id": "https://example.com/object1673719972.json",
 	"title": "Root",
 	"type": "object",
 	"required": [
@@ -25,6 +25,7 @@
 				"activation",
 				"solver",
 				"learning_rate",
+				"max_iter",
 				"learning_rate_init"
 			],
 			"properties": {
@@ -38,7 +39,7 @@
 						"title": "Items",
 						"type": "integer",
 						"examples": [
-							80
+							60
 						],
 						"default": 0
 					}
@@ -91,6 +92,21 @@
 						"pattern": "^.*$"
 					}
 				},
+				"max_iter": {
+					"$id": "#root/hyper_parameters/max_iter",
+					"title": "Max_iter",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/max_iter/items",
+						"title": "Items",
+						"type": "integer",
+						"examples": [
+							4000
+						],
+						"default": 0
+					}
+				},
 				"learning_rate_init": {
 					"$id": "#root/hyper_parameters/learning_rate_init",
 					"title": "Learning_rate_init",
@@ -137,7 +153,7 @@
 					"title": "Max_iter",
 					"type": "integer",
 					"examples": [
-						3000
+						4000
 					],
 					"default": 0
 				},
@@ -235,7 +251,7 @@
 			"type": "string",
 			"default": "",
 			"examples": [
-				"No"
+				"Yes"
 			],
 			"pattern": "^.*$"
 		},

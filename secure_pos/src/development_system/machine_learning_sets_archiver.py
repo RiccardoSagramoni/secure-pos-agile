@@ -57,6 +57,7 @@ class MachineLearningSetsArchiver:
             try:
                 ret = self.db_connection.insert(data_frame, 'MachineLearningSets')
             except Exception as ex:
+                ret = 0
                 print("Error during the insert execution in MachineLearningSets: %s", ex)
             return ret
 
@@ -66,6 +67,7 @@ class MachineLearningSetsArchiver:
             try:
                 ret = self.db_connection.insert(data_frame, 'JsonDataReceived')
             except Exception as ex:
+                ret = 0
                 print("Error during the insert execution in JsonDataReceived: %s", ex)
             return ret
 

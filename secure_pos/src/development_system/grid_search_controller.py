@@ -1,3 +1,4 @@
+import math
 import os
 import joblib
 from sklearn.model_selection import ParameterGrid
@@ -56,8 +57,17 @@ class GridSearchController:
 
         grid_search = list(ParameterGrid(setted_hyper_parameters))
         index = 1
+        number_of_iteration = len(grid_search)
+        step = 0.25
+        check_step_increment = number_of_iteration * step
+        check_step = number_of_iteration*step
+        print(f"Number of possible combinations of the hyperparameters: {number_of_iteration}")
         for possible_hyperparameters_combination in grid_search:
-            print(f"Combinazione {index}")
+            if index == math.floor(check_step):
+                print(f"Grid Search Progress: {step*100}%")
+                step += 0.25
+                check_step += check_step_increment
+
             self.grid_search_mlp_training.train_neural_network(possible_hyperparameters_combination)
             self.check_validation_error_classifier(index, possible_hyperparameters_combination)
             index = index + 1

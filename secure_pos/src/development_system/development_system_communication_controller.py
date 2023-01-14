@@ -1,10 +1,13 @@
 import logging
+from datetime import datetime
+
 import requests
 
 from communication import RestServer
 from communication.api.json_transfer import ReceiveJsonApi
 from development_system.development_system_configuration import DevelopmentSystemConfiguration
 
+TESTER_URL = 'http://25.34.53.59:1234'
 
 class DevelopmentSystemCommunicationController:
 
@@ -43,3 +46,20 @@ class DevelopmentSystemCommunicationController:
                 print("Best Classifier sent to the execution system")
         except requests.exceptions.RequestException as ex:
             logging.error("Error during the send of the classifier: %s", ex)
+
+def send_to_testing_system(scenario):
+
+    print(f"Sending scenario: {scenario} to testing system")
+    timestamp = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S.%f")
+    # Create a dictionary with requested data
+    dictionary = {
+        'scenario_id': scenario,
+        'timestamp': timestamp
+    }
+    # Send data
+    try:
+        response = requests.post(TESTER_URL, json=dictionary)
+        if not response.ok:
+            logging.error("Failed to send raw dataset")
+    except requests.exceptions.RequestException as ex:
+        logging.error(f"Unable to send scenario msg to testing system.\tException %{ex}\n")
