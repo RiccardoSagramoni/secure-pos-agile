@@ -1,4 +1,4 @@
-import os
+import os.path
 
 import joblib
 from sklearn.neural_network import MLPClassifier
@@ -14,7 +14,14 @@ class ClassifierModelDeployment:
         pass
 
     def load_classifier_model(self) -> None:
+        """
+        Start the classifier model
+        """
         self.__classifier_model = joblib.load(os.path.join(data_folder, CLASSIFIER_MODEL_PATH))
 
     def get_classifier_model(self) -> MLPClassifier:
+        """
+        Get the classifier deployed and loaded
+        :return: the classifier model
+        """
         return self.__classifier_model

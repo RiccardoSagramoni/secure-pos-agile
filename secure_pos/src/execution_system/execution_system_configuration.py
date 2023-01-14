@@ -1,12 +1,16 @@
 import json
 import logging
-import os
+import os.path
 
 import utility
 from utility.json_validation import validate_json_data_file
 
 
 class ExecutionSystemConfiguration:
+    """
+    Class responsible for retrieving and validating the configuration parameters
+    set by the system administrator. It offers the parameters as public attributes.
+    """
     def __init__(self, json_configuration_path: str, json_schema_path: str):
         # Open configuration file
         with open(os.path.join(utility.data_folder, json_configuration_path), "r", encoding="UTF-8") as file:

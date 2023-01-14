@@ -12,10 +12,17 @@ from utility import data_folder
 
 CONFIGURATION_FILE = 'execution_system/execution_config.json'
 CONFIGURATION_SCHEMA = 'execution_system/execution_config_schema.json'
-TESTING_MODE = False
+TESTING_MODE = True
 
 
 class ExecutionSystemController:
+    """
+    Class responsible for executing the main logic workflow of the execution system.
+
+    - It configures the system and all the necessary resources.
+    - It handles the reception and the deployment of a classifier model.
+    - It handles the reception ànd the classification of a new session.
+    """
 
     def __init__(self):
         self.__configuration = ExecutionSystemConfiguration(CONFIGURATION_FILE, CONFIGURATION_SCHEMA)
@@ -27,10 +34,14 @@ class ExecutionSystemController:
         self.__deployed_classifier_model = ClassifierModelDeployment()
 
     def run(self) -> None:
-        # Start REST server
+        """ Start REST server of the Execution system """
         self.__communication_controller.start_execution_rest_server()
 
     def handle_classifier_model_deployment(self) -> None:
+        """
+        Handle the deployment of a new classifier model
+        whenever it is received by the REST endpoint.
+        """
         # Start classifier
         self.__deployed_classifier_model.load_classifier_model()
         self.__system_mode_tracker.development_mode = False
@@ -40,6 +51,10 @@ class ExecutionSystemController:
             send_testing_timestamp(scenario_id=4)
 
     def handle_new_prepared_session_reception(self, json_session: dict) -> None:
+        """
+        Handle a new session whenever it is received by the REST endpoint.
+        :param json_session: received JSON data
+        """
         if os.path.exists(os.path.join(data_folder, CLASSIFIER_MODEL_PATH)) \
                 and self.__system_mode_tracker.development_mode:
             self.handle_classifier_model_deployment()
