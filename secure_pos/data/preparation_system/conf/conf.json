@@ -1,5 +1,5 @@
 {
-  "mode": "development",
+  "mode": "execution",
   "ip_execution_system": "25.20.54.175",
   "port_execution_system": 8001,
   "ip_segregation_system": "25.20.30.97",

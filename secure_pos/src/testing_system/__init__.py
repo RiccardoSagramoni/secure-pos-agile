@@ -22,7 +22,7 @@ def elasticity_testing():
 
 
 if __name__ == "__main__":
-    # execution_testing()
-    elasticity_testing()
+    execution_testing()
+    # elasticity_testing()
     print("FINE TESTING")
     sys.exit(0)

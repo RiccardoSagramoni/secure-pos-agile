@@ -78,8 +78,8 @@ class ExecutionTester:
         
             self.received_response = message
         
-            if len(self.diff_timestamp_list) >= self.NUM_SESSIONS:
-                self.semaphore.release()
+            # if len(self.diff_timestamp_list) >= self.NUM_SESSIONS:
+                # self.semaphore.release()
             
         
     
@@ -101,7 +101,8 @@ class ExecutionTester:
     def __execution_send_raw_sessions(self,
                                       num_sessions,
                                       execution_length,
-                                      monitoring_length):
+                                      monitoring_length,
+                                      iteration):
         for i in range(num_sessions):
             session_index = i % self.TOTAL_NUM_SESSIONS
             
@@ -114,7 +115,7 @@ class ExecutionTester:
             # Get session id
             session_id = label_data['event_id']
             label_data = replace_broken_label(label_data)
-            print(f"{session_index + 1}) {label_data}")
+            print(f"iteration: {iteration}, {session_index + 1}) {label_data}")
             
             # Register start timestamp
             with self.start_timestamp_lock:
@@ -166,7 +167,7 @@ class ExecutionTester:
     
     def __run_execution_testing(self, iteration_num, num_sessions, execution_len, monitoring_len):
         # Send raw sessions
-        self.__execution_send_raw_sessions(num_sessions, execution_len, monitoring_len)
+        self.__execution_send_raw_sessions(num_sessions, execution_len, monitoring_len, iteration_num)
         
         # Wait for HTTP message
         self.semaphore.acquire()
@@ -182,12 +183,13 @@ class ExecutionTester:
                 }
             )
         result_df = pd.DataFrame(results)
+        print(f"iteration: {iteration_num}, Insert result into csv")
         result_df.to_csv("execution.csv", sep=',', encoding="UTF-8", mode='a', header=False, index=False)
 
     def start_execution_testing(self, num_session_list: list, execution_len, monitoring_len) -> None:
         # Create development.csv file
         with open("execution.csv", "w", encoding="UTF-8") as file:
-            file.write("scenario_id,diff\n")
+            file.write("iteration,scenario_id,diff\n")
         
         # Start REST server
         flask_thread = threading.Thread(target=self.__start_rest_server, daemon=True)
@@ -195,7 +197,13 @@ class ExecutionTester:
         
         for i, num in enumerate(num_session_list):
             self.NUM_SESSIONS = num
+            # mettere qui il release semaphore
+            self.semaphore.release()
             self.__run_execution_testing(i, num, execution_len, monitoring_len)
+            print(f"finish iteration: {i}")
+            time.sleep(10)
+            self.diff_timestamp_list = []
+            self.start_timestamp_dict = {}
         
         # todo do stuff here?
         return
