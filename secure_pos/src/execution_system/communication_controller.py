@@ -29,7 +29,7 @@ def send_testing_timestamp(scenario_id: int, session_id: str = None) -> None:
         'timestamp': end_timestamp
     }
     if session_id is not None:
-        testing_msg['session_id'] = session_id[0]
+        testing_msg['session_id'] = session_id
 
     try:
         response = requests.post(TESTING_URL, json=testing_msg)

@@ -63,7 +63,7 @@ class ExecutionSystemController:
             return
 
         # Get prepared session
-        session_id = json_session['id']
+        session_id = json_session['id'][0]
         prepared_session = pd.DataFrame(data=json_session)
         prepared_session = prepared_session.iloc[:, 1:-2]
 
