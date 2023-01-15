@@ -1,0 +1,5 @@
+{
+  "development_system_url": "http://25.41.143.144:8000",
+  "session_nr_threshold": 100,
+  "development_mode": "True"
+}
