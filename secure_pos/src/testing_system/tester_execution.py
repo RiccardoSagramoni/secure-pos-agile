@@ -103,7 +103,8 @@ class ExecutionTester:
                                       num_sessions,
                                       execution_length,
                                       monitoring_length,
-                                      iteration):
+                                      iteration,
+                                      time_sleep):
         for i in range(num_sessions):
             session_index = i % self.TOTAL_NUM_SESSIONS
             
@@ -167,11 +168,11 @@ class ExecutionTester:
                     print(ex)
                     print(f"FAIL label session_id: {session_id}")
                     break
-            time.sleep(0.005)
+            time.sleep(time_sleep[iteration])
     
-    def __run_execution_testing(self, iteration_num, num_sessions, execution_len, monitoring_len):
+    def __run_execution_testing(self, iteration_num, num_sessions, execution_len, monitoring_len, time_sleep):
         # Send raw sessions
-        self.__execution_send_raw_sessions(num_sessions, execution_len, monitoring_len, iteration_num)
+        self.__execution_send_raw_sessions(num_sessions, execution_len, monitoring_len, iteration_num, time_sleep)
         
         # Wait for HTTP message
         self.semaphore.acquire()
@@ -190,7 +191,7 @@ class ExecutionTester:
         print(f"iteration: {iteration_num}, Insert result into csv")
         result_df.to_csv("execution.csv", sep=',', encoding="UTF-8", mode='a', header=False, index=False)
 
-    def start_execution_testing(self, num_session_list: list, execution_len, monitoring_len) -> None:
+    def start_execution_testing(self, num_session_list: list, execution_len, monitoring_len, time_sleep) -> None:
         # Create development.csv file
         with open("execution.csv", "w", encoding="UTF-8") as file:
             file.write("iteration,scenario_id,diff\n")
@@ -202,7 +203,7 @@ class ExecutionTester:
         
         for i, num in enumerate(num_session_list):
             self.semaphore.release()
-            self.__run_execution_testing(i, num, execution_len, monitoring_len)
+            self.__run_execution_testing(i, num, execution_len, monitoring_len, time_sleep)
             print(f"finish iteration: {i}")
             time.sleep(10)
             self.diff_timestamp_list = []
