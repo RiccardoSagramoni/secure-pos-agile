@@ -1,5 +1,7 @@
 class PreparedSession:
-
+    """
+    Object containing the data of a specific Prepared Session
+    """
     def __init__(self, features, label):
         self.time_mean = features[0]
         self.time_median = features[1]

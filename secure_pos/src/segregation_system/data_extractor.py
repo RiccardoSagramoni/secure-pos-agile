@@ -1,6 +1,6 @@
 import pandas as pd
 
-from segregation_system.objects.collected_sessions import CollectedSessions
+from segregation_system.collected_sessions import CollectedSessions
 
 
 class DataExtractor:
@@ -9,9 +9,10 @@ class DataExtractor:
     the required data and return it to the front-end
     """
 
-    def __init__(self, db_handler):
+    def __init__(self, db_handler, iteration, sessions_per_training):
 
-        [features, labels] = db_handler.extract_all_unallocated_data()
+        [features, labels] = db_handler.extract_all_unallocated_data(iteration,
+                                                                     sessions_per_training)
 
         self.current_sessions = CollectedSessions(features, labels)
 
@@ -75,4 +76,3 @@ class DataExtractor:
                                            'amount_skewness'])
 
         return data_frame
-

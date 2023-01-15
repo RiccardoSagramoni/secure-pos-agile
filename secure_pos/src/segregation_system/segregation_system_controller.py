@@ -8,25 +8,29 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
-from segregation_system.objects.data_extractor import DataExtractor
-from segregation_system.objects.communication_controller import CommunicationController, send_to_testing_system
-from segregation_system.objects.db_handler import DBHandler
-from segregation_system.objects.segregation_system_configuration import SegregationSystemConfiguration
-from segregation_system.objects.response_extractor import ResponseExtractor
-from segregation_system.objects.plotters import PlotterHistogram, PlotterRadarDiagram
+import utility
+from segregation_system.data_extractor import DataExtractor
+from segregation_system.communication_controller import CommunicationController, send_to_testing_system
+from segregation_system.db_handler import DBHandler
+from segregation_system.segregation_system_configuration import SegregationSystemConfiguration
+from segregation_system.response_extractor import ResponseExtractor
+from segregation_system.plotters import PlotterHistogram, PlotterRadarDiagram
 
-PATH_DB = "./database/segregationSystemDatabase.db"
-BALANCING_REPORT_PATH = "./graphs/Balancing_plot.png"
-QUALITY_REPORT_PATH = "./graphs/radar_diagram.png"
+PATH_DB = "segregation_system/database/segregationSystemDatabase.db"
+BALANCING_REPORT_PATH = "segregation_system/graphs/Balancing_plot.png"
+QUALITY_REPORT_PATH = "segregation_system/graphs/radar_diagram.png"
 
 TESTING_PHASE = True
-SERVER_STARTED = False
+TESTING_DB_RESET = [5, 10, 15, 20, 25]
+TESTING_ITER = 0
 
 
 class SegregationSystemController:
     """
     Class that manage all the logic inside the Segregation System
     """
+    current_iteration = 0
+    server_started = False
 
     def __init__(self):
         self.config_file = SegregationSystemConfiguration()
@@ -41,40 +45,61 @@ class SegregationSystemController:
         and plot them in order to evaluate the data balancing
         :return: Null
         """
+        global TESTING_ITER
 
-        data_extractor = DataExtractor(self.db_handler)
+        data_extractor = DataExtractor(self.db_handler,
+                                       self.current_iteration,
+                                       self.config_file.session_nr_threshold)
         labels = data_extractor.count_labels()
 
         plotter = PlotterHistogram(labels)
         plotter.plot_data_balancing()
-        
+
         if not TESTING_PHASE:
             sys.exit(0)
-        
+
         # The system now needs to stop, we need to wait the Data Analyst evaluation
         random_number = random.randint(0, 9)
         # Set as 20% failure, 80% success
         if random_number >= 8:
-            with open('./responses/balancing_response.json', 'r', encoding='utf-8') as opened_file:
+            self.current_iteration += 1
+            if self.current_iteration == TESTING_DB_RESET[TESTING_ITER]:
+                self.db_handler.drop_db()
+                TESTING_ITER += 1
+                self.current_iteration = 0
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/balancing_response.json'),
+                    'r',
+                    encoding='utf-8') as opened_file:
                 data = json.load(opened_file)
                 data['response'] = 'No'
-            with open('./responses/balancing_response.json', 'w', encoding='utf-8') as response:
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/balancing_response.json'),
+                    'w',
+                    encoding='utf-8') as response:
                 json.dump(data, response)
         else:
-            with open('./responses/balancing_response.json', 'r', encoding='utf-8') as opened_file:
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/balancing_response.json'),
+                    'r',
+                    encoding='utf-8') as opened_file:
                 data = json.load(opened_file)
                 data['response'] = 'Yes'
-            with open('./responses/balancing_response.json', 'w', encoding='utf-8') as response:
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/balancing_response.json'),
+                    'w',
+                    encoding='utf-8') as response:
                 json.dump(data, response)
-        return
 
     def check_quality(self):
         """
         Method that calls the API that extracts the data
         and plot them in order to evaluate the data quality
         """
-
-        data_extractor = DataExtractor(self.db_handler)
+        global TESTING_ITER
+        data_extractor = DataExtractor(self.db_handler,
+                                       self.current_iteration,
+                                       self.config_file.session_nr_threshold)
         data = data_extractor.extract_features()
 
         plotter = PlotterRadarDiagram(data)
@@ -82,32 +107,49 @@ class SegregationSystemController:
 
         if not TESTING_PHASE:
             sys.exit(0)
-        
+
         # The system now needs to stop, we need to wait the Data Analyst evaluation
         random_number = random.randint(0, 9)
         # Set as 20% failure, 80% success
         if random_number >= 8:
-            with open('./responses/quality_response.json', 'r', encoding='utf-8') as opened_file:
+            self.current_iteration += 1
+            if self.current_iteration == TESTING_DB_RESET[TESTING_ITER]:
+                self.db_handler.drop_db()
+                TESTING_ITER += 1
+                self.current_iteration = 0
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/quality_response.json'),
+                    'r',
+                    encoding='utf-8') as opened_file:
                 data = json.load(opened_file)
                 data['response'] = 'No'
-            with open('./responses/quality_response.json', 'w', encoding='utf-8') as response:
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/quality_response.json'),
+                    'w',
+                    encoding='utf-8') as response:
                 json.dump(data, response)
         else:
-            with open('./responses/quality_response.json', 'r', encoding='utf-8') as opened_file:
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/quality_response.json'),
+                    'r',
+                    encoding='utf-8') as opened_file:
                 data = json.load(opened_file)
                 data['response'] = 'Yes'
-            with open('./responses/quality_response.json', 'w', encoding='utf-8') as response:
+            with open(os.path.join(
+                    utility.data_folder, 'segregation_system/responses/quality_response.json'),
+                    'w',
+                    encoding='utf-8') as response:
                 json.dump(data, response)
-        return
-        
 
     def generate_datasets(self):
         """
         Method that manage the flow of the final phase, extracts data from the DB
         and splits them in train, validation and test sets
         """
-
-        data_extractor = DataExtractor(self.db_handler)
+        global TESTING_ITER
+        data_extractor = DataExtractor(self.db_handler,
+                                       self.current_iteration,
+                                       self.config_file.session_nr_threshold)
         data_frame_input = data_extractor.extract_all()
 
         data_frame_result = data_extractor.extract_labels()
@@ -136,7 +178,7 @@ class SegregationSystemController:
         res = pd.concat([x_train, x_validation, x_test], ignore_index=True)
 
         # Update the type and mark the records as used
-        self.db_handler.update_type()
+        self.db_handler.update_type(self.current_iteration, self.config_file.session_nr_threshold)
 
         communication_controller = CommunicationController(self.db_handler,
                                                            self.config_file.development_system_url,
@@ -146,20 +188,26 @@ class SegregationSystemController:
 
         # remove the generated graphs
         try:
-            os.remove(BALANCING_REPORT_PATH)
-            os.remove(QUALITY_REPORT_PATH)
+            os.remove(os.path.join(
+                    utility.data_folder, BALANCING_REPORT_PATH))
+            os.remove(os.path.join(
+                    utility.data_folder, QUALITY_REPORT_PATH))
         except FileNotFoundError as ex:
             print(f"Error during file removal: {ex}")
 
         # New testing phase
         if TESTING_PHASE:
+            self.current_iteration += 1
+            if self.current_iteration == TESTING_DB_RESET[TESTING_ITER]:
+                self.db_handler.drop_db()
+                TESTING_ITER += 1
+                self.current_iteration = 0
             return
-
         sys.exit(0)
 
-    def run(self):  # todo cambia nome in design class diagram
+    def run(self):
         """
-        Function that checks which phase we need to execute, three options are available:
+        Method that checks which phase we need to execute, three options are available:
         - First start:  The REST server is not started yet, so we need to start it waiting for
                         new incoming messages from Preparation system.
 
@@ -171,18 +219,8 @@ class SegregationSystemController:
                         continued its execution until the radar diagram has been generated, the
                         system suspended again waiting for the Data Analyst response
         """
-        global SERVER_STARTED
 
         extractor = ResponseExtractor()
-
-        # Start the Flask server on a daemon thread
-        communication_controller = \
-            CommunicationController(self.db_handler,
-                                    self.config_file.development_system_url,
-                                    self)
-        flask_thread = threading.Thread(target=communication_controller.init_rest_server,
-                                        daemon=True)
-        flask_thread.start()
 
         while True:
             # Check if data balance graph was analyzed by human expert
@@ -216,8 +254,19 @@ class SegregationSystemController:
                         continue
                 else:
                     print('Unknown response: please write "yes" or "no" inside the file')
-            
-            # Wait for enough sessions to generate ML sets
+
+            # Start the Flask server on a daemon thread
+            if not self.server_started:
+                communication_controller = \
+                    CommunicationController(self.db_handler,
+                                            self.config_file.development_system_url,
+                                            self.manage_message)
+                flask_thread = threading.Thread(target=communication_controller.init_rest_server,
+                                                daemon=True)
+                flask_thread.start()
+                self.server_started = True
+
+            # Wait for a enough sessions to generate ML sets
             self.semaphore.acquire()
             self.check_balancing()
 
@@ -248,7 +297,8 @@ class SegregationSystemController:
                 print(f"Error during session insert #{self.sessions_nr + 1}")
                 return
             self.sessions_nr += 1
-            print(f"Arrived session #{self.sessions_nr}") # todo remove
+            if TESTING_PHASE:
+                print(f"Arrived session #{self.sessions_nr}")
             # Check if we have enough sessions
             if self.sessions_nr != self.config_file.session_nr_threshold:
                 return

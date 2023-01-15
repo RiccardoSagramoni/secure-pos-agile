@@ -1,5 +1,5 @@
 import pandas as pd
-from segregation_system.objects.prepared_session import PreparedSession
+from segregation_system.prepared_session import PreparedSession
 
 
 class CollectedSessions:
@@ -17,7 +17,8 @@ class CollectedSessions:
 
     def get_features(self):
         """
-        Extracts a list of features we are currently working on: [[...features...],[...features...],...]
+        Extracts a list of features we are currently working on:
+        [[...features...],[...features...],...]
         :return: list of the list of features
         """
         features = []
@@ -43,7 +44,8 @@ class CollectedSessions:
 
     def get_all(self):
         """
-        Extracts a list of features we are currently working on: [[...features...],[...features...],...]
+        Extracts a list of features we are currently working on:
+        [[...features...],[...features...],...]
         :return: list of the list of features
         """
         data = []

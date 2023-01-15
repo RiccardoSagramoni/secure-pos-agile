@@ -13,18 +13,16 @@ class CommunicationController:
     Class that manage all the communication with other systems
     """
 
-    def __init__(self, db_handler, url, segregation_system_controller):
+    def __init__(self, db_handler, url, handler):
         self.filename = './database/PreparedSession.json'
         self.db_handler = db_handler
         self.dev_system_url = url
-        self.segregation_system_controller = segregation_system_controller
+        self.manage_message = handler
 
     def init_rest_server(self):
         """
         Method that create the server waiting for prepared sessions
         """
-        # DB dropping
-        self.db_handler.drop_db()
 
         server = RestServer()
         server.api.add_resource(ReceiveJsonApi,
@@ -39,7 +37,7 @@ class CommunicationController:
         Method that handle the incoming messages (preparation system)
         """
         logging.info("received new session")
-        thread = threading.Thread(target=self.segregation_system_controller.manage_message,
+        thread = threading.Thread(target=self.manage_message,
                                   args=[file_json])
         thread.start()
 
@@ -57,6 +55,10 @@ class CommunicationController:
 
 
 def send_to_testing_system(scenario):
+    """
+    Testing function that sends the scenario and the timestamp to the testing system
+    :param scenario: integer representing the scenario
+    """
     print(f"Sending scenario: {scenario} to testing system")
     timestamp = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S.%f")
     # Create a dictionary with requested data
@@ -66,8 +68,8 @@ def send_to_testing_system(scenario):
     }
     # Send data
     try:
-        response = requests.post('http://25.34.31.202:1234', json=dictionary)
+        response = requests.post('http://25.34.53.59:1234', json=dictionary)
         if not response.ok:
             logging.error("Failed to send raw dataset")
     except requests.exceptions.RequestException as ex:
-        logging.error(f"Unable to send scenario msg to testing system.\tException %{ex}\n")
+        logging.error(f"Unable to send scenario msg to testing system.\tException {ex}\n")
