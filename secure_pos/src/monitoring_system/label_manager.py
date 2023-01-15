@@ -39,12 +39,13 @@ class LabelManager:
             else:
                 self.storer.store_label(label_dataframe, 'expertLabel')
                 self.count_labels('expert')
-            if self.tot_labels_from_expert == monitoring_window_length and \
-                    self.tot_labels_from_classifier == monitoring_window_length:
-                self.tot_labels_from_expert = 0
-                self.tot_labels_from_classifier = 0
+            if self.tot_labels_from_expert >= monitoring_window_length and \
+                    self.tot_labels_from_classifier >= monitoring_window_length:
+                self.tot_labels_from_expert -= monitoring_window_length
+                self.tot_labels_from_classifier -= monitoring_window_length
 
                 logging.info("Enough labels to generate a report")
+                print("generate report")
 
                 # carico le label in memoria
                 query = "SELECT expert.session_id, " \
@@ -59,12 +60,12 @@ class LabelManager:
 
                 if session_id_list:
                     # le elimino dal db
-                    query = "DELETE FROM expertLabel " \
+                    query = "DELETE FROM expertLabel " + \
                             "WHERE session_id IN (" + \
                             str(session_id_list)[1:-1] + ")"
                     self.storer.delete_all_labels(query)
 
-                    query = "DELETE FROM classifierLabel " \
+                    query = "DELETE FROM classifierLabel " + \
                             "WHERE session_id IN (" + \
                             str(session_id_list)[1:-1] + ")"
                     self.storer.delete_all_labels(query)
