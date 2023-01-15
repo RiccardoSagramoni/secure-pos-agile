@@ -55,19 +55,22 @@ class GridSearchController:
 
     def generate_grid_search_hyperparameters(self, setted_hyper_parameters):
 
+        # variable for the grid search
         grid_search = list(ParameterGrid(setted_hyper_parameters))
         index = 1
-        number_of_iteration = len(grid_search)
+        # variables for printing the status of the grid search
         step = 0.25
-        check_step_increment = number_of_iteration * step
-        check_step = number_of_iteration*step
-        print(f"Number of possible combinations of the hyperparameters: {number_of_iteration}")
+        check_step = len(grid_search) * step
+        check_step_increment = len(grid_search) * step
+        print(f"Number of possible combinations of the hyperparameters: {len(grid_search)}")
         for possible_hyperparameters_combination in grid_search:
+            # check for printing the status of the grid search
             if index == math.floor(check_step):
                 print(f"Grid Search Progress: {step*100}%")
                 step += 0.25
                 check_step += check_step_increment
 
+            # executing the grid search
             self.grid_search_mlp_training.train_neural_network(possible_hyperparameters_combination)
             self.check_validation_error_classifier(index, possible_hyperparameters_combination)
             index = index + 1
