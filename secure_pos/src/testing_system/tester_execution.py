@@ -34,8 +34,6 @@ class ExecutionTester:
     diff_timestamp_list = []
     diff_timestamp_lock = threading.RLock()  # lock for diff_timestamp_list
     
-    NUM_SESSIONS = 0
-    
     # [COMMUNICATION] Testing -> toolchain
     ingestion_system_url = "http://25.20.54.175:8000"
     
@@ -68,21 +66,24 @@ class ExecutionTester:
         # Ottenere il timestamp di arrivo, leggere il dict per prendere il timestamp di partenza
         # e scrivi la differenza in una lista globale
         session_id = message["session_id"]
-        end_timestamp_str = message["timestamp"]
-        end_timestamp = datetime.strptime(end_timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
-        diff_timestamp = end_timestamp - self.start_timestamp_dict[session_id]
+        # end_timestamp_str = message["timestamp"]
+        current_time = datetime.now()
+        # current_str = datetime.strftime(current_time, "%Y-%m-%d %H:%M:%S.%f")
+        # print(f"current: {current_str}")
+        # print(f"session_id: {session_id}")
+        # start_str = datetime.strftime(self.start_timestamp_dict[session_id], "%Y-%m-%d %H:%M:%S.%f")
+        # print(f"start: {start_str}")
+        # print(f"end: {end_timestamp_str}")
+        # end_timestamp = datetime.strptime(end_timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
+        # diff_timestamp = end_timestamp - self.start_timestamp_dict[session_id]
+        diff_timestamp = current_time - self.start_timestamp_dict[session_id]
         diff = diff_timestamp.total_seconds()
 
         with self.diff_timestamp_lock:
             self.diff_timestamp_list.append(diff)
         
             self.received_response = message
-        
-            # if len(self.diff_timestamp_list) >= self.NUM_SESSIONS:
-                # self.semaphore.release()
-            
-        
-    
+
     def __start_rest_server(self):
         server = RestServer()
         server.api.add_resource(
@@ -120,6 +121,9 @@ class ExecutionTester:
             # Register start timestamp
             with self.start_timestamp_lock:
                 self.start_timestamp_dict[session_id] = datetime.now()
+                # print(f"session_id: {session_id}")
+                # start_str = datetime.strftime(self.start_timestamp_dict[session_id], "%Y-%m-%d %H:%M:%S.%f")
+                # print(f"get start time: {start_str}")
             
             # Prepare data to send
             data_to_send = [
@@ -163,7 +167,7 @@ class ExecutionTester:
                     print(ex)
                     print(f"FAIL label session_id: {session_id}")
                     break
-            time.sleep(0.05)
+            time.sleep(0.005)
     
     def __run_execution_testing(self, iteration_num, num_sessions, execution_len, monitoring_len):
         # Send raw sessions
@@ -194,16 +198,15 @@ class ExecutionTester:
         # Start REST server
         flask_thread = threading.Thread(target=self.__start_rest_server, daemon=True)
         flask_thread.start()
+        time.sleep(5)
         
         for i, num in enumerate(num_session_list):
-            self.NUM_SESSIONS = num
-            # mettere qui il release semaphore
             self.semaphore.release()
             self.__run_execution_testing(i, num, execution_len, monitoring_len)
             print(f"finish iteration: {i}")
             time.sleep(10)
             self.diff_timestamp_list = []
             self.start_timestamp_dict = {}
-        
+
         # todo do stuff here?
         return
