@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "response": {
+      "description": "evaluation response",
+      "type": "string"
+    }
+  }
+}

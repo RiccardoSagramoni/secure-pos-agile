@@ -1,0 +1,48 @@
+{
+  "hyper_parameters": {
+    "hidden_layer_sizes": [
+      60,
+      80,
+      100
+    ],
+    "activation": [
+      "relu",
+      "tanh",
+      "logistic"
+    ],
+    "solver": [
+      "adam",
+      "sgd",
+      "lbfgs"
+    ],
+    "learning_rate": [
+      "constant",
+      "invscaling",
+      "adaptive"
+    ],
+    "max_iter": [
+      4000
+    ],
+    "learning_rate_init": [
+      0.001,
+      0.01,
+      0.05
+    ]
+  },
+  "average_params": {
+    "hidden_layer_sizes": 80,
+    "max_iter": 4000,
+    "activation": "relu",
+    "solver": "adam",
+    "learning_rate": "constant",
+    "learning_rate_init": 0.001,
+    "random_state": 0
+  },
+  "number_of_top_classifiers": 5,
+  "test_tolerance": 0.03,
+  "validation_tolerance": 0.03,
+  "is_grid_search_over": "No",
+  "is_initial_phase_over": "No",
+  "best_classifier_number": 0,
+  "test_best_classifier_passed": "None"
+}

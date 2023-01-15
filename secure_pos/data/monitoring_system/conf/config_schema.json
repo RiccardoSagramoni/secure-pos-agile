@@ -1,0 +1,6 @@
+{
+  "type" : "object",
+  "properties" : {
+    "monitoring_window_length" : {"type" :  "number"}
+  }
+}

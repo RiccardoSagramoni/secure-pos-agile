@@ -1,0 +1,12 @@
+{
+  "ip_address": "0.0.0.0",
+  "port": 8000,
+  "database_path": "ingestion_system.db",
+  "preparation_system_url": "http://25.34.53.59:8000/",
+  "monitoring_system_url": "http://25.34.53.59:8001/",
+  "min_transactions_per_session": 1,
+  "max_invalid_attributes_allowed": 100,
+  "execution_window_length": 1000,
+  "monitoring_window_length": 10,
+  "is_development_mode": false
+}
