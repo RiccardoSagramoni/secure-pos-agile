@@ -1,4 +1,7 @@
 import logging
+from datetime import datetime
+
+import requests
 
 from ingestion_system.communication_controller import CommunicationController
 from ingestion_system.configuration import Configuration
@@ -9,6 +12,11 @@ from ingestion_system.system_mode_tracker import SystemModeTracker
 
 CONFIGURATION_FILE_PATH = 'ingestion_system/config.json'
 CONFIGURATION_SCHEMA_PATH = 'ingestion_system/config_schema.json'
+
+# Variable for testing during execution mode
+EXECUTION_TESTING = True
+SCENARIO_ID = 10
+TESTER_URL = 'http://25.34.53.59:1234' # Fede
 
 
 class IngestionSystemController:
@@ -68,6 +76,18 @@ class IngestionSystemController:
         if len(raw_session.transactions) < self.__configuration.min_transactions_per_session:
             logging.warning("Session %s rejected: not enough transactions (%i)",
                             session_id, len(raw_session.transactions))
+            if EXECUTION_TESTING:
+                # Send message to tester
+                try:
+                    testing_msg = {
+                        'scenario_id': SCENARIO_ID,
+                        'timestamp': datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S.%f"),
+                        'session_id': session_id
+                    }
+                    requests.post(TESTER_URL, json=testing_msg)
+                except requests.exceptions.RequestException as ex:
+                    logging.error("Unable to send message to testing system "
+                                  "for session %s.\tException %s", session_id, ex)
             return
         
         # If we are in monitoring window, send attack risk label to monitoring system
