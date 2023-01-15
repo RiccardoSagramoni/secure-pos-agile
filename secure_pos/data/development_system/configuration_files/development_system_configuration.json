@@ -1,6 +1,5 @@
 {
   "ip_address": "0.0.0.0",
   "port": 8000,
-  "execution_system_url":  "http://25.20.54.175:8000/classifier_model",
-  "is_testing_phase": "False"
+  "execution_system_url":  "http://25.20.54.175:8001/classifier_model"
 }

@@ -7,4 +7,3 @@ class TopClassifier:
         self.hyper_parameters = hyper_parameters
         self.validation_error = classifier.validation_error
         self.training_error = classifier.training_error
-

@@ -1,7 +1,7 @@
 {
 	"definitions": {},
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://example.com/object1673397498.json",
+	"$id": "https://example.com/object1673719972.json",
 	"title": "Root",
 	"type": "object",
 	"required": [
@@ -10,8 +10,8 @@
 		"number_of_top_classifiers",
 		"test_tolerance",
 		"validation_tolerance",
-		"is_initial_phase_over",
 		"is_grid_search_over",
+		"is_initial_phase_over",
 		"best_classifier_number",
 		"test_best_classifier_passed"
 	],
@@ -25,6 +25,7 @@
 				"activation",
 				"solver",
 				"learning_rate",
+				"max_iter",
 				"learning_rate_init"
 			],
 			"properties": {
@@ -38,7 +39,7 @@
 						"title": "Items",
 						"type": "integer",
 						"examples": [
-							80
+							60
 						],
 						"default": 0
 					}
@@ -91,6 +92,21 @@
 						"pattern": "^.*$"
 					}
 				},
+				"max_iter": {
+					"$id": "#root/hyper_parameters/max_iter",
+					"title": "Max_iter",
+					"type": "array",
+					"default": [],
+					"items":{
+						"$id": "#root/hyper_parameters/max_iter/items",
+						"title": "Items",
+						"type": "integer",
+						"examples": [
+							4000
+						],
+						"default": 0
+					}
+				},
 				"learning_rate_init": {
 					"$id": "#root/hyper_parameters/learning_rate_init",
 					"title": "Learning_rate_init",
@@ -137,7 +153,7 @@
 					"title": "Max_iter",
 					"type": "integer",
 					"examples": [
-						1000
+						4000
 					],
 					"default": 0
 				},
@@ -219,16 +235,6 @@
 			],
 			"default": 0.0
 		},
-		"is_initial_phase_over": {
-			"$id": "#root/is_initial_phase_over",
-			"title": "Is_initial_phase_over",
-			"type": "string",
-			"default": "",
-			"examples": [
-				"No"
-			],
-			"pattern": "^.*$"
-		},
 		"is_grid_search_over": {
 			"$id": "#root/is_grid_search_over",
 			"title": "Is_grid_search_over",
@@ -239,12 +245,22 @@
 			],
 			"pattern": "^.*$"
 		},
+		"is_initial_phase_over": {
+			"$id": "#root/is_initial_phase_over",
+			"title": "Is_initial_phase_over",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"Yes"
+			],
+			"pattern": "^.*$"
+		},
 		"best_classifier_number": {
 			"$id": "#root/best_classifier_number",
 			"title": "Best_classifier_number",
 			"type": "integer",
 			"examples": [
-				2
+				0
 			],
 			"default": 0
 		},
@@ -254,7 +270,7 @@
 			"type": "string",
 			"default": "",
 			"examples": [
-				"No"
+				"None"
 			],
 			"pattern": "^.*$"
 		}
