@@ -12,7 +12,7 @@ from utility import data_folder
 
 CONFIGURATION_FILE = 'execution_system/execution_config.json'
 CONFIGURATION_SCHEMA = 'execution_system/execution_config_schema.json'
-TESTING_MODE = True
+TESTING_MODE = False
 
 
 class ExecutionSystemController:

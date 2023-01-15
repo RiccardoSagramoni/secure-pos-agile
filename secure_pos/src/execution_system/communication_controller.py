@@ -30,9 +30,13 @@ def send_testing_timestamp(scenario_id: int, session_id: str = None) -> None:
     }
     if session_id is not None:
         testing_msg['session_id'] = session_id[0]
-    response = requests.post(TESTING_URL, json=testing_msg)
-    if not response.ok:
-        logging.error("Failed to send message to testing:\n%s", testing_msg)
+
+    try:
+        response = requests.post(TESTING_URL, json=testing_msg)
+        if not response.ok:
+            logging.error("Failed to send message to testing:\n%s", testing_msg)
+    except requests.exceptions.RequestException as ex:
+        logging.error("Unable to send message to testing.\tException %s", ex)
 
 
 class CommunicationController:
