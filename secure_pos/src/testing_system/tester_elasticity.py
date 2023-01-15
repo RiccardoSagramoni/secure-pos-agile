@@ -34,7 +34,7 @@ class ElasticityTester:
     NUM_SESSIONS_PER_CLASSIFIER = 100
     
     # [COMMUNICATION] Testing -> toolchain
-    ingestion_system_url = "http://25.20.54.175:8000"
+    ingestion_system_url = "http://25.34.31.202:8000"
     
     # [COMMUNICATION] toolchain -> Testing
     semaphore = threading.Semaphore(0)
