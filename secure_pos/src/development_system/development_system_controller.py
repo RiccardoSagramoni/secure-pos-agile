@@ -139,7 +139,6 @@ class DevelopmentSystemController:
         flask_thread = threading.Thread(target=self.communication_controller.start_developing_rest_server, daemon=True)
         flask_thread.start()
 
-        # initialize del counter
         # start the execution control of the development system
         while True:
 
@@ -155,7 +154,6 @@ class DevelopmentSystemController:
             else:
                 self.status = "Running"
 
-            # incremnet counter
             self.execution_control_of_the_development_system()
 
     def execution_control_exit(self):
