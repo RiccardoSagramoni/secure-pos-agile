@@ -173,7 +173,7 @@ class ElasticityTester:
 
     def start_development_testing(self, how_many_classifiers_list: list) -> None:
         # Create development.csv file
-        with open("development2.csv", "w", encoding="UTF-8") as file:
+        with open("development.csv", "w", encoding="UTF-8") as file:
             file.write("iteration,scenario_id,diff\n")
         
         # Start REST server

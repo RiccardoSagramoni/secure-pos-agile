@@ -65,7 +65,7 @@ class SegregationSystemController:
             self.current_iteration += 1
             if self.current_iteration == TESTING_DB_RESET[TESTING_ITER]:
                 self.db_handler.drop_db()
-                TESTING_ITER += 1
+                TESTING_ITER = (TESTING_ITER + 1) % 5
                 self.current_iteration = 0
             with open(os.path.join(
                     utility.data_folder, 'segregation_system/responses/balancing_response.json'),
@@ -115,7 +115,7 @@ class SegregationSystemController:
             self.current_iteration += 1
             if self.current_iteration == TESTING_DB_RESET[TESTING_ITER]:
                 self.db_handler.drop_db()
-                TESTING_ITER += 1
+                TESTING_ITER = (TESTING_ITER + 1) % 5
                 self.current_iteration = 0
             with open(os.path.join(
                     utility.data_folder, 'segregation_system/responses/quality_response.json'),
@@ -200,7 +200,7 @@ class SegregationSystemController:
             self.current_iteration += 1
             if self.current_iteration == TESTING_DB_RESET[TESTING_ITER]:
                 self.db_handler.drop_db()
-                TESTING_ITER += 1
+                TESTING_ITER = (TESTING_ITER + 1) % 5
                 self.current_iteration = 0
             return
         sys.exit(0)
