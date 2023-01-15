@@ -26,9 +26,10 @@ def send_testing_timestamp(scenario_id: int, session_id: str = None) -> None:
     end_timestamp = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S.%f")
     testing_msg = {
         'scenario_id': scenario_id,
-        'session_id': session_id[0],
         'timestamp': end_timestamp
     }
+    if session_id is not None:
+        testing_msg['session_id'] = session_id[0]
     response = requests.post(TESTING_URL, json=testing_msg)
     if not response.ok:
         logging.error("Failed to send message to testing:\n%s", testing_msg)
