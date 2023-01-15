@@ -16,9 +16,11 @@ class RawSessionPackager:
     def package_as_json_dict(self) -> dict:
         doc = {
             'session_id': self.__raw_session.session_id,
-            'attack_risk_label': self.__raw_session.attack_risk_label.value,
             'transactions': []
         }
+        if self.__raw_session.attack_risk_label is not None:
+            doc['attack_risk_label'] = self.__raw_session.attack_risk_label.value
+
         for transaction in self.__raw_session.transactions:
             doc['transactions'].append(
                 jsons.dump(transaction)
