@@ -188,5 +188,4 @@ class ElasticityTester:
                     break
             self.received_response_list = []
         
-        # todo do stuff here?
         return

@@ -14,9 +14,9 @@ CONFIGURATION_FILE_PATH = 'ingestion_system/config.json'
 CONFIGURATION_SCHEMA_PATH = 'ingestion_system/config_schema.json'
 
 # Variable for testing during execution mode
-EXECUTION_TESTING = True
+EXECUTION_TESTING = False
 SCENARIO_ID = 10
-TESTER_URL = 'http://25.34.53.59:1234' # Fede
+TESTER_URL = 'http://25.34.53.59:1234'  # Federica
 
 
 class IngestionSystemController:
@@ -92,7 +92,7 @@ class IngestionSystemController:
         
         # If we are in monitoring window, send attack risk label to monitoring system
         if self.__system_mode_tracker.is_session_in_monitoring_window(session_id):
-            self.__communication_controller\
+            self.__communication_controller \
                 .send_attack_risk_label(session_id, raw_session.attack_risk_label)
         # Send raw session to preparation system
         self.__communication_controller.send_raw_session(raw_session)

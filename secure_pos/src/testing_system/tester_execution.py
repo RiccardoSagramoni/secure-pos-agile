@@ -208,5 +208,4 @@ class ExecutionTester:
             self.diff_timestamp_list = []
             self.start_timestamp_dict = {}
 
-        # todo do stuff here?
         return
