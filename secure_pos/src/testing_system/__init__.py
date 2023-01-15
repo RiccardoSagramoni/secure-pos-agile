@@ -9,11 +9,9 @@ def execution_testing():
     execution_len = 1000
     monitoring_len = 10
 
-    # num_sessions = [5]
-    num_sessions = [1010, 1010, 1010, 1010, 1010]
-    time_sleep = [0.05, 0.005, 0.003, 0.001, 0.0005]
+    num_sessions = [i * (execution_len + monitoring_len) for i in range(1, 6)]
     
-    test_system.start_execution_testing(num_sessions, execution_len, monitoring_len, time_sleep)
+    test_system.start_execution_testing(num_sessions, execution_len, monitoring_len)
 
     
 def elasticity_testing():
@@ -24,6 +22,6 @@ def elasticity_testing():
 
 if __name__ == "__main__":
     # execution_testing()
-    elasticity_testing()
+    # elasticity_testing()
     print("FINE TESTING")
     sys.exit(0)
