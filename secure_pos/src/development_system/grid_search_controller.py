@@ -12,14 +12,14 @@ from development_system.mlp_training import MLPTraining
 
 class GridSearchController:
 
-    def __init__(self, mlp_classifier: MLPTraining, training_conf: TrainingConfiguration):
+    def __init__(self, mlp_training: MLPTraining, training_conf: TrainingConfiguration):
 
         # data from the json training_configuration file
         self.validation_tolerance = training_conf.validation_tolerance
         self.number_of_top_classifiers = training_conf.number_of_top_classifiers
 
         # necessary field for the gridsearch algorithm
-        self.grid_search_mlp_training = mlp_classifier
+        self.grid_search_mlp_training = mlp_training
         self.validation_error_top_classifiers = dict.fromkeys([1, 2, 3, 4, 5])
         self.top_classifiers_object_list = []
 

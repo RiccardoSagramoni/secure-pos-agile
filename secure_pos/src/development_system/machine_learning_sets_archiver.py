@@ -17,10 +17,10 @@ class MachineLearningSetsArchiver:
 
         with self.semaphore:
             self.db_connection.create_table(
-                "CREATE TABLE IF NOT EXISTS MachineLearningSets"
-                "(id VARCHAR(80) PRIMARY KEY, time_mean FLOAT, time_median FLOAT, time_std FLOAT,"
-                "time_kurtosis FLOAT, time_skewness FLOAT, amount_mean FLOAT, amount_median FLOAT, amount_std FLOAT,"
-                "amount_kurtosis FLOAT, amount_skewness FLOAT, "
+                "CREATE TABLE IF NOT EXISTS MachineLearningSets "
+                "(id_classifier INTEGER PRIMARY KEY AUTOINCREMENT, id VARCHAR(80), time_mean FLOAT, time_median FLOAT, "
+                "time_std FLOAT, time_kurtosis FLOAT, time_skewness FLOAT, amount_mean FLOAT, amount_median FLOAT, "
+                "amount_std FLOAT, amount_kurtosis FLOAT, amount_skewness FLOAT, "
                 "type INT, label VARCHAR(20))"
             )
 
